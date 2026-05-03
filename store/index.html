@@ -785,21 +785,22 @@
   var placesLoaded = false;
   async function loadPlaces() {
     if (placesLoaded) return;
-    placesLoaded = true;
     var container = document.getElementById('place-items-container');
     try {
       var sb = await getSb();
       var { data, error } = await sb
         .from('callpop_applications')
-        .select('id, place_name_kr')
+        .select('id, place_name_kr, status')
         .eq('status', '운영중')
         .not('place_name_kr', 'is', null)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
 
+      placesLoaded = true;
+
       if (!data || data.length === 0) {
-        container.innerHTML = '<div style="padding:12px;font-size:13px;color:var(--mute);">등록된 플레이스가 없습니다.</div>';
+        container.innerHTML = '<div style="padding:12px;font-size:13px;color:var(--mute);">현재 운영 중인 플레이스가 없습니다.</div>';
         return;
       }
 
