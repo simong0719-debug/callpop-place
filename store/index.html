@@ -312,67 +312,86 @@
 <!-- ════════════════════════════════════════
      HERO
 ════════════════════════════════════════ -->
-<section id="hero-section" style="padding-top:120px;padding-bottom:80px;background:#fff;">
+<section id="hero-section" style="padding-top:120px;padding-bottom:80px;background:linear-gradient(160deg,#fff 60%,#FFF5F5 100%);">
   <div class="wrap">
     <div class="grid-hero">
 
       <!-- 왼쪽 카피 -->
       <div>
-        <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:24px;padding:6px 14px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:700;color:var(--sub);">
-          <span style="width:8px;height:8px;border-radius:50%;background:var(--red);"></span>
+        <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:24px;padding:6px 14px;background:#FFF5F5;border:1px solid #FFCDD2;border-radius:20px;font-size:12px;font-weight:700;color:var(--red);">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block;"></span>
           콜팝 가맹점 신청
         </div>
-        <h1 style="font-size:clamp(30px,4.5vw,48px);font-weight:900;line-height:1.2;letter-spacing:-0.03em;margin-bottom:24px;">
+        <h1 style="font-size:clamp(30px,4.5vw,50px);font-weight:900;line-height:1.18;letter-spacing:-0.03em;margin-bottom:24px;">
           배달플랫폼이<br>빼앗아간 고객,<br>
           <span class="red-underline">이제 되찾으세요</span>
         </h1>
-        <p style="font-size:17px;color:var(--sub);line-height:1.8;margin-bottom:36px;">
+        <p style="font-size:16px;color:var(--sub);line-height:1.85;margin-bottom:36px;">
           중개수수료 <strong style="color:var(--text);font-weight:700;">0원</strong>.
           광고비 <strong style="color:var(--text);font-weight:700;">0원</strong>.<br>
           전화 한 통으로 주문받고,
           <strong style="color:var(--red);font-weight:700;">고객을 직접 보유</strong>하세요.
         </p>
+        <!-- 수치 강조 (모바일에서도 보임) -->
+        <div style="display:flex;gap:24px;margin-bottom:36px;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:26px;font-weight:900;color:var(--red);line-height:1;letter-spacing:-1px;">0%</div>
+            <div style="font-size:12px;color:var(--mute);margin-top:3px;">중개수수료</div>
+          </div>
+          <div style="width:1px;background:var(--border);"></div>
+          <div>
+            <div style="font-size:26px;font-weight:900;color:var(--red);line-height:1;letter-spacing:-1px;">0원</div>
+            <div style="font-size:12px;color:var(--mute);margin-top:3px;">광고비</div>
+          </div>
+          <div style="width:1px;background:var(--border);"></div>
+          <div>
+            <div style="font-size:26px;font-weight:900;color:var(--red);line-height:1;letter-spacing:-1px;">3%</div>
+            <div style="font-size:12px;color:var(--mute);margin-top:3px;">결제수수료(D+3)</div>
+          </div>
+        </div>
         <div class="hero-btns">
           <a href="#inquiry-form">
-            <button class="btn-red" style="padding:14px 32px;font-size:15px;">가맹점 신청하기</button>
+            <button class="btn-red" style="padding:15px 34px;font-size:15px;border-radius:6px;">가맹점 신청하기</button>
           </a>
           <a href="#comparison">
-            <button class="btn-outline" style="padding:14px 28px;font-size:15px;">기존앱과 비교 →</button>
+            <button class="btn-outline" style="padding:15px 28px;font-size:15px;">기존앱과 비교 →</button>
           </a>
         </div>
       </div>
 
-      <!-- 오른쪽 수수료 비교 카드 -->
+      <!-- 오른쪽 수수료 비교 카드 (네이비 다크) -->
       <div class="hide-mob">
-        <div class="card" style="padding:36px;border-radius:12px;">
-          <div style="text-align:center;padding-bottom:24px;border-bottom:1px solid var(--border);margin-bottom:24px;">
-            <div style="font-size:13px;color:var(--mute);margin-bottom:8px;">기존 배달앱 월 수수료 부담</div>
-            <div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;margin-bottom:4px;">
-              <span style="font-size:44px;font-weight:900;color:#999;line-height:1;letter-spacing:-2px;text-decoration:line-through;">16%</span>
-              <span style="font-size:14px;color:var(--mute);margin-bottom:8px;">이상</span>
-            </div>
-            <div style="font-size:13px;color:var(--mute);">중개수수료 13% + 결제수수료 3%</div>
+        <div style="background:var(--navy);border-radius:14px;padding:36px;box-shadow:0 16px 48px rgba(26,26,46,.18);">
+          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;">수수료 비교</div>
+
+          <div style="padding:20px;background:rgba(255,255,255,.06);border-radius:8px;margin-bottom:12px;text-align:center;">
+            <div style="font-size:12px;color:rgba(255,255,255,.45);margin-bottom:8px;">기존 배달앱</div>
+            <div style="font-size:42px;font-weight:900;color:rgba(255,255,255,.3);line-height:1;letter-spacing:-2px;text-decoration:line-through;">16%+</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:6px;">중개 13% + 결제 3% + 광고비</div>
           </div>
-          <div style="text-align:center;margin-bottom:24px;">
-            <div style="font-size:13px;color:var(--mute);margin-bottom:8px;">콜팝 가맹점 수수료</div>
-            <div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;margin-bottom:4px;">
-              <span style="font-size:44px;font-weight:900;color:var(--red);line-height:1;letter-spacing:-2px;">3%</span>
-              <span style="font-size:14px;color:var(--sub);margin-bottom:8px;">결제수수료만</span>
-            </div>
-            <div style="font-size:13px;color:var(--sub);">중개수수료·광고비 없음 (D+3 기준)</div>
+
+          <div style="padding:20px;background:var(--red);border-radius:8px;margin-bottom:24px;text-align:center;">
+            <div style="font-size:12px;color:rgba(255,255,255,.7);margin-bottom:8px;">콜팝 가맹점</div>
+            <div style="font-size:42px;font-weight:900;color:#fff;line-height:1;letter-spacing:-2px;">3%</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:6px;">결제수수료만 (D+3 기준)</div>
           </div>
+
           <div style="display:flex;flex-direction:column;gap:10px;">
-            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;font-size:16px;">✓</span> 중개수수료 없음
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.65);">
+              <span style="width:20px;height:20px;border-radius:50%;background:rgba(227,0,27,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--red);flex-shrink:0;">✓</span>
+              중개수수료 없음
             </div>
-            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;font-size:16px;">✓</span> 광고비 없음
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.65);">
+              <span style="width:20px;height:20px;border-radius:50%;background:rgba(227,0,27,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--red);flex-shrink:0;">✓</span>
+              광고비 없음
             </div>
-            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;font-size:16px;">✓</span> 고객 정보 직접 보유
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.65);">
+              <span style="width:20px;height:20px;border-radius:50%;background:rgba(227,0,27,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--red);flex-shrink:0;">✓</span>
+              고객 정보 직접 보유
             </div>
-            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;font-size:16px;">✓</span> 전화 주문으로 앱 설치 불필요
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.65);">
+              <span style="width:20px;height:20px;border-radius:50%;background:rgba(227,0,27,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--red);flex-shrink:0;">✓</span>
+              앱 설치 없이 전화 주문
             </div>
           </div>
         </div>
@@ -396,22 +415,25 @@
     </div>
     <div class="grid-pain">
 
-      <div class="card" style="padding:32px;">
-        <div style="width:52px;height:52px;background:#FFF5F5;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:20px;">💸</div>
-        <h3 style="font-size:17px;font-weight:700;margin-bottom:12px;line-height:1.4;">수수료가 너무 높아<br>남는 게 없어요</h3>
-        <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">중개수수료 6~13%에 결제수수료 3%, 광고비까지 내고 나면 배달 매출이 오히려 적자입니다. 열심히 팔수록 플랫폼만 좋은 일을 하고 있습니다.</p>
+      <div style="background:#fff;border-radius:10px;border:1px solid var(--border);border-top:4px solid var(--red);padding:32px;transition:box-shadow 0.2s,transform 0.2s;" onmouseover="this.style.boxShadow='0 8px 28px rgba(0,0,0,.08)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='';this.style.transform=''">
+        <div style="width:48px;height:48px;background:#FFF5F5;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">💸</div>
+        <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;line-height:1.4;letter-spacing:-0.02em;">수수료가 너무 높아<br>남는 게 없어요</h3>
+        <p style="font-size:14px;color:var(--sub);line-height:1.8;margin:0 0 16px;">중개수수료 6~13%에 결제수수료 3%, 광고비까지 내고 나면 배달 매출이 적자입니다.</p>
+        <div style="font-size:12px;font-weight:700;color:var(--red);padding:6px 12px;background:#FFF5F5;border-radius:4px;display:inline-block;">최대 16%+ 부담</div>
       </div>
 
-      <div class="card" style="padding:32px;">
-        <div style="width:52px;height:52px;background:#FFF5F5;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:20px;">📢</div>
-        <h3 style="font-size:17px;font-weight:700;margin-bottom:12px;line-height:1.4;">광고 안 하면<br>노출조차 안 돼요</h3>
-        <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">검색 상단에 노출되려면 별도 광고비가 필수입니다. 매달 수십만 원씩 광고비를 써야 겨우 주문이 들어옵니다. 광고를 끊으면 매출도 사라집니다.</p>
+      <div style="background:#fff;border-radius:10px;border:1px solid var(--border);border-top:4px solid var(--red);padding:32px;transition:box-shadow 0.2s,transform 0.2s;" onmouseover="this.style.boxShadow='0 8px 28px rgba(0,0,0,.08)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='';this.style.transform=''">
+        <div style="width:48px;height:48px;background:#FFF5F5;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">📢</div>
+        <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;line-height:1.4;letter-spacing:-0.02em;">광고 안 하면<br>노출조차 안 돼요</h3>
+        <p style="font-size:14px;color:var(--sub);line-height:1.8;margin:0 0 16px;">검색 상단 노출을 위해 매달 수십만 원의 광고비가 필수입니다. 광고를 끊으면 매출도 사라집니다.</p>
+        <div style="font-size:12px;font-weight:700;color:var(--red);padding:6px 12px;background:#FFF5F5;border-radius:4px;display:inline-block;">월 수십만 원 추가 부담</div>
       </div>
 
-      <div class="card" style="padding:32px;">
-        <div style="width:52px;height:52px;background:#FFF5F5;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:20px;">🔒</div>
-        <h3 style="font-size:17px;font-weight:700;margin-bottom:12px;line-height:1.4;">내 고객인데<br>연락처도 못 봐요</h3>
-        <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">단골이 생겨도 고객 정보는 플랫폼이 독점합니다. 재주문 유도도, 이벤트 홍보도 내 마음대로 할 수 없습니다. 플랫폼을 떠나는 순간 고객도 사라집니다.</p>
+      <div style="background:#fff;border-radius:10px;border:1px solid var(--border);border-top:4px solid var(--red);padding:32px;transition:box-shadow 0.2s,transform 0.2s;" onmouseover="this.style.boxShadow='0 8px 28px rgba(0,0,0,.08)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='';this.style.transform=''">
+        <div style="width:48px;height:48px;background:#FFF5F5;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">🔒</div>
+        <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;line-height:1.4;letter-spacing:-0.02em;">내 고객인데<br>연락처도 못 봐요</h3>
+        <p style="font-size:14px;color:var(--sub);line-height:1.8;margin:0 0 16px;">단골이 생겨도 고객 정보는 플랫폼이 독점합니다. 플랫폼을 떠나는 순간 고객도 함께 사라집니다.</p>
+        <div style="font-size:12px;font-weight:700;color:var(--red);padding:6px 12px;background:#FFF5F5;border-radius:4px;display:inline-block;">고객 데이터 플랫폼 독점</div>
       </div>
 
     </div>
@@ -500,82 +522,61 @@
     <div class="grid-steps">
 
       <!-- Step 1 -->
-      <div style="position:relative;">
-        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;">
-          <div class="step-num">1</div>
-          <div style="padding-top:8px;">
-            <div style="font-size:12px;font-weight:700;color:var(--red);letter-spacing:0.06em;margin-bottom:4px;">STEP 1</div>
-            <h3 style="font-size:19px;font-weight:900;line-height:1.3;letter-spacing:-0.02em;">가입 신청<br>&amp; 개설</h3>
+      <div style="background:#fff;border-radius:12px;border:1px solid var(--border);padding:32px;position:relative;">
+        <div style="position:absolute;top:-16px;left:28px;width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(227,0,27,.3);">1</div>
+        <div style="font-size:36px;margin-bottom:16px;margin-top:8px;">📋</div>
+        <div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">STEP 1</div>
+        <h3 style="font-size:18px;font-weight:900;line-height:1.3;letter-spacing:-0.02em;margin-bottom:12px;">가입 신청 &amp; 개설</h3>
+        <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0 0 16px;">신청 폼을 작성하면 콜팝 담당자가 연락드립니다. 매장 정보와 희망 플레이스를 선택해 주시면 신속히 안내해 드립니다.</p>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;display:inline-block;"></span> 가입신청서 작성
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;display:inline-block;"></span> 담당자 확인 전화
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;display:inline-block;"></span> 플레이스 배정 완료
           </div>
         </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:24px;">
-          <div style="font-size:32px;margin-bottom:14px;">📋</div>
-          <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">아래 신청 폼을 작성하면 콜팝 담당자가 연락드립니다. 매장 정보와 희망 플레이스를 선택해 주시면 신속하게 가입 절차를 안내해 드립니다.</p>
-          <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;">·</span> 가입신청서 작성
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;">·</span> 담당자 확인 전화
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;">·</span> 플레이스 배정 완료
-            </div>
-          </div>
-        </div>
-        <!-- 연결선 (데스크탑) -->
-        <div class="hide-mob" style="position:absolute;top:22px;right:-16px;width:32px;height:2px;background:var(--border);z-index:1;"></div>
       </div>
 
       <!-- Step 2 -->
-      <div style="position:relative;">
-        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;">
-          <div class="step-num">2</div>
-          <div style="padding-top:8px;">
-            <div style="font-size:12px;font-weight:700;color:var(--red);letter-spacing:0.06em;margin-bottom:4px;">STEP 2</div>
-            <h3 style="font-size:19px;font-weight:900;line-height:1.3;letter-spacing:-0.02em;">메뉴 등록<br>&amp; PG 계약</h3>
+      <div style="background:#fff;border-radius:12px;border:1px solid var(--border);padding:32px;position:relative;">
+        <div style="position:absolute;top:-16px;left:28px;width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(227,0,27,.3);">2</div>
+        <div style="font-size:36px;margin-bottom:16px;margin-top:8px;">🍽️</div>
+        <div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">STEP 2</div>
+        <h3 style="font-size:18px;font-weight:900;line-height:1.3;letter-spacing:-0.02em;margin-bottom:12px;">메뉴 등록 &amp; PG 계약</h3>
+        <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0 0 16px;">담당자 안내에 따라 메뉴를 등록하고 결제(PG) 계약을 진행합니다. 결제수수료 3.0%(D+3), 중개수수료 없음.</p>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;display:inline-block;"></span> 메뉴 사진 및 가격 등록
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;display:inline-block;"></span> PG사 계약 (결제수수료 3%)
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;display:inline-block;"></span> 정산 계좌 등록
           </div>
         </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:24px;">
-          <div style="font-size:32px;margin-bottom:14px;">🍽️</div>
-          <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">담당자의 안내에 따라 판매 메뉴를 등록하고 결제(PG) 계약을 진행합니다. 결제 수수료는 3.0%(D+3)이며 별도의 중개수수료는 없습니다.</p>
-          <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;">·</span> 메뉴 사진 및 가격 등록
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;">·</span> PG사 계약 (결제수수료 3%)
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;">·</span> 정산 계좌 등록
-            </div>
-          </div>
-        </div>
-        <div class="hide-mob" style="position:absolute;top:22px;right:-16px;width:32px;height:2px;background:var(--border);z-index:1;"></div>
       </div>
 
       <!-- Step 3 -->
-      <div>
-        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;">
-          <div class="step-num">3</div>
-          <div style="padding-top:8px;">
-            <div style="font-size:12px;font-weight:700;color:var(--red);letter-spacing:0.06em;margin-bottom:4px;">STEP 3</div>
-            <h3 style="font-size:19px;font-weight:900;line-height:1.3;letter-spacing:-0.02em;">매장 오픈<br>&amp; 운영</h3>
+      <div style="background:var(--navy);border-radius:12px;border:1px solid var(--navy);padding:32px;position:relative;">
+        <div style="position:absolute;top:-16px;left:28px;width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(227,0,27,.4);">3</div>
+        <div style="font-size:36px;margin-bottom:16px;margin-top:8px;">🚀</div>
+        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">STEP 3</div>
+        <h3 style="font-size:18px;font-weight:900;line-height:1.3;letter-spacing:-0.02em;margin-bottom:12px;color:#fff;">매장 오픈 &amp; 운영</h3>
+        <p style="font-size:14px;color:rgba(255,255,255,.65);line-height:1.75;margin:0 0 16px;">설정 완료 후 콜팝 플레이스를 통해 전화 주문을 받습니다. 주문마다 자동 결제 처리, D+3 자동 정산.</p>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.6);">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;display:inline-block;"></span> 전화 주문 수신 시작
           </div>
-        </div>
-        <div style="background:#FFF5F5;border:1px solid #FFCDD2;border-radius:8px;padding:24px;">
-          <div style="font-size:32px;margin-bottom:14px;">🚀</div>
-          <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">모든 설정이 완료되면 콜팝 플레이스를 통해 전화 주문을 받을 수 있습니다. 주문이 들어올 때마다 결제가 자동 처리되고, D+3 기준으로 정산됩니다.</p>
-          <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;">·</span> 전화 주문 수신 시작
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;">·</span> 자동 결제 처리
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);">
-              <span style="color:var(--red);font-weight:900;">·</span> D+3 자동 정산
-            </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.6);">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;display:inline-block;"></span> 자동 결제 처리
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.6);">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;display:inline-block;"></span> D+3 자동 정산
           </div>
         </div>
       </div>

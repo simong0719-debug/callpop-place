@@ -329,11 +329,13 @@
 <div id="login-screen">
   <div id="login-box">
     <div class="login-logo">
-      <img src="brand_logo/callpop_logo_dark.png" alt="CallPop"
-           onerror="this.style.display='none';document.querySelector('.login-logo-text').style.display='block'">
-      <span class="login-logo-text">CALLPOP</span>
+      <div style="display:inline-flex;align-items:center;justify-content:center;background:#E3001B;border-radius:10px;padding:10px 20px;margin-bottom:4px;">
+        <img src="brand_logo/callpop_logo_light.png" alt="CallPop" style="height:32px;width:auto;"
+             onerror="this.style.display='none';document.querySelector('.login-logo-text').style.display='block'">
+        <span class="login-logo-text">CALLPOP</span>
+      </div>
     </div>
-    <p class="login-subtitle">플레이스 관리자</p>
+    <p class="login-subtitle">관리자 페이지</p>
     <div class="field">
       <label>이메일</label>
       <input id="login-email" type="email" placeholder="admin@example.com" autocomplete="email">
