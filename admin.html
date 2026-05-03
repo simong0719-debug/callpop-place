@@ -292,6 +292,26 @@
     .user-del-btn:disabled { opacity: .35; cursor: not-allowed; }
     #users-error { color: #E3001B; font-size: 13px; min-height: 18px; margin-top: 4px; }
 
+    /* ── TABS ────────────────────────────────── */
+    .tab-bar {
+      display: flex; gap: 0; margin-bottom: 22px;
+      border-bottom: 2px solid #e8e8e8;
+    }
+    .tab-btn {
+      padding: 10px 24px; font-size: 14px; font-weight: 700;
+      color: #aaa; background: none; border: none;
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      cursor: pointer; transition: color .15s, border-color .15s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: #555; }
+    .tab-btn.active { color: #E3001B; border-bottom-color: #E3001B; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* store badge */
+    .s-검토중 { background: #e3f0ff; color: #1565c0; }
+
     /* ── RESPONSIVE ───────────────────────────── */
     @media (max-width: 768px) {
       #main { padding: 14px; }
@@ -342,61 +362,126 @@
 
   <div id="main">
 
-    <!-- 통계 -->
-    <div class="stats-row">
-      <div class="stat-card accent">
-        <div class="s-label">전체 신청</div>
-        <div class="s-value" id="stat-total">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="s-label">대기중</div>
-        <div class="s-value" id="stat-pending">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="s-label">운영중</div>
-        <div class="s-value" id="stat-active">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="s-label">오늘 신청</div>
-        <div class="s-value" id="stat-today">—</div>
-      </div>
+    <!-- 탭 -->
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-place-btn" onclick="switchTab('place')">플레이스 신청</button>
+      <button class="tab-btn" id="tab-store-btn" onclick="switchTab('store')">가맹점 신청</button>
     </div>
 
-    <!-- 검색/필터 -->
-    <div class="toolbar">
-      <input type="text" id="search-input" placeholder="플레이스명, 전화번호, 대표자 검색...">
-      <select id="filter-status">
-        <option value="">전체 상태</option>
-        <option value="대기중">대기중</option>
-        <option value="설정중">설정중</option>
-        <option value="운영중">운영중</option>
-        <option value="완료">완료</option>
-        <option value="취소">취소</option>
-      </select>
-      <button class="refresh-btn" id="refresh-btn">↻ 새로고침</button>
+    <!-- ══ 플레이스 신청 패널 ══ -->
+    <div class="tab-panel active" id="tab-place">
+
+      <div class="stats-row">
+        <div class="stat-card accent">
+          <div class="s-label">전체 신청</div>
+          <div class="s-value" id="stat-total">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-label">대기중</div>
+          <div class="s-value" id="stat-pending">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-label">운영중</div>
+          <div class="s-value" id="stat-active">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-label">오늘 신청</div>
+          <div class="s-value" id="stat-today">—</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" id="search-input" placeholder="플레이스명, 전화번호, 대표자 검색...">
+        <select id="filter-status">
+          <option value="">전체 상태</option>
+          <option value="대기중">대기중</option>
+          <option value="설정중">설정중</option>
+          <option value="운영중">운영중</option>
+          <option value="완료">완료</option>
+          <option value="취소">취소</option>
+        </select>
+        <button class="refresh-btn" id="refresh-btn">↻ 새로고침</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>플레이스명</th>
+              <th>대표자</th>
+              <th>전화번호</th>
+              <th>착신번호</th>
+              <th>콜팝전화번호</th>
+              <th>링크주소</th>
+              <th>상태</th>
+              <th>신청일</th>
+              <th>메모</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="app-tbody">
+            <tr class="state-row"><td colspan="10">데이터를 불러오는 중...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
-    <!-- 테이블 -->
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>플레이스명</th>
-            <th>대표자</th>
-            <th>전화번호</th>
-            <th>착신번호</th>
-            <th>콜팝전화번호</th>
-            <th>링크주소</th>
-            <th>상태</th>
-            <th>신청일</th>
-            <th>메모</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="app-tbody">
-          <tr class="state-row"><td colspan="10">데이터를 불러오는 중...</td></tr>
-        </tbody>
-      </table>
+    <!-- ══ 가맹점 신청 패널 ══ -->
+    <div class="tab-panel" id="tab-store">
+
+      <div class="stats-row">
+        <div class="stat-card accent">
+          <div class="s-label">전체 문의</div>
+          <div class="s-value" id="s-stat-total">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-label">대기중</div>
+          <div class="s-value" id="s-stat-pending">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-label">완료</div>
+          <div class="s-value" id="s-stat-done">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-label">오늘 문의</div>
+          <div class="s-value" id="s-stat-today">—</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" id="s-search-input" placeholder="매장명, 연락처, 대표자 검색...">
+        <select id="s-filter-status">
+          <option value="">전체 상태</option>
+          <option value="대기중">대기중</option>
+          <option value="검토중">검토중</option>
+          <option value="완료">완료</option>
+          <option value="취소">취소</option>
+        </select>
+        <button class="refresh-btn" id="s-refresh-btn">↻ 새로고침</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>매장명</th>
+              <th>카테고리</th>
+              <th>대표자</th>
+              <th>연락처</th>
+              <th>희망 플레이스</th>
+              <th>상태</th>
+              <th>신청일</th>
+              <th>메모</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="store-tbody">
+            <tr class="state-row"><td colspan="9">데이터를 불러오는 중...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
   </div>
@@ -490,14 +575,64 @@
   </div>
 </div>
 
+<!-- ══════════════ 가맹점 모달 ══════════════ -->
+<div id="store-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:16px;">
+  <div id="store-modal" style="background:#fff;border-radius:14px;width:100%;max-width:580px;max-height:92vh;overflow-y:auto;box-shadow:0 28px 90px rgba(0,0,0,.28);display:flex;flex-direction:column;">
+    <div class="modal-header">
+      <h3 id="store-modal-title">가맹점 신청 상세</h3>
+      <button class="modal-close-btn" id="store-modal-close-btn">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="section-label">신청 정보</div>
+      <div class="info-grid" id="store-modal-info-grid"></div>
+
+      <hr class="modal-divider">
+
+      <div class="section-label">관리 설정</div>
+      <div class="form-field">
+        <label>처리 상태</label>
+        <select id="s-edit-status">
+          <option value="대기중">대기중</option>
+          <option value="검토중">검토중</option>
+          <option value="완료">완료</option>
+          <option value="취소">취소</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>메모</label>
+        <textarea id="s-edit-memo" placeholder="내부 메모를 입력하세요..."></textarea>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-delete" id="store-modal-delete-btn">삭제</button>
+      <span class="save-ok" id="s-save-ok" style="display:none">✓ 저장되었습니다</span>
+      <button class="btn-cancel" id="store-modal-cancel-btn">취소</button>
+      <button class="btn-save" id="store-modal-save-btn">저장</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ─── Supabase ────────────────────────────────
 const { createClient } = supabase;
 let sb;
 
 // ─── State ───────────────────────────────────
-let allApps = [];
+let allApps   = [];
 let currentId = null;
+let allStores   = [];
+let currentStoreId = null;
+
+// ─── Tab 전환 ────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('tab-place').classList.toggle('active', tab === 'place');
+  document.getElementById('tab-store').classList.toggle('active', tab === 'store');
+  document.getElementById('tab-place-btn').classList.toggle('active', tab === 'place');
+  document.getElementById('tab-store-btn').classList.toggle('active', tab === 'store');
+  if (tab === 'store' && allStores.length === 0) loadStores();
+}
 
 // ─── Init ────────────────────────────────────
 (async () => {
@@ -711,6 +846,7 @@ document.getElementById('modal-overlay').addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (document.getElementById('users-overlay').classList.contains('open')) closeUsersModal();
+    else if (document.getElementById('store-modal-overlay').style.display === 'flex') closeStoreModal();
     else closeModal();
   }
 });
@@ -916,6 +1052,173 @@ async function deleteApp() {
   applyFilters();
   closeModal();
 }
+
+// ─── 가맹점 신청 로드 ────────────────────────
+document.getElementById('s-refresh-btn').addEventListener('click', loadStores);
+document.getElementById('s-search-input').addEventListener('input', applyStoreFilters);
+document.getElementById('s-filter-status').addEventListener('change', applyStoreFilters);
+
+async function loadStores() {
+  const tbody = document.getElementById('store-tbody');
+  tbody.innerHTML = '<tr class="state-row"><td colspan="9">데이터를 불러오는 중...</td></tr>';
+
+  const { data, error } = await sb
+    .from('store_inquiries')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    tbody.innerHTML = `<tr class="state-row"><td colspan="9">로드 실패: ${esc(error.message)}</td></tr>`;
+    return;
+  }
+
+  allStores = data || [];
+  updateStoreStats();
+  renderStoreTable(allStores);
+}
+
+function updateStoreStats() {
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById('s-stat-total').textContent   = allStores.length;
+  document.getElementById('s-stat-pending').textContent = allStores.filter(s => !s.status || s.status === '대기중').length;
+  document.getElementById('s-stat-done').textContent    = allStores.filter(s => s.status === '완료').length;
+  document.getElementById('s-stat-today').textContent   = allStores.filter(s => (s.created_at || '').slice(0, 10) === today).length;
+}
+
+function renderStoreTable(stores) {
+  const tbody = document.getElementById('store-tbody');
+  if (!stores.length) {
+    tbody.innerHTML = '<tr class="state-row"><td colspan="9">가맹점 신청 내역이 없습니다.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = stores.map(s => {
+    const status = s.status || '대기중';
+    const date   = (s.created_at || '').slice(0, 10).replace(/-/g, '.');
+    const memo   = s.admin_memo ? esc(s.admin_memo) : '';
+    const places = s.desired_places ? esc(s.desired_places) : '—';
+    return `
+      <tr>
+        <td class="td-name">${esc(s.store_name || '—')}</td>
+        <td>${esc(s.category || '—')}</td>
+        <td>${esc(s.representative || '—')}</td>
+        <td class="td-phone">${esc(s.phone || '—')}</td>
+        <td class="td-memo" title="${places}" style="max-width:160px;">${places}</td>
+        <td><span class="badge s-${esc(status)}">${esc(status)}</span></td>
+        <td class="td-date">${date || '—'}</td>
+        <td class="td-memo" title="${memo}">${memo || '<span class="td-dash">—</span>'}</td>
+        <td><button class="edit-btn" onclick="openStoreModal('${esc(s.id)}')">편집</button></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function applyStoreFilters() {
+  const q      = document.getElementById('s-search-input').value.toLowerCase();
+  const status = document.getElementById('s-filter-status').value;
+  const filtered = allStores.filter(s => {
+    const matchText = !q
+      || (s.store_name    || '').toLowerCase().includes(q)
+      || (s.phone         || '').includes(q)
+      || (s.representative|| '').toLowerCase().includes(q);
+    const matchStatus = !status || (s.status || '대기중') === status;
+    return matchText && matchStatus;
+  });
+  renderStoreTable(filtered);
+}
+
+// ─── 가맹점 모달 ─────────────────────────────
+function openStoreModal(id) {
+  const s = allStores.find(x => x.id === id);
+  if (!s) return;
+  currentStoreId = id;
+
+  document.getElementById('store-modal-title').textContent = (s.store_name || '가맹점') + ' — 편집';
+
+  const INFO = [
+    ['매장명',      s.store_name],
+    ['매장 주소',   s.store_address],
+    ['카테고리',    s.category],
+    ['대표자',      s.representative],
+    ['연락처',      s.phone],
+    ['희망 플레이스', s.desired_places],
+    ['추가 문의',   s.message],
+  ];
+  document.getElementById('store-modal-info-grid').innerHTML = INFO
+    .filter(([, v]) => v != null && v !== '')
+    .map(([label, value]) => `
+      <div class="info-item">
+        <div class="i-label">${esc(label)}</div>
+        <div class="i-value">${esc(String(value))}</div>
+      </div>
+    `).join('');
+
+  document.getElementById('s-edit-status').value = s.status || '대기중';
+  document.getElementById('s-edit-memo').value   = s.admin_memo || '';
+
+  document.getElementById('s-save-ok').style.display          = 'none';
+  document.getElementById('store-modal-save-btn').disabled    = false;
+  document.getElementById('store-modal-save-btn').textContent = '저장';
+  document.getElementById('store-modal-delete-btn').disabled    = false;
+  document.getElementById('store-modal-delete-btn').textContent = '삭제';
+
+  const overlay = document.getElementById('store-modal-overlay');
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeStoreModal() {
+  document.getElementById('store-modal-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+  currentStoreId = null;
+}
+
+document.getElementById('store-modal-close-btn').addEventListener('click', closeStoreModal);
+document.getElementById('store-modal-cancel-btn').addEventListener('click', closeStoreModal);
+document.getElementById('store-modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('store-modal-overlay')) closeStoreModal();
+});
+
+document.getElementById('store-modal-save-btn').addEventListener('click', async () => {
+  if (!currentStoreId) return;
+  const btn = document.getElementById('store-modal-save-btn');
+  const ok  = document.getElementById('s-save-ok');
+  btn.textContent = '저장 중...'; btn.disabled = true; ok.style.display = 'none';
+
+  const updates = {
+    status:     document.getElementById('s-edit-status').value,
+    admin_memo: document.getElementById('s-edit-memo').value.trim() || null,
+  };
+
+  const { error } = await sb.from('store_inquiries').update(updates).eq('id', currentStoreId);
+  if (error) {
+    btn.textContent = '저장 실패 — 다시 시도'; btn.disabled = false;
+    alert('저장 실패: ' + error.message); return;
+  }
+
+  const idx = allStores.findIndex(s => s.id === currentStoreId);
+  if (idx !== -1) Object.assign(allStores[idx], updates);
+  updateStoreStats(); applyStoreFilters();
+  ok.style.display = 'block'; btn.textContent = '저장'; btn.disabled = false;
+  setTimeout(closeStoreModal, 1200);
+});
+
+document.getElementById('store-modal-delete-btn').addEventListener('click', async () => {
+  if (!currentStoreId) return;
+  const s = allStores.find(x => x.id === currentStoreId);
+  if (!confirm(`"${s?.store_name || '이 항목'}" 신청을 삭제하시겠습니까?`)) return;
+
+  const btn = document.getElementById('store-modal-delete-btn');
+  btn.textContent = '삭제 중...'; btn.disabled = true;
+
+  const { error } = await sb.from('store_inquiries').delete().eq('id', currentStoreId);
+  if (error) {
+    btn.textContent = '삭제'; btn.disabled = false;
+    alert('삭제 실패: ' + error.message); return;
+  }
+
+  allStores = allStores.filter(s => s.id !== currentStoreId);
+  updateStoreStats(); applyStoreFilters(); closeStoreModal();
+});
 
 // ─── XSS helper ──────────────────────────────
 function esc(str) {
