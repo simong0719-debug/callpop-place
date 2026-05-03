@@ -796,6 +796,17 @@
       return;
     }
 
+    // 이메일 알림 발송 (실패해도 신청은 완료 처리)
+    try {
+      await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    } catch (e) {
+      console.warn('이메일 발송 오류:', e);
+    }
+
     document.getElementById('form-success').style.display = 'block';
     btn.textContent = '✓ 신청 완료';
     btn.style.background = '#16a34a';
