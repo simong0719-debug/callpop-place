@@ -797,10 +797,13 @@
 <script>
   // Supabase 초기화
   const { createClient } = supabase;
-  const sb = createClient(
-    'https://caqqgmtbgipkjapdadwu.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhcXFnbXRiZ2lwa2phcGRhZHd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2OTAxMjksImV4cCI6MjA5MzI2NjEyOX0.KbpIypLA0lZhiOkjhcLQAdSqGtAEsqpFIDEE_EoNOmk'
-  );
+  let _sb;
+  async function getSb() {
+    if (_sb) return _sb;
+    const { supabaseUrl, supabaseKey } = await fetch('/api/config').then(r => r.json());
+    _sb = createClient(supabaseUrl, supabaseKey);
+    return _sb;
+  }
 
   // 폼 제출
   document.getElementById('appForm').addEventListener('submit', async function(e) {
@@ -835,7 +838,7 @@
       message:         fd.get('message')          || null,
     };
 
-    var { error } = await sb.from('callpop_applications').insert(payload);
+    var { error } = await (await getSb()).from('callpop_applications').insert(payload);
 
     if (error) {
       console.error(error);

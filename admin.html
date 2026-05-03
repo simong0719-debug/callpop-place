@@ -493,10 +493,7 @@
 <script>
 // ─── Supabase ────────────────────────────────
 const { createClient } = supabase;
-const sb = createClient(
-  'https://caqqgmtbgipkjapdadwu.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhcXFnbXRiZ2lwa2phcGRhZHd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2OTAxMjksImV4cCI6MjA5MzI2NjEyOX0.KbpIypLA0lZhiOkjhcLQAdSqGtAEsqpFIDEE_EoNOmk'
-);
+let sb;
 
 // ─── State ───────────────────────────────────
 let allApps = [];
@@ -504,14 +501,17 @@ let currentId = null;
 
 // ─── Init ────────────────────────────────────
 (async () => {
+  const cfg = await fetch('/api/config').then(r => r.json());
+  sb = createClient(cfg.supabaseUrl, cfg.supabaseKey);
+
   const { data: { session } } = await sb.auth.getSession();
   if (session) showDashboard();
-})();
 
-sb.auth.onAuthStateChange((event, session) => {
-  if (event === 'SIGNED_IN')  showDashboard();
-  if (event === 'SIGNED_OUT') showLogin();
-});
+  sb.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_IN')  showDashboard();
+    if (event === 'SIGNED_OUT') showLogin();
+  });
+})();
 
 // ─── Login ───────────────────────────────────
 document.getElementById('login-btn').addEventListener('click', handleLogin);
