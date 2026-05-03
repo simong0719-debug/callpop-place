@@ -82,7 +82,7 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         from: 'onboarding@resend.dev',
-        to: 'simong35@naver.com',
+        to: 'simong0719@gmail.com',
         subject: `[콜팝 플레이스] 새 신청 — ${place_name_kr || '이름없음'}`,
         html,
       }),
