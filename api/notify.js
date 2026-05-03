@@ -81,8 +81,8 @@ module.exports = async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'onboarding@resend.dev',
-        to: 'simong0719@gmail.com',
+        from: 'noreply@callpop.co.kr',
+        to: 'simong35@naver.com',
         subject: `[콜팝 플레이스] 새 신청 — ${place_name_kr || '이름없음'}`,
         html,
       }),
