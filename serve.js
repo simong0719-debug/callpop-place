@@ -25,6 +25,16 @@ const path = require('path');
   console.log('.env 로드 완료');
 })();
 
+const SECURITY_HEADERS = {
+  'Strict-Transport-Security':   'max-age=31536000; includeSubDomains; preload',
+  'X-Content-Type-Options':      'nosniff',
+  'X-Frame-Options':             'DENY',
+  'X-XSS-Protection':            '1; mode=block',
+  'Referrer-Policy':             'strict-origin-when-cross-origin',
+  'Permissions-Policy':          'camera=(), microphone=(), geolocation=(), payment=()',
+  'Content-Security-Policy':     "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://api.resend.com; img-src 'self' data: https:; font-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+};
+
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.js':   'application/javascript',
@@ -88,10 +98,10 @@ http.createServer(async (req, res) => {
 
   fs.readFile(file, (err, data) => {
     if (err) {
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.writeHead(404, { 'Content-Type': 'text/plain', ...SECURITY_HEADERS });
       res.end('Not found');
     } else {
-      res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
+      res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream', ...SECURITY_HEADERS });
       res.end(data);
     }
   });
