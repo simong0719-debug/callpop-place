@@ -841,11 +841,13 @@
       message:         fd.get('message')          || null,
     };
 
-    var { error } = await (await getSb()).from('callpop_applications').insert(payload);
-
-    if (error) {
-      console.error(error);
-      errEl.textContent = '오류가 발생했습니다: ' + error.message;
+    try {
+      var sb = await getSb();
+      var { error } = await sb.from('callpop_applications').insert(payload);
+      if (error) throw error;
+    } catch (err) {
+      console.error(err);
+      errEl.textContent = '오류가 발생했습니다: ' + (err.message || '잠시 후 다시 시도해 주세요.');
       errEl.style.display = 'block';
       btn.textContent = '콜팝 플레이스 이용 신청하기';
       btn.disabled = false;
