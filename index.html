@@ -211,10 +211,66 @@
     }
     .flabel .req { color: var(--red); margin-left: 2px; }
 
+    /* ── 그리드 클래스 ── */
+    .grid-hero         { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+    .grid-features     { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:center; }
+    .grid-feat-cards   { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .grid-howitworks   { display:grid; grid-template-columns:1fr 2fr; gap:72px; align-items:start; }
+    .grid-form-2       { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .grid-form-3       { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+    .hero-btns         { display:flex; gap:12px; flex-wrap:wrap; }
+
     /* ── 반응형 ── */
     @media (max-width: 768px) {
-      .section { padding: 60px 0; }
+      .wrap { padding: 0 16px; }
+      .section { padding: 48px 0; }
+      .section-sm { padding: 40px 0; }
       .hide-mob { display: none !important; }
+
+      /* 그리드 → 단일 컬럼 */
+      .grid-hero,
+      .grid-features,
+      .grid-howitworks { grid-template-columns: 1fr; gap: 28px; }
+      .grid-feat-cards { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .grid-form-2,
+      .grid-form-3     { grid-template-columns: 1fr; gap: 14px; }
+
+      /* 히어로 버튼 세로 정렬 */
+      .hero-btns { flex-direction: column; }
+      .hero-btns a, .hero-btns button { width: 100%; text-align: center; }
+
+      /* 폼 grid-column 리셋 */
+      .grid-form-2 > [style*="grid-column:1/-1"],
+      .grid-form-3 > [style*="grid-column:1/-1"] { grid-column: 1 / -1 !important; }
+
+      /* 비교표 셀 패딩 축소 */
+      .comp-table th,
+      .comp-table td { padding: 10px 12px; font-size: 13px; }
+
+      /* 섹션 타이틀 */
+      .section-title { font-size: 24px; }
+      .section-desc  { font-size: 14px; }
+
+      /* 히어로 상단 여백 (고정 헤더 보정) */
+      #hero-section { padding-top: 88px; padding-bottom: 48px; }
+
+      /* 헤더 로고 */
+      header img { height: 28px; }
+      header .btn-red { padding: 8px 16px !important; font-size: 13px !important; }
+
+      /* 폼 */
+      .form-section-title { font-size: 13px; }
+      #appForm { gap: 24px; }
+
+      /* 피처 카드 패딩 */
+      .grid-feat-cards > div { padding: 18px 14px !important; }
+
+      /* 타겟 섹션 */
+      .section-sm { padding: 36px 0; }
+
+      /* 푸터 */
+      footer { padding: 36px 0; }
+      footer .wrap > div:first-child { flex-direction: column; gap: 24px; }
     }
   </style>
 </head>
@@ -226,12 +282,10 @@
 <header style="position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;border-bottom:1px solid var(--border);">
   <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;height:60px;">
     <div style="display:flex;align-items:center;gap:10px;">
-      <!-- KT 로고 느낌의 텍스트 로고 -->
-      <div style="display:flex;align-items:center;gap:4px;">
-        <span style="font-size:20px;font-weight:900;color:var(--red);letter-spacing:-1px;">kt</span>
-        <span style="width:1px;height:16px;background:var(--border);margin:0 6px;"></span>
-        <span style="font-size:16px;font-weight:700;color:var(--text);letter-spacing:-0.5px;">콜팝 플레이스</span>
-      </div>
+      <a href="#" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+        <img src="./brand_logo/logo.png" alt="콜팝" style="height:34px;width:auto;">
+        <span style="font-size:14px;font-weight:700;color:var(--text);letter-spacing:-0.3px;background:var(--bg);padding:3px 10px;border-radius:20px;border:1px solid var(--border);">플레이스</span>
+      </a>
     </div>
     <a href="#apply-form">
       <button class="btn-red" style="padding:9px 22px;font-size:13px;">신청하기</button>
@@ -243,9 +297,9 @@
 <!-- ════════════════════════════════════════
      HERO
 ════════════════════════════════════════ -->
-<section style="padding-top:120px;padding-bottom:80px;background:#fff;">
+<section id="hero-section" style="padding-top:120px;padding-bottom:80px;background:#fff;">
   <div class="wrap">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+    <div class="grid-hero">
 
       <!-- 왼쪽 카피 -->
       <div>
@@ -264,7 +318,7 @@
           주문마다 우리 조직에
           <strong style="color:var(--red);font-weight:700;">최대 1.5% 수익</strong>이 쌓입니다.
         </p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div class="hero-btns">
           <a href="#apply-form">
             <button class="btn-red" style="padding:14px 32px;font-size:15px;">플레이스 신청하기</button>
           </a>
@@ -351,13 +405,13 @@
 ════════════════════════════════════════ -->
 <section class="section" style="background:#fff;">
   <div class="wrap">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;">
+    <div class="grid-features">
       <div>
         <div class="section-label">콜팝 플레이스 솔루션</div>
         <h2 class="section-title">5분 만에 우리 조직의<br>배달 플랫폼 완성</h2>
         <p class="section-desc">KT의 검증된 인프라를 그대로 사용합니다.<br>개발 없이, 비용 없이, 우리 이름의 전화 주문 플랫폼이 생깁니다.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="grid-feat-cards">
         <div style="padding:24px;background:var(--bg);border-radius:8px;border:1px solid var(--border);">
           <div style="font-size:28px;margin-bottom:12px;">📞</div>
           <div style="font-size:15px;font-weight:700;margin-bottom:6px;">전화 한 통으로 주문</div>
@@ -453,7 +507,7 @@
 ════════════════════════════════════════ -->
 <section class="section" style="background:#fff;">
   <div class="wrap">
-    <div style="display:grid;grid-template-columns:1fr 2fr;gap:72px;align-items:start;">
+    <div class="grid-howitworks">
       <div>
         <div class="section-label">운영 방법</div>
         <h2 class="section-title">신청부터<br>수익 정산까지<br>단 3단계</h2>
@@ -541,7 +595,7 @@
         <div class="form-section-title">
           <span class="num">1</span>신청인 정보
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="grid-form-2">
           <div>
             <label class="flabel">플레이스명 (한글) <span class="req">*</span></label>
             <input type="text" name="place_name_kr" placeholder="예: 한마음교회 콜팝" class="finput" required>
@@ -596,7 +650,7 @@
         <div class="form-section-title">
           <span class="num">2</span>플레이스 개설 정보
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="grid-form-2">
           <div style="grid-column:1/-1;">
             <label class="flabel">플레이스 소개</label>
             <textarea name="place_intro" rows="3" placeholder="우리 플레이스를 간단히 소개해 주세요." class="finput" style="resize:vertical;"></textarea>
@@ -641,7 +695,7 @@
         <div style="background:#FFF9F9;border:1px solid #FFCDD2;border-radius:6px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:var(--sub);line-height:1.6;">
           ※ 플레이스 수익은 매월 익월 15영업일 이내에 아래 계좌로 정산됩니다. 정확히 입력해 주세요.
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+        <div class="grid-form-3">
           <div>
             <label class="flabel">은행명 <span class="req">*</span></label>
             <select name="bank_name" class="finput" required>
@@ -695,6 +749,7 @@
         <div style="font-size:28px;margin-bottom:8px;">✅</div>
         <div style="font-size:17px;font-weight:700;color:#166534;margin-bottom:4px;">신청이 접수되었습니다!</div>
         <div style="font-size:14px;color:#4B7A5A;">KT 담당자가 2~3 영업일 이내에 연락드립니다.</div>
+        <button type="button" id="reset-btn" class="btn-outline" style="margin-top:18px;padding:10px 28px;font-size:14px;">다시 신청하기</button>
       </div>
 
       <div>
@@ -720,25 +775,28 @@
   <div class="wrap">
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:32px;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08);">
       <div>
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-          <span style="font-size:18px;font-weight:900;color:var(--red);">kt</span>
-          <span style="font-size:14px;font-weight:700;color:#fff;">콜팝 플레이스</span>
+        <!-- 로고 -->
+        <div style="display:inline-flex;align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 14px;margin-bottom:16px;">
+          <img src="./brand_logo/logo.png" alt="콜팝" style="height:28px;width:auto;">
+          <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,.8);margin-left:8px;">플레이스</span>
         </div>
-        <div style="font-size:13px;line-height:1.8;">
-          문의: KT 콜팝서비스팀<br>
-          전화: 1661-1234
+        <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">관리운영사</div>
+        <div style="font-size:13px;line-height:2;color:rgba(255,255,255,.55);">
+          회사명 : (주)더드림랩<br>
+          대표전화 : <a href="tel:0502-777-0909" style="color:rgba(255,255,255,.55);text-decoration:none;">0502-777-0909</a><br>
+          이메일 : <a href="mailto:simong0719@gmail.com" style="color:rgba(255,255,255,.55);text-decoration:none;">simong0719@gmail.com</a>
         </div>
       </div>
       <div style="font-size:13px;line-height:2;">
         <div style="color:rgba(255,255,255,.8);font-weight:600;margin-bottom:4px;">서비스 안내</div>
-        <div>이용 기간: 1년 (만료 30일 전 자동 연장)</div>
-        <div>정산: 매월 익월 15영업일 이내</div>
-        <div>수익: 결제금액의 최대 1.5%</div>
-        <div>개설 비용: 무료</div>
+        <div>이용 기간 : 1년 (만료 30일 전 자동 연장)</div>
+        <div>정산 : 매월 익월 15영업일 이내</div>
+        <div>수익 : 결제금액의 최대 1.5%</div>
+        <div>개설 비용 : 무료</div>
       </div>
     </div>
     <div style="padding-top:24px;font-size:12px;text-align:center;color:rgba(255,255,255,.25);">
-      © 2026 KT 콜팝 서비스. All rights reserved.
+      © 2026 (주)더드림랩. All rights reserved. | 콜팝 플레이스는 KT 콜팝 서비스를 기반으로 운영됩니다.
     </div>
   </div>
 </footer>
@@ -812,6 +870,17 @@
     btn.style.background = '#16a34a';
     this.reset();
     document.getElementById('form-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  // 다시 신청하기 버튼
+  document.getElementById('reset-btn').addEventListener('click', function() {
+    document.getElementById('form-success').style.display = 'none';
+    var btn = document.getElementById('submit-btn');
+    btn.textContent = '콜팝 플레이스 이용 신청하기';
+    btn.disabled = false;
+    btn.style.background = '';
+    document.getElementById('appForm').reset();
+    document.getElementById('apply-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   // 부드러운 앵커 스크롤
