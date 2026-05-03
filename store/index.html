@@ -655,27 +655,45 @@
         <div class="form-section-title">
           <span class="num">3</span>희망 플레이스 선택
         </div>
-        <label class="flabel" style="margin-bottom:10px;">
+        <label class="flabel" style="margin-bottom:14px;">
           입점을 희망하는 플레이스를 선택해 주세요 <span class="req">*</span>
-          <span style="font-weight:400;color:var(--mute);font-size:12px;margin-left:6px;">복수 선택 가능</span>
         </label>
-        <div class="place-checkbox-wrap" id="place-list">
-          <!-- 전체 선택 -->
-          <div class="place-item place-item-all">
-            <input type="checkbox" id="place-all" name="desired_all">
-            <label for="place-all">전체 플레이스 (모두 선택)</label>
-          </div>
-          <!-- 동적 로드 영역 -->
-          <div id="place-items-container">
-            <div style="padding:16px;text-align:center;color:var(--mute);font-size:13px;">
-              플레이스 목록을 불러오는 중...
+
+        <div style="display:flex;flex-direction:column;gap:10px;">
+
+          <!-- 옵션 1: 전체 플레이스 -->
+          <label id="label-scope-all" style="display:flex;align-items:center;gap:14px;padding:16px 18px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;transition:border-color 0.15s,background 0.15s;">
+            <input type="radio" name="place_scope" value="all" id="scope-all" style="width:18px;height:18px;accent-color:var(--red);flex-shrink:0;">
+            <div>
+              <div style="font-size:15px;font-weight:700;">콜팝내 전체 플레이스</div>
+              <div style="font-size:13px;color:var(--mute);margin-top:3px;">현재 운영 중인 모든 플레이스에 입점을 희망합니다</div>
             </div>
-          </div>
+          </label>
+
+          <!-- 옵션 2: 일부 플레이스 -->
+          <label id="label-scope-some" style="display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;transition:border-color 0.15s,background 0.15s;">
+            <input type="radio" name="place_scope" value="some" id="scope-some" style="width:18px;height:18px;accent-color:var(--red);flex-shrink:0;margin-top:2px;">
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:15px;font-weight:700;">콜팝내 일부 플레이스</div>
+              <div style="font-size:13px;color:var(--mute);margin-top:3px;">특정 플레이스를 선택해 입점을 희망합니다</div>
+
+              <!-- 플레이스 체크박스 목록 (일부 선택 시에만 표시) -->
+              <div id="place-select-wrap" style="display:none;margin-top:14px;">
+                <div class="place-checkbox-wrap" id="place-list">
+                  <div id="place-items-container">
+                    <div style="padding:12px;text-align:center;color:var(--mute);font-size:13px;">
+                      플레이스 목록을 불러오는 중...
+                    </div>
+                  </div>
+                </div>
+                <div id="place-error" style="display:none;margin-top:8px;font-size:12px;color:var(--mute);">
+                  플레이스 목록을 불러올 수 없습니다. 추가 문의사항에 희망 플레이스를 직접 입력해 주세요.
+                </div>
+              </div>
+            </div>
+          </label>
+
         </div>
-        <div id="place-error" style="display:none;margin-top:8px;font-size:12px;color:var(--mute);">
-          플레이스 목록을 불러올 수 없습니다. 추가 문의사항에 희망 플레이스를 직접 입력해 주세요.
-        </div>
-        <!-- hidden input for selected places -->
         <input type="hidden" name="desired_places" id="desired-places-input">
       </div>
 
@@ -757,12 +775,20 @@
     return _sb;
   }
 
-  // 플레이스 목록 로드
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // 플레이스 목록 로드 (일부 선택 시 호출)
+  var placesLoaded = false;
   async function loadPlaces() {
-    const container = document.getElementById('place-items-container');
+    if (placesLoaded) return;
+    placesLoaded = true;
+    var container = document.getElementById('place-items-container');
     try {
-      const sb = await getSb();
-      const { data, error } = await sb
+      var sb = await getSb();
+      var { data, error } = await sb
         .from('callpop_applications')
         .select('id, place_name_kr')
         .not('place_name_kr', 'is', null)
@@ -771,21 +797,16 @@
       if (error) throw error;
 
       if (!data || data.length === 0) {
-        container.innerHTML = '<div style="padding:12px 0;font-size:13px;color:var(--mute);">등록된 플레이스가 없습니다.</div>';
+        container.innerHTML = '<div style="padding:12px;font-size:13px;color:var(--mute);">등록된 플레이스가 없습니다.</div>';
         return;
       }
 
       container.innerHTML = data.map(function(p) {
         return '<div class="place-item">' +
-          '<input type="checkbox" id="place-' + p.id + '" class="place-checkbox" name="place_' + p.id + '" value="' + escapeHtml(p.place_name_kr) + '">' +
+          '<input type="checkbox" id="place-' + p.id + '" class="place-checkbox" value="' + escapeHtml(p.place_name_kr) + '">' +
           '<label for="place-' + p.id + '">' + escapeHtml(p.place_name_kr) + '</label>' +
           '</div>';
       }).join('');
-
-      // 개별 체크박스 이벤트
-      document.querySelectorAll('.place-checkbox').forEach(function(cb) {
-        cb.addEventListener('change', syncAllCheckbox);
-      });
 
     } catch (e) {
       console.warn('플레이스 로드 실패:', e);
@@ -794,66 +815,81 @@
     }
   }
 
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  // 라디오 선택에 따라 플레이스 목록 표시/숨김 + 카드 스타일
+  function updateScopeStyle() {
+    var allRadio  = document.getElementById('scope-all');
+    var someRadio = document.getElementById('scope-some');
+    var wrap      = document.getElementById('place-select-wrap');
+    var labelAll  = document.getElementById('label-scope-all');
+    var labelSome = document.getElementById('label-scope-some');
+
+    if (allRadio.checked) {
+      labelAll.style.borderColor  = 'var(--red)';
+      labelAll.style.background   = '#FFF5F5';
+      labelSome.style.borderColor = 'var(--border)';
+      labelSome.style.background  = '';
+      wrap.style.display = 'none';
+    } else if (someRadio.checked) {
+      labelSome.style.borderColor = 'var(--red)';
+      labelSome.style.background  = '#FFF5F5';
+      labelAll.style.borderColor  = 'var(--border)';
+      labelAll.style.background   = '';
+      wrap.style.display = 'block';
+      loadPlaces();
+    }
   }
 
-  // "전체 선택" 체크박스 동작
-  document.getElementById('place-all').addEventListener('change', function() {
-    var checked = this.checked;
-    document.querySelectorAll('.place-checkbox').forEach(function(cb) {
-      cb.checked = checked;
-    });
-  });
-
-  function syncAllCheckbox() {
-    var all = document.querySelectorAll('.place-checkbox');
-    var checked = document.querySelectorAll('.place-checkbox:checked');
-    document.getElementById('place-all').checked = (all.length > 0 && all.length === checked.length);
-  }
+  document.getElementById('scope-all').addEventListener('change', updateScopeStyle);
+  document.getElementById('scope-some').addEventListener('change', updateScopeStyle);
 
   // 선택된 플레이스 수집
   function getSelectedPlaces() {
-    if (document.getElementById('place-all').checked) {
-      return '전체';
-    }
+    var allRadio = document.getElementById('scope-all');
+    if (allRadio.checked) return '전체 플레이스';
     var selected = [];
     document.querySelectorAll('.place-checkbox:checked').forEach(function(cb) {
       selected.push(cb.value);
     });
-    return selected.join(', ') || '';
+    return selected.join(', ');
   }
 
   // 폼 제출
   document.getElementById('inquiryForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    var btn = document.getElementById('submit-btn');
+    var btn   = document.getElementById('submit-btn');
     var errEl = document.getElementById('form-error');
+    errEl.style.display = 'none';
 
-    var selectedPlaces = getSelectedPlaces();
-    if (!selectedPlaces) {
-      errEl.textContent = '희망 플레이스를 하나 이상 선택해 주세요.';
+    // 플레이스 선택 검증
+    var scope = document.querySelector('input[name="place_scope"]:checked');
+    if (!scope) {
+      errEl.textContent = '희망 플레이스를 선택해 주세요.';
       errEl.style.display = 'block';
-      document.getElementById('place-list').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById('label-scope-all').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (scope.value === 'some' && !document.querySelector('.place-checkbox:checked')) {
+      errEl.textContent = '일부 플레이스를 선택하신 경우 하나 이상 체크해 주세요.';
+      errEl.style.display = 'block';
+      document.getElementById('place-select-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
     btn.textContent = '처리 중...';
     btn.disabled = true;
-    errEl.style.display = 'none';
 
     var fd = new FormData(this);
+    var selectedPlaces = getSelectedPlaces();
 
     var payload = {
-      store_name:    fd.get('store_name')    || null,
-      store_address: fd.get('store_address') || null,
-      category:      fd.get('category')      || null,
+      store_name:     fd.get('store_name')     || null,
+      store_address:  fd.get('store_address')  || null,
+      category:       fd.get('category')       || null,
       representative: fd.get('representative') || null,
-      phone:         fd.get('phone')         || null,
+      phone:          fd.get('phone')          || null,
       desired_places: selectedPlaces,
-      desired_all:   document.getElementById('place-all').checked,
-      message:       fd.get('message')       || null,
+      desired_all:    scope.value === 'all',
+      message:        fd.get('message')        || null,
     };
 
     try {
@@ -861,7 +897,6 @@
       var { error } = await sb.from('store_inquiries').insert(payload);
       if (error) throw error;
 
-      // 알림 발송 (실패해도 신청은 완료)
       try {
         await fetch('/api/notify', {
           method: 'POST',
@@ -876,8 +911,12 @@
       btn.textContent = '✓ 신청 완료';
       btn.style.background = '#16a34a';
       this.reset();
-      document.querySelectorAll('.place-checkbox').forEach(function(cb) { cb.checked = false; });
-      document.getElementById('place-all').checked = false;
+      placesLoaded = false;
+      document.getElementById('place-select-wrap').style.display = 'none';
+      document.getElementById('label-scope-all').style.borderColor = 'var(--border)';
+      document.getElementById('label-scope-all').style.background = '';
+      document.getElementById('label-scope-some').style.borderColor = 'var(--border)';
+      document.getElementById('label-scope-some').style.background = '';
       document.getElementById('form-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     } catch (err) {
@@ -909,8 +948,7 @@
     });
   });
 
-  // 페이지 로드 시 플레이스 목록 로드
-  loadPlaces();
+  // 플레이스 목록은 "일부 플레이스" 선택 시에만 로드
 </script>
 </body>
 </html>
