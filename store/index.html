@@ -254,6 +254,12 @@
     .grid-form-2     { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
     .hero-btns       { display:flex; gap:12px; flex-wrap:wrap; }
 
+    /* ── 헤더 로고 크기 고정 (Tailwind preflight 오버라이드) ── */
+    header a img { height: 34px !important; width: auto !important; }
+    @media (max-width: 768px) {
+      header a img { height: 28px !important; }
+    }
+
     /* ── 반응형 ── */
     @media (max-width: 768px) {
       .wrap { padding: 0 16px; }

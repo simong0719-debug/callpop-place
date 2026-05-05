@@ -548,6 +548,10 @@
       <div class="section-label">관리 설정</div>
 
       <div class="form-field">
+        <label>플레이스 소개</label>
+        <textarea id="edit-place-intro" placeholder="방문자에게 보여줄 플레이스 소개를 입력하세요..." style="min-height:80px;"></textarea>
+      </div>
+      <div class="form-field">
         <label>콜팝전화번호</label>
         <input id="edit-callpop-phone" type="tel" placeholder="콜팝 부여 전화번호 (예: 1644-xxxx)">
       </div>
@@ -825,6 +829,7 @@ function openModal(id) {
       </div>
     `).join('');
 
+  document.getElementById('edit-place-intro').value   = app.place_intro        || '';
   document.getElementById('edit-callpop-phone').value = app.callpop_phone      || '';
   document.getElementById('edit-forwarding').value    = app.forwarding_number  || '';
   document.getElementById('edit-link').value           = app.link_url           || '';
@@ -874,6 +879,7 @@ async function saveModal() {
   ok.style.display = 'none';
 
   const updates = {
+    place_intro:       document.getElementById('edit-place-intro').value.trim()   || null,
     callpop_phone:     document.getElementById('edit-callpop-phone').value.trim() || null,
     forwarding_number: document.getElementById('edit-forwarding').value.trim()    || null,
     link_url:          document.getElementById('edit-link').value.trim()           || null,
