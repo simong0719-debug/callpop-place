@@ -206,9 +206,9 @@
     }
     .place-item {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
-      padding: 7px 0;
+      padding: 12px 0;
       border-bottom: 1px solid var(--border);
       cursor: pointer;
     }
@@ -218,6 +218,7 @@
       accent-color: var(--red);
       cursor: pointer;
       flex-shrink: 0;
+      margin-top: 2px;
     }
     .place-item label {
       font-size: 14px;
@@ -226,12 +227,14 @@
       flex: 1;
       line-height: 1.4;
     }
-    .place-item-all {
-      padding-bottom: 10px;
-      margin-bottom: 4px;
-      border-bottom: 2px solid var(--border) !important;
+    .place-item-name { font-weight: 700; margin-bottom: 3px; }
+    .place-item-phone {
+      font-size: 12px; color: var(--red); font-weight: 600;
+      margin-bottom: 2px; letter-spacing: 0.02em;
     }
-    .place-item-all label { font-weight: 700; color: var(--red); }
+    .place-item-intro {
+      font-size: 12px; color: var(--mute); line-height: 1.5;
+    }
 
     /* ── 레이아웃 ── */
     .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
@@ -790,7 +793,7 @@
       var sb = await getSb();
       var { data, error } = await sb
         .from('callpop_applications')
-        .select('id, place_name_kr, status')
+        .select('id, place_name_kr, callpop_phone, place_intro, status')
         .eq('status', '운영중')
         .not('place_name_kr', 'is', null)
         .order('created_at', { ascending: true });
@@ -805,9 +808,14 @@
       }
 
       container.innerHTML = data.map(function(p) {
+        var phone = p.callpop_phone ? '<div class="place-item-phone">📞 ' + escapeHtml(p.callpop_phone) + '</div>' : '';
+        var intro = p.place_intro  ? '<div class="place-item-intro">'  + escapeHtml(p.place_intro)  + '</div>' : '';
         return '<div class="place-item">' +
           '<input type="checkbox" id="place-' + p.id + '" class="place-checkbox" value="' + escapeHtml(p.place_name_kr) + '">' +
-          '<label for="place-' + p.id + '">' + escapeHtml(p.place_name_kr) + '</label>' +
+          '<label for="place-' + p.id + '">' +
+            '<div class="place-item-name">' + escapeHtml(p.place_name_kr) + '</div>' +
+            phone + intro +
+          '</label>' +
           '</div>';
       }).join('');
 
