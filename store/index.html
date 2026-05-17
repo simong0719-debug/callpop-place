@@ -764,7 +764,8 @@
                 <button type="button" id="open-place-popup-btn" style="padding:10px 20px;border:1.5px solid var(--red);border-radius:6px;background:#fff;color:var(--red);font-size:14px;font-weight:700;cursor:pointer;">
                   🔍 플레이스 검색
                 </button>
-                <div id="selected-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"></div>
+                <div id="recommended-chip" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"></div>
+                <div id="selected-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;"></div>
                 <div id="place-error" style="display:none;margin-top:8px;font-size:12px;color:var(--mute);">
                   플레이스 목록을 불러올 수 없습니다. 추가 문의사항에 희망 플레이스를 직접 입력해 주세요.
                 </div>
@@ -901,9 +902,10 @@
   }
 
   // ── 팝업 상태 ──────────────────────────────────
-  var allPlacesData  = [];
-  var placesLoaded   = false;
+  var allPlacesData    = [];
+  var placesLoaded     = false;
   var popupSelectedIds = new Set();
+  var featuredPlace    = null;
 
   var consonantGroups = {
     'ㄱ':['ㄱ','ㄲ'], 'ㄴ':['ㄴ'], 'ㄷ':['ㄷ','ㄸ'], 'ㄹ':['ㄹ'],
@@ -911,11 +913,50 @@
     'ㅈ':['ㅈ','ㅉ'], 'ㅊ':['ㅊ'], 'ㅋ':['ㅋ'], 'ㅌ':['ㅌ'], 'ㅍ':['ㅍ'], 'ㅎ':['ㅎ']
   };
 
+  // 영문 첫 글자 → 한국식 발음 초성 매핑
+  var engLetterConsonant = {
+    'A':'ㅇ','B':'ㅂ','C':'ㅅ','D':'ㄷ','E':'ㅇ','F':'ㅇ',
+    'G':'ㅈ','H':'ㅇ','I':'ㅇ','J':'ㅈ','K':'ㅋ','L':'ㅇ',
+    'M':'ㅇ','N':'ㅇ','O':'ㅇ','P':'ㅍ','Q':'ㅋ','R':'ㅇ',
+    'S':'ㅇ','T':'ㅌ','U':'ㅇ','V':'ㅂ','W':'ㄷ','X':'ㅇ',
+    'Y':'ㅇ','Z':'ㅈ'
+  };
+
   function getInitialConsonant(char) {
+    var upper = char.toUpperCase();
+    if (upper >= 'A' && upper <= 'Z') return engLetterConsonant[upper] || 'ㅇ';
     var code = char.charCodeAt(0) - 0xAC00;
     if (code < 0 || code > 11171) return char;
     var initials = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
     return initials[Math.floor(code / (21 * 28))];
+  }
+
+  // 한글 먼저, 영문 나중 / 같은 그룹 내에서 가나다순
+  function sortPlaces(places) {
+    var consOrder = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+    function key(name) {
+      if (!name) return [2, 99, ''];
+      var first = name.charAt(0);
+      var isEng = first.toUpperCase() >= 'A' && first.toUpperCase() <= 'Z';
+      var cons  = getInitialConsonant(first);
+      var ci    = consOrder.indexOf(cons); if (ci < 0) ci = 99;
+      return [isEng ? 1 : 0, ci, name];
+    }
+    return places.slice().sort(function(a, b) {
+      var ka = key(a.place_name_kr), kb = key(b.place_name_kr);
+      if (ka[0] !== kb[0]) return ka[0] - kb[0];
+      if (ka[1] !== kb[1]) return ka[1] - kb[1];
+      return (ka[2] || '').localeCompare(kb[2] || '', 'ko');
+    });
+  }
+
+  function renderRecommendedChip() {
+    var container = document.getElementById('recommended-chip');
+    if (!featuredPlace) { container.innerHTML = ''; return; }
+    container.innerHTML =
+      '<span class="selected-chip" style="background:#FFF0F3;border-color:#FECDD3;color:var(--red);">' +
+      '<span style="font-size:10px;background:var(--red);color:#fff;border-radius:2px;padding:1px 5px;margin-right:5px;font-weight:700;">추천</span>' +
+      escapeHtml(featuredPlace.place_name_kr) + '</span>';
   }
 
   async function loadPlacesData() {
@@ -924,18 +965,19 @@
       var sb = await getSb();
       var { data, error } = await sb
         .from('callpop_applications')
-        .select('id, place_name_kr, place_type, callpop_phone, start_date, expected_stores, place_intro, status')
+        .select('id, place_name_kr, place_type, callpop_phone, start_date, expected_stores, place_intro, status, is_featured')
         .eq('status', '운영중')
-        .not('place_name_kr', 'is', null)
-        .order('place_name_kr', { ascending: true });
+        .not('place_name_kr', 'is', null);
       if (error) throw error;
       placesLoaded = true;
-      allPlacesData = data || [];
-      document.getElementById('popup-list-loading').style.display = 'none';
+      allPlacesData = sortPlaces(data || []);
+      featuredPlace = allPlacesData.find(function(p) { return p.is_featured; }) || null;
+      renderRecommendedChip();
       renderPopupList('');
     } catch (e) {
       console.warn('플레이스 로드 실패:', e);
-      document.getElementById('popup-list-loading').textContent = '목록을 불러올 수 없습니다.';
+      var loadingEl = document.getElementById('popup-list-loading');
+      if (loadingEl) loadingEl.textContent = '목록을 불러올 수 없습니다.';
       document.getElementById('place-error').style.display = 'block';
     }
   }
@@ -955,20 +997,30 @@
       return;
     }
     panel.innerHTML = filtered.map(function(p) {
+      if (p.is_featured) {
+        return '<div class="popup-place-item selected" data-id="' + escapeHtml(p.id) + '" data-featured="true" style="cursor:default;opacity:0.85;">' +
+          '<span style="font-size:10px;background:var(--red);color:#fff;border-radius:2px;padding:1px 5px;margin-right:5px;font-weight:700;vertical-align:middle;">추천</span>' +
+          escapeHtml(p.place_name_kr) + '</div>';
+      }
       var sel = popupSelectedIds.has(p.id) ? ' selected' : '';
       return '<div class="popup-place-item' + sel + '" data-id="' + escapeHtml(p.id) + '">' + escapeHtml(p.place_name_kr) + '</div>';
     }).join('');
 
     panel.querySelectorAll('.popup-place-item').forEach(function(el) {
       el.addEventListener('click', function() {
+        if (el.dataset.featured === 'true') {
+          showPopupDetail(allPlacesData.find(function(p) { return p.is_featured; }));
+          return;
+        }
         var id = el.dataset.id;
+        var maxSel = featuredPlace ? 1 : 2;
         if (popupSelectedIds.has(id)) {
           popupSelectedIds.delete(id);
           el.classList.remove('selected');
         } else {
-          if (popupSelectedIds.size >= 2) {
+          if (popupSelectedIds.size >= maxSel) {
             var countEl = document.getElementById('popup-selected-count');
-            countEl.textContent = '최대 2개까지 선택할 수 있습니다.';
+            countEl.textContent = '추가로 ' + maxSel + '개까지 선택할 수 있습니다.';
             countEl.style.color = 'var(--red)';
             setTimeout(function() { updatePopupSelectedCount(); countEl.style.color = ''; }, 2500);
             return;
@@ -1026,7 +1078,11 @@
   document.getElementById('open-place-popup-btn').addEventListener('click', function() {
     document.getElementById('place-popup-overlay').classList.add('open');
     document.body.style.overflow = 'hidden';
-    loadPlacesData();
+    // 자음 필터 초기화
+    document.querySelectorAll('.cons-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelector('.cons-btn[data-cons=""]').classList.add('active');
+    if (placesLoaded) renderPopupList('');
+    else loadPlacesData();
   });
   function closePlacePopup() {
     document.getElementById('place-popup-overlay').classList.remove('open');
@@ -1082,9 +1138,11 @@
   function getSelectedPlaces() {
     var allRadio = document.getElementById('scope-all');
     if (allRadio.checked) return '전체 플레이스';
-    var selected = allPlacesData
+    var selected = [];
+    if (featuredPlace) selected.push(featuredPlace.place_name_kr);
+    allPlacesData
       .filter(function(p) { return popupSelectedIds.has(p.id); })
-      .map(function(p) { return p.place_name_kr; });
+      .forEach(function(p) { selected.push(p.place_name_kr); });
     return selected.join(', ');
   }
 
@@ -1103,7 +1161,7 @@
       document.getElementById('label-scope-all').scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    if (scope.value === 'some' && popupSelectedIds.size === 0) {
+    if (scope.value === 'some' && popupSelectedIds.size === 0 && !featuredPlace) {
       errEl.textContent = '일부 플레이스를 선택하신 경우 하나 이상 선택해 주세요.';
       errEl.style.display = 'block';
       document.getElementById('place-select-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' });

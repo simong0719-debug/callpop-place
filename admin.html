@@ -567,6 +567,13 @@
         <label>링크주소2</label>
         <input id="edit-link2" type="url" placeholder="https://example.com/info">
       </div>
+      <div class="form-field" style="background:#FFFBF0;border:1.5px solid #FCD34D;border-radius:6px;padding:12px 14px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:0;">
+          <input type="checkbox" id="edit-featured" style="width:17px;height:17px;accent-color:#E3001B;cursor:pointer;">
+          <span style="font-size:14px;font-weight:700;">★ 기본 플레이스로 지정</span>
+          <span style="font-size:12px;color:#888;font-weight:400;">(가맹점 신청 시 추천으로 표시됨)</span>
+        </label>
+      </div>
       <div class="form-field">
         <label>처리 상태</label>
         <select id="edit-status">
@@ -761,7 +768,7 @@ function renderTable(apps) {
 
     return `
       <tr>
-        <td class="td-name">${esc(app.place_name_kr || '—')}</td>
+        <td class="td-name">${app.is_featured ? '<span style="background:#E3001B;color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;margin-right:4px;vertical-align:middle;">★기본</span>' : ''}${esc(app.place_name_kr || '—')}</td>
         <td>${esc(app.representative || '—')}</td>
         <td class="td-phone">${esc(app.phone || '—')}</td>
         <td class="td-phone">${fwdNum ? esc(fwdNum) : '<span class="td-dash">—</span>'}</td>
@@ -837,8 +844,9 @@ function openModal(id) {
   document.getElementById('edit-place-intro').value   = app.place_intro        || '';
   document.getElementById('edit-callpop-phone').value = app.callpop_phone      || '';
   document.getElementById('edit-forwarding').value    = app.forwarding_number  || '';
-  document.getElementById('edit-link1').value = app.link_url  || '';
-  document.getElementById('edit-link2').value = app.link_url2 || '';
+  document.getElementById('edit-link1').value    = app.link_url    || '';
+  document.getElementById('edit-link2').value    = app.link_url2   || '';
+  document.getElementById('edit-featured').checked = !!app.is_featured;
   document.getElementById('edit-status').value         = app.status             || '대기중';
   document.getElementById('edit-memo').value           = app.admin_memo         || '';
 
@@ -884,6 +892,7 @@ async function saveModal() {
   btn.disabled = true;
   ok.style.display = 'none';
 
+  const isFeatured = document.getElementById('edit-featured').checked;
   const updates = {
     place_intro:       document.getElementById('edit-place-intro').value.trim()   || null,
     callpop_phone:     document.getElementById('edit-callpop-phone').value.trim() || null,
@@ -892,7 +901,13 @@ async function saveModal() {
     link_url2: document.getElementById('edit-link2').value.trim() || null,
     status:            document.getElementById('edit-status').value,
     admin_memo:        document.getElementById('edit-memo').value.trim()           || null,
+    is_featured:       isFeatured,
   };
+
+  // 기본 플레이스는 1개만 허용 — 다른 항목 해제
+  if (isFeatured) {
+    await sb.from('callpop_applications').update({ is_featured: false }).neq('id', currentId);
+  }
 
   const { error } = await sb
     .from('callpop_applications')
