@@ -560,8 +560,12 @@
         <input id="edit-forwarding" type="tel" placeholder="착신 번호 (예: 0507-xxxx-xxxx)">
       </div>
       <div class="form-field">
-        <label>링크주소</label>
-        <input id="edit-link" type="url" placeholder="https://example.com/menu">
+        <label>링크주소1</label>
+        <input id="edit-link1" type="url" placeholder="https://example.com/menu">
+      </div>
+      <div class="form-field">
+        <label>링크주소2</label>
+        <input id="edit-link2" type="url" placeholder="https://example.com/info">
       </div>
       <div class="form-field">
         <label>처리 상태</label>
@@ -747,9 +751,10 @@ function renderTable(apps) {
   tbody.innerHTML = apps.map(app => {
     const status      = app.status || '대기중';
     const date        = (app.created_at || '').slice(0, 10).replace(/-/g, '.');
-    const linkCell    = app.link_url
-      ? `<a href="${esc(app.link_url)}" target="_blank" rel="noopener noreferrer">링크 ↗</a>`
-      : '<span class="td-dash">—</span>';
+    const linkParts = [];
+    if (app.link_url)  linkParts.push(`<a href="${esc(app.link_url)}"  target="_blank" rel="noopener noreferrer" style="display:block;">링크1 ↗</a>`);
+    if (app.link_url2) linkParts.push(`<a href="${esc(app.link_url2)}" target="_blank" rel="noopener noreferrer" style="display:block;">링크2 ↗</a>`);
+    const linkCell = linkParts.length ? linkParts.join('') : '<span class="td-dash">—</span>';
     const memoText    = app.admin_memo ? esc(app.admin_memo) : '';
     const fwdNum      = app.forwarding_number || '';
     const callpopNum  = app.callpop_phone || '';
@@ -832,7 +837,8 @@ function openModal(id) {
   document.getElementById('edit-place-intro').value   = app.place_intro        || '';
   document.getElementById('edit-callpop-phone').value = app.callpop_phone      || '';
   document.getElementById('edit-forwarding').value    = app.forwarding_number  || '';
-  document.getElementById('edit-link').value           = app.link_url           || '';
+  document.getElementById('edit-link1').value = app.link_url  || '';
+  document.getElementById('edit-link2').value = app.link_url2 || '';
   document.getElementById('edit-status').value         = app.status             || '대기중';
   document.getElementById('edit-memo').value           = app.admin_memo         || '';
 
@@ -882,7 +888,8 @@ async function saveModal() {
     place_intro:       document.getElementById('edit-place-intro').value.trim()   || null,
     callpop_phone:     document.getElementById('edit-callpop-phone').value.trim() || null,
     forwarding_number: document.getElementById('edit-forwarding').value.trim()    || null,
-    link_url:          document.getElementById('edit-link').value.trim()           || null,
+    link_url:  document.getElementById('edit-link1').value.trim() || null,
+    link_url2: document.getElementById('edit-link2').value.trim() || null,
     status:            document.getElementById('edit-status').value,
     admin_memo:        document.getElementById('edit-memo').value.trim()           || null,
   };

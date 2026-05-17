@@ -190,6 +190,78 @@
     }
     .flabel .req { color: var(--red); margin-left: 2px; }
 
+    /* ── 플레이스 검색 팝업 ── */
+    #place-popup-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    #place-popup-overlay.open { display: flex; }
+    #place-popup {
+      background: #fff;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 700px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,.28);
+    }
+    .cons-btn {
+      padding: 5px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text);
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+    }
+    .cons-btn:hover { border-color: var(--red); color: var(--red); }
+    .cons-btn.active { background: var(--red); border-color: var(--red); color: #fff; }
+    .popup-place-item {
+      padding: 11px 16px;
+      border-bottom: 1px solid #F3F4F6;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      transition: background 0.1s;
+    }
+    .popup-place-item:hover { background: #FFF5F6; }
+    .popup-place-item.selected { background: #4A80D0; color: #fff; }
+    .popup-detail-table { width: 100%; border-collapse: collapse; }
+    .popup-detail-table th {
+      width: 100px; padding: 10px 14px;
+      background: #4A80D0; color: #fff;
+      font-size: 13px; font-weight: 700;
+      text-align: left; border: 1px solid #6B9FE4;
+    }
+    .popup-detail-table td {
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--text);
+      border: 1px solid #E5E7EB;
+      background: #F9FAFB;
+    }
+    .selected-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #EBF4FF; border: 1px solid #93C5FD;
+      border-radius: 100px; padding: 5px 12px;
+      font-size: 13px; font-weight: 600; color: #1D4ED8;
+    }
+    .selected-chip button {
+      background: none; border: none; cursor: pointer;
+      color: #6B7280; font-size: 16px; padding: 0; line-height: 1;
+    }
+    .selected-chip button:hover { color: var(--red); }
+
     /* ── 플레이스 체크박스 ── */
     .place-checkbox-wrap {
       border: 1.5px solid var(--border);
@@ -687,15 +759,12 @@
               <div style="font-size:15px;font-weight:700;">콜팝내 일부 플레이스</div>
               <div style="font-size:13px;color:var(--mute);margin-top:3px;">특정 플레이스를 선택해 입점을 희망합니다</div>
 
-              <!-- 플레이스 체크박스 목록 (일부 선택 시에만 표시) -->
+              <!-- 플레이스 검색 팝업 트리거 -->
               <div id="place-select-wrap" style="display:none;margin-top:14px;">
-                <div class="place-checkbox-wrap" id="place-list">
-                  <div id="place-items-container">
-                    <div style="padding:12px;text-align:center;color:var(--mute);font-size:13px;">
-                      플레이스 목록을 불러오는 중...
-                    </div>
-                  </div>
-                </div>
+                <button type="button" id="open-place-popup-btn" style="padding:10px 20px;border:1.5px solid var(--red);border-radius:6px;background:#fff;color:var(--red);font-size:14px;font-weight:700;cursor:pointer;">
+                  🔍 플레이스 검색
+                </button>
+                <div id="selected-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"></div>
                 <div id="place-error" style="display:none;margin-top:8px;font-size:12px;color:var(--mute);">
                   플레이스 목록을 불러올 수 없습니다. 추가 문의사항에 희망 플레이스를 직접 입력해 주세요.
                 </div>
@@ -774,6 +843,47 @@
 </footer>
 
 
+<!-- ══════════════ 플레이스 검색 팝업 ══════════════ -->
+<div id="place-popup-overlay">
+  <div id="place-popup">
+    <div style="padding:18px 24px;border-bottom:1px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+      <h3 style="font-size:17px;font-weight:700;margin:0;">플레이스 검색</h3>
+      <button id="close-place-popup" style="background:none;border:none;font-size:22px;cursor:pointer;color:#888;padding:0;line-height:1;">✕</button>
+    </div>
+    <div style="padding:12px 24px;border-bottom:1px solid #E5E7EB;flex-shrink:0;">
+      <div id="consonant-filter" style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="cons-btn active" data-cons="">전체</button>
+        <button class="cons-btn" data-cons="ㄱ">ㄱ</button>
+        <button class="cons-btn" data-cons="ㄴ">ㄴ</button>
+        <button class="cons-btn" data-cons="ㄷ">ㄷ</button>
+        <button class="cons-btn" data-cons="ㄹ">ㄹ</button>
+        <button class="cons-btn" data-cons="ㅁ">ㅁ</button>
+        <button class="cons-btn" data-cons="ㅂ">ㅂ</button>
+        <button class="cons-btn" data-cons="ㅅ">ㅅ</button>
+        <button class="cons-btn" data-cons="ㅇ">ㅇ</button>
+        <button class="cons-btn" data-cons="ㅈ">ㅈ</button>
+        <button class="cons-btn" data-cons="ㅊ">ㅊ</button>
+        <button class="cons-btn" data-cons="ㅋ">ㅋ</button>
+        <button class="cons-btn" data-cons="ㅌ">ㅌ</button>
+        <button class="cons-btn" data-cons="ㅍ">ㅍ</button>
+        <button class="cons-btn" data-cons="ㅎ">ㅎ</button>
+      </div>
+    </div>
+    <div style="display:flex;flex:1;overflow:hidden;min-height:0;">
+      <div id="popup-list-panel" style="width:200px;border-right:1px solid #E5E7EB;overflow-y:auto;flex-shrink:0;">
+        <div id="popup-list-loading" style="padding:20px;text-align:center;color:#888;font-size:13px;">불러오는 중...</div>
+      </div>
+      <div id="popup-detail-panel" style="flex:1;overflow-y:auto;padding:20px 24px;">
+        <div style="color:#888;font-size:13px;text-align:center;margin-top:40px;">왼쪽 목록에서 플레이스를 클릭하면<br>상세 정보가 표시됩니다.</div>
+      </div>
+    </div>
+    <div style="padding:14px 24px;border-top:1px solid #E5E7EB;display:flex;justify-content:flex-end;align-items:center;gap:16px;flex-shrink:0;">
+      <span id="popup-selected-count" style="font-size:13px;color:var(--mute);"></span>
+      <button type="button" id="confirm-place-btn" class="btn-red" style="padding:10px 28px;font-size:14px;">선택하기</button>
+    </div>
+  </div>
+</div>
+
 <script>
   // Supabase 초기화
   const { createClient } = supabase;
@@ -790,49 +900,153 @@
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // 플레이스 목록 로드 (일부 선택 시 호출)
-  var placesLoaded = false;
-  async function loadPlaces() {
+  // ── 팝업 상태 ──────────────────────────────────
+  var allPlacesData  = [];
+  var placesLoaded   = false;
+  var popupSelectedIds = new Set();
+
+  var consonantGroups = {
+    'ㄱ':['ㄱ','ㄲ'], 'ㄴ':['ㄴ'], 'ㄷ':['ㄷ','ㄸ'], 'ㄹ':['ㄹ'],
+    'ㅁ':['ㅁ'], 'ㅂ':['ㅂ','ㅃ'], 'ㅅ':['ㅅ','ㅆ'], 'ㅇ':['ㅇ'],
+    'ㅈ':['ㅈ','ㅉ'], 'ㅊ':['ㅊ'], 'ㅋ':['ㅋ'], 'ㅌ':['ㅌ'], 'ㅍ':['ㅍ'], 'ㅎ':['ㅎ']
+  };
+
+  function getInitialConsonant(char) {
+    var code = char.charCodeAt(0) - 0xAC00;
+    if (code < 0 || code > 11171) return char;
+    var initials = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+    return initials[Math.floor(code / (21 * 28))];
+  }
+
+  async function loadPlacesData() {
     if (placesLoaded) return;
-    var container = document.getElementById('place-items-container');
     try {
       var sb = await getSb();
       var { data, error } = await sb
         .from('callpop_applications')
-        .select('id, place_name_kr, callpop_phone, place_intro, status')
+        .select('id, place_name_kr, place_type, callpop_phone, start_date, expected_stores, place_intro, status')
         .eq('status', '운영중')
         .not('place_name_kr', 'is', null)
-        .order('created_at', { ascending: true });
-
+        .order('place_name_kr', { ascending: true });
       if (error) throw error;
-
       placesLoaded = true;
-
-      if (!data || data.length === 0) {
-        container.innerHTML = '<div style="padding:12px;font-size:13px;color:var(--mute);">현재 운영 중인 플레이스가 없습니다.</div>';
-        return;
-      }
-
-      container.innerHTML = data.map(function(p) {
-        var phone = p.callpop_phone ? '<div class="place-item-phone">📞 ' + escapeHtml(p.callpop_phone) + '</div>' : '';
-        var intro = p.place_intro  ? '<div class="place-item-intro">'  + escapeHtml(p.place_intro)  + '</div>' : '';
-        return '<div class="place-item">' +
-          '<input type="checkbox" id="place-' + p.id + '" class="place-checkbox" value="' + escapeHtml(p.place_name_kr) + '">' +
-          '<label for="place-' + p.id + '">' +
-            '<div class="place-item-name">' + escapeHtml(p.place_name_kr) + '</div>' +
-            phone + intro +
-          '</label>' +
-          '</div>';
-      }).join('');
-
+      allPlacesData = data || [];
+      document.getElementById('popup-list-loading').style.display = 'none';
+      renderPopupList('');
     } catch (e) {
       console.warn('플레이스 로드 실패:', e);
-      container.innerHTML = '';
+      document.getElementById('popup-list-loading').textContent = '목록을 불러올 수 없습니다.';
       document.getElementById('place-error').style.display = 'block';
     }
   }
 
-  // 라디오 선택에 따라 플레이스 목록 표시/숨김 + 카드 스타일
+  function renderPopupList(filterCons) {
+    var panel = document.getElementById('popup-list-panel');
+    document.getElementById('popup-list-loading').style.display = 'none';
+    var filtered = filterCons
+      ? allPlacesData.filter(function(p) {
+          var first   = (p.place_name_kr || '').charAt(0);
+          var initial = getInitialConsonant(first);
+          return (consonantGroups[filterCons] || [filterCons]).indexOf(initial) !== -1;
+        })
+      : allPlacesData;
+
+    if (filtered.length === 0) {
+      panel.innerHTML = '<div style="padding:20px;text-align:center;color:#888;font-size:13px;">해당 플레이스가 없습니다.</div>';
+      return;
+    }
+    panel.innerHTML = filtered.map(function(p) {
+      var sel = popupSelectedIds.has(p.id) ? ' selected' : '';
+      return '<div class="popup-place-item' + sel + '" data-id="' + escapeHtml(p.id) + '">' + escapeHtml(p.place_name_kr) + '</div>';
+    }).join('');
+
+    panel.querySelectorAll('.popup-place-item').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var id = el.dataset.id;
+        if (popupSelectedIds.has(id)) {
+          popupSelectedIds.delete(id);
+          el.classList.remove('selected');
+        } else {
+          popupSelectedIds.add(id);
+          el.classList.add('selected');
+        }
+        var place = allPlacesData.find(function(p) { return p.id === id; });
+        if (place) showPopupDetail(place);
+        updatePopupSelectedCount();
+      });
+    });
+  }
+
+  function showPopupDetail(place) {
+    var rows = [
+      ['플레이스명',   place.place_name_kr],
+      ['플레이스유형', place.place_type],
+      ['콜팝번호',     place.callpop_phone],
+      ['운영개시일',   place.start_date],
+      ['가맹점수',     place.expected_stores ? place.expected_stores + '개' : null],
+      ['플레이스소개', place.place_intro],
+    ];
+    document.getElementById('popup-detail-panel').innerHTML =
+      '<table class="popup-detail-table">' +
+      rows.map(function(r) {
+        return '<tr><th>' + escapeHtml(r[0]) + '</th><td>' +
+          (r[1] ? escapeHtml(String(r[1])) : '<span style="color:#bbb;">—</span>') + '</td></tr>';
+      }).join('') + '</table>';
+  }
+
+  function updatePopupSelectedCount() {
+    document.getElementById('popup-selected-count').textContent =
+      popupSelectedIds.size > 0 ? popupSelectedIds.size + '개 선택됨' : '';
+  }
+
+  function renderSelectedChips() {
+    var container = document.getElementById('selected-chips');
+    var names = allPlacesData
+      .filter(function(p) { return popupSelectedIds.has(p.id); })
+      .map(function(p) { return p.place_name_kr; });
+    container.innerHTML = names.map(function(name) {
+      return '<span class="selected-chip">' + escapeHtml(name) +
+        '<button type="button" data-name="' + escapeHtml(name) + '" class="remove-chip-btn">×</button></span>';
+    }).join('');
+    container.querySelectorAll('.remove-chip-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var place = allPlacesData.find(function(p) { return p.place_name_kr === btn.dataset.name; });
+        if (place) { popupSelectedIds.delete(place.id); renderSelectedChips(); }
+      });
+    });
+  }
+
+  // 팝업 열기/닫기
+  document.getElementById('open-place-popup-btn').addEventListener('click', function() {
+    document.getElementById('place-popup-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    loadPlacesData();
+  });
+  function closePlacePopup() {
+    document.getElementById('place-popup-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('close-place-popup').addEventListener('click', closePlacePopup);
+  document.getElementById('place-popup-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closePlacePopup();
+  });
+
+  // 자음 필터
+  document.getElementById('consonant-filter').addEventListener('click', function(e) {
+    var btn = e.target.closest('.cons-btn');
+    if (!btn) return;
+    document.querySelectorAll('.cons-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    renderPopupList(btn.dataset.cons);
+  });
+
+  // 선택하기 확인
+  document.getElementById('confirm-place-btn').addEventListener('click', function() {
+    renderSelectedChips();
+    closePlacePopup();
+  });
+
+  // 라디오 선택에 따라 표시/숨김
   function updateScopeStyle() {
     var allRadio  = document.getElementById('scope-all');
     var someRadio = document.getElementById('scope-some');
@@ -852,7 +1066,6 @@
       labelAll.style.borderColor  = 'var(--border)';
       labelAll.style.background   = '';
       wrap.style.display = 'block';
-      loadPlaces();
     }
   }
 
@@ -863,10 +1076,9 @@
   function getSelectedPlaces() {
     var allRadio = document.getElementById('scope-all');
     if (allRadio.checked) return '전체 플레이스';
-    var selected = [];
-    document.querySelectorAll('.place-checkbox:checked').forEach(function(cb) {
-      selected.push(cb.value);
-    });
+    var selected = allPlacesData
+      .filter(function(p) { return popupSelectedIds.has(p.id); })
+      .map(function(p) { return p.place_name_kr; });
     return selected.join(', ');
   }
 
@@ -885,8 +1097,8 @@
       document.getElementById('label-scope-all').scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    if (scope.value === 'some' && !document.querySelector('.place-checkbox:checked')) {
-      errEl.textContent = '일부 플레이스를 선택하신 경우 하나 이상 체크해 주세요.';
+    if (scope.value === 'some' && popupSelectedIds.size === 0) {
+      errEl.textContent = '일부 플레이스를 선택하신 경우 하나 이상 선택해 주세요.';
       errEl.style.display = 'block';
       document.getElementById('place-select-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
