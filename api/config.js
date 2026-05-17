@@ -3,8 +3,8 @@ module.exports = function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const supabaseUrl = (process.env.SUPABASE_URL       || '').trim();
-  const supabaseKey = (process.env.SUPABASE_ANON_KEY  || '').trim();
+  const supabaseUrl = (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '').trim();
+  const supabaseKey = (process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '').trim();
 
   if (!supabaseUrl || !supabaseKey) {
     return res.status(500).json({ error: 'SUPABASE_URL / SUPABASE_ANON_KEY 환경변수가 없습니다.' });
