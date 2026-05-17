@@ -256,7 +256,7 @@
       #place-popup-overlay { padding: 8px; }
       #place-popup { border-radius: 10px; max-height: 92vh; }
       .cons-btn { padding: 4px 7px; font-size: 12px; }
-      #popup-list-panel { width: 130px; }
+      #popup-list-panel { width: 35%; }
       #popup-detail-panel { padding: 14px 12px; }
       .popup-detail-table th { width: 72px; padding: 7px 8px; font-size: 12px; }
       .popup-detail-table td { padding: 7px 8px; font-size: 12px; }
@@ -1004,45 +1004,31 @@
         })
       : allPlacesData;
 
-    if (filtered.length === 0) {
+    // 기본 플레이스를 제외한 필터링
+    var nonFeatFiltered = filtered.filter(function(p) { return !p.is_featured; });
+
+    if (nonFeatFiltered.length === 0 && !featuredPlace) {
       panel.innerHTML = '<div style="padding:20px;text-align:center;color:#888;font-size:13px;">해당 플레이스가 없습니다.</div>';
       return;
     }
-    panel.innerHTML = filtered.map(function(p) {
-      if (p.is_featured) {
-        return '<div class="popup-place-item selected" data-id="' + escapeHtml(p.id) + '" data-featured="true" style="cursor:default;opacity:0.85;">' +
-          '<span style="font-size:10px;background:var(--red);color:#fff;border-radius:2px;padding:1px 5px;margin-right:5px;font-weight:700;vertical-align:middle;">기본</span>' +
-          escapeHtml(p.place_name_kr) + '</div>';
-      }
+
+    var featHtml = '';
+    if (featuredPlace) {
+      featHtml = '<div class="popup-place-item selected" data-id="' + escapeHtml(featuredPlace.id) + '" data-featured="true" style="cursor:pointer;">' +
+        '<span style="font-size:10px;background:var(--red);color:#fff;border-radius:2px;padding:1px 5px;margin-right:5px;font-weight:700;vertical-align:middle;">기본</span>' +
+        escapeHtml(featuredPlace.place_name_kr) + '</div>';
+    }
+
+    panel.innerHTML = featHtml + nonFeatFiltered.map(function(p) {
       var sel = popupSelectedIds.has(p.id) ? ' selected' : '';
       return '<div class="popup-place-item' + sel + '" data-id="' + escapeHtml(p.id) + '">' + escapeHtml(p.place_name_kr) + '</div>';
     }).join('');
 
     panel.querySelectorAll('.popup-place-item').forEach(function(el) {
       el.addEventListener('click', function() {
-        if (el.dataset.featured === 'true') {
-          showPopupDetail(allPlacesData.find(function(p) { return p.is_featured; }));
-          return;
-        }
         var id = el.dataset.id;
-        var maxSel = featuredPlace ? 1 : 2;
-        if (popupSelectedIds.has(id)) {
-          popupSelectedIds.delete(id);
-          el.classList.remove('selected');
-        } else {
-          if (popupSelectedIds.size >= maxSel) {
-            var countEl = document.getElementById('popup-selected-count');
-            countEl.textContent = '추가로 ' + maxSel + '개까지 선택할 수 있습니다.';
-            countEl.style.color = 'var(--red)';
-            setTimeout(function() { updatePopupSelectedCount(); countEl.style.color = ''; }, 2500);
-            return;
-          }
-          popupSelectedIds.add(id);
-          el.classList.add('selected');
-        }
         var place = allPlacesData.find(function(p) { return p.id === id; });
         if (place) showPopupDetail(place);
-        updatePopupSelectedCount();
       });
     });
   }
@@ -1056,12 +1042,43 @@
       ['가맹점수',     place.expected_stores ? place.expected_stores + '개' : null],
       ['플레이스소개', place.place_intro],
     ];
+    var isFeat = !!place.is_featured;
+    var isSel  = popupSelectedIds.has(place.id);
+    var maxSel = featuredPlace ? 1 : 2;
+    var canAdd = popupSelectedIds.size < maxSel;
+
+    var btnHtml = '';
+    if (!isFeat) {
+      if (isSel) {
+        btnHtml = '<button type="button" id="detail-sel-btn" style="margin-top:14px;width:100%;padding:10px;background:#EBF4FF;border:1.5px solid #93C5FD;border-radius:6px;color:#1D4ED8;font-size:13px;font-weight:700;cursor:pointer;">선택 취소</button>';
+      } else if (canAdd) {
+        btnHtml = '<button type="button" id="detail-sel-btn" style="margin-top:14px;width:100%;padding:10px;background:#4A80D0;border:none;border-radius:6px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">이 플레이스 선택</button>';
+      } else {
+        btnHtml = '<div style="margin-top:12px;padding:8px 10px;background:#FFF5F6;border-radius:6px;color:var(--red);font-size:12px;text-align:center;">더 이상 선택할 수 없습니다.<br>선택 취소 후 다시 선택해 주세요.</div>';
+      }
+    }
+
     document.getElementById('popup-detail-panel').innerHTML =
       '<table class="popup-detail-table">' +
       rows.map(function(r) {
         return '<tr><th>' + escapeHtml(r[0]) + '</th><td>' +
           (r[1] ? escapeHtml(String(r[1])) : '<span style="color:#bbb;">—</span>') + '</td></tr>';
-      }).join('') + '</table>';
+      }).join('') + '</table>' + btnHtml;
+
+    var selBtn = document.getElementById('detail-sel-btn');
+    if (selBtn) {
+      selBtn.addEventListener('click', function() {
+        if (popupSelectedIds.has(place.id)) {
+          popupSelectedIds.delete(place.id);
+        } else {
+          popupSelectedIds.add(place.id);
+        }
+        var activeCons = document.querySelector('.cons-btn.active').dataset.cons;
+        renderPopupList(activeCons);
+        updatePopupSelectedCount();
+        showPopupDetail(place);
+      });
+    }
   }
 
   function updatePopupSelectedCount() {
