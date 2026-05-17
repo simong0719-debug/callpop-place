@@ -942,7 +942,6 @@
 
   function renderPopupList(filterCons) {
     var panel = document.getElementById('popup-list-panel');
-    document.getElementById('popup-list-loading').style.display = 'none';
     var filtered = filterCons
       ? allPlacesData.filter(function(p) {
           var first   = (p.place_name_kr || '').charAt(0);
@@ -967,6 +966,13 @@
           popupSelectedIds.delete(id);
           el.classList.remove('selected');
         } else {
+          if (popupSelectedIds.size >= 2) {
+            var countEl = document.getElementById('popup-selected-count');
+            countEl.textContent = '최대 2개까지 선택할 수 있습니다.';
+            countEl.style.color = 'var(--red)';
+            setTimeout(function() { updatePopupSelectedCount(); countEl.style.color = ''; }, 2500);
+            return;
+          }
           popupSelectedIds.add(id);
           el.classList.add('selected');
         }
