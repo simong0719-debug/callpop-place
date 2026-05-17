@@ -256,19 +256,11 @@
       #place-popup-overlay { padding: 8px; }
       #place-popup { border-radius: 10px; max-height: 92vh; }
       .cons-btn { padding: 4px 7px; font-size: 12px; }
-      /* 모바일: 좌우 → 상하 레이아웃 */
-      #popup-list-panel {
-        width: 100% !important;
-        border-right: none !important;
-        border-bottom: 1px solid #E5E7EB;
-        max-height: 160px;
-        flex-shrink: 0;
-      }
-      #popup-body-wrap { flex-direction: column !important; }
-      #popup-detail-panel { padding: 14px 16px !important; }
-      .popup-detail-table th { width: 80px; padding: 8px 10px; font-size: 12px; }
-      .popup-detail-table td { padding: 8px 10px; font-size: 12px; }
-      .popup-place-item { padding: 9px 14px; font-size: 13px; }
+      #popup-list-panel { width: 130px; }
+      #popup-detail-panel { padding: 14px 12px; }
+      .popup-detail-table th { width: 72px; padding: 7px 8px; font-size: 12px; }
+      .popup-detail-table td { padding: 7px 8px; font-size: 12px; }
+      .popup-place-item { padding: 9px 10px; font-size: 12px; }
     }
     .selected-chip {
       display: inline-flex; align-items: center; gap: 6px;
@@ -1019,7 +1011,7 @@
     panel.innerHTML = filtered.map(function(p) {
       if (p.is_featured) {
         return '<div class="popup-place-item selected" data-id="' + escapeHtml(p.id) + '" data-featured="true" style="cursor:default;opacity:0.85;">' +
-          '<span style="font-size:10px;background:var(--red);color:#fff;border-radius:2px;padding:1px 5px;margin-right:5px;font-weight:700;vertical-align:middle;">추천</span>' +
+          '<span style="font-size:10px;background:var(--red);color:#fff;border-radius:2px;padding:1px 5px;margin-right:5px;font-weight:700;vertical-align:middle;">기본</span>' +
           escapeHtml(p.place_name_kr) + '</div>';
       }
       var sel = popupSelectedIds.has(p.id) ? ' selected' : '';
@@ -1120,6 +1112,8 @@
     document.querySelectorAll('.cons-btn').forEach(function(b) { b.classList.remove('active'); });
     btn.classList.add('active');
     renderPopupList(btn.dataset.cons);
+    document.getElementById('popup-detail-panel').innerHTML =
+      '<div style="color:#888;font-size:13px;text-align:center;margin-top:40px;">왼쪽 목록에서 플레이스를 클릭하면<br>상세 정보가 표시됩니다.</div>';
   });
 
   // 선택하기 확인
