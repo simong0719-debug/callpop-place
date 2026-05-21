@@ -419,7 +419,7 @@
       <div>
         <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:24px;padding:6px 14px;background:#FFDDE3;border:1px solid #FFA8B5;border-radius:20px;font-size:12px;font-weight:700;color:var(--red);">
           <span style="width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block;"></span>
-          콜팝 가맹점 신청
+          콜팝 가맹점
         </div>
         <h1 style="font-size:clamp(30px,4.5vw,50px);font-weight:900;line-height:1.18;letter-spacing:-0.03em;margin-bottom:24px;">
           배달플랫폼이<br>빼앗아간 고객,<br>
@@ -849,9 +849,9 @@
       <div>
         <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">바로가기</div>
         <div style="display:flex;flex-direction:column;gap:8px;">
-          <a href="/admin" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">관리자</a>
-          <a href="/" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">플레이스 신청</a>
-          <a href="/store/" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">가맹점 신청</a>
+          <a href="/admin" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">관리자 로그인</a>
+          <a href="/#apply-form" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">플레이스 신청</a>
+          <a href="/store/#inquiry-form" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">가맹점 신청</a>
         </div>
       </div>
     </div>
@@ -990,8 +990,13 @@
         .eq('status', '운영중')
         .not('place_name_kr', 'is', null);
       if (error) throw error;
+      if (!data || data.length === 0) {
+        var loadingEl2 = document.getElementById('popup-list-loading');
+        if (loadingEl2) loadingEl2.innerHTML = '<div style="padding:12px 8px;text-align:center;color:#aaa;font-size:11px;">플레이스 준비중입니다.</div>';
+        return;
+      }
       placesLoaded = true;
-      allPlacesData = sortPlaces(data || []);
+      allPlacesData = sortPlaces(data);
       featuredPlace = allPlacesData.find(function(p) { return p.is_featured; }) || null;
       renderRecommendedChip();
       renderPopupList('');
@@ -999,8 +1004,7 @@
     } catch (e) {
       console.warn('플레이스 로드 실패:', e);
       var loadingEl = document.getElementById('popup-list-loading');
-      if (loadingEl) loadingEl.textContent = '목록을 불러올 수 없습니다.';
-      document.getElementById('place-error').style.display = 'block';
+      if (loadingEl) loadingEl.innerHTML = '<div style="padding:12px 8px;text-align:center;color:#aaa;font-size:11px;">목록을 불러올 수 없습니다.<br><button onclick="location.reload()" style="margin-top:6px;font-size:10px;padding:3px 8px;border:1px solid #ddd;border-radius:3px;cursor:pointer;background:#f5f5f5;">새로고침</button></div>';
     }
   }
 
