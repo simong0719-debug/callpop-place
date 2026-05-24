@@ -150,7 +150,7 @@
   <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;height:60px;">
     <div style="display:flex;align-items:center;gap:14px;">
       <a href="/" style="display:flex;align-items:center;text-decoration:none;">
-        <img src="./brand_logo/callpop_logo_light.png" alt="콜팝" style="height:46px;width:auto;">
+        <img src="./brand_logo/callpop_logo_orange.png" alt="콜팝" style="height:40px;width:auto;">
       </a>
       <nav style="display:flex;align-items:center;gap:4px;" class="hide-mob">
         <a href="/" style="font-size:14px;font-weight:700;color:#fff;background:var(--orange);padding:4px 14px;border-radius:20px;text-decoration:none;border:1px solid var(--orange);">홈</a>
@@ -395,14 +395,15 @@
     <p style="font-size:16px;color:rgba(255,255,255,.8);line-height:1.8;margin-bottom:40px;">
       설치 후 바로 주문 가능합니다.<br>앱스토어 없이 홈 화면에 바로 추가됩니다.
     </p>
-    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;">
+    <div id="install-btns-wrap" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;">
       <button id="download-android-btn" onclick="handleInstall()" class="btn-white" style="padding:16px 32px;font-size:16px;min-width:200px;">
         <span>🤖</span> Android 설치
       </button>
-      <button id="download-ios-btn" onclick="showIOSGuide()" class="btn-outline-white" style="padding:16px 32px;font-size:16px;min-width:200px;">
+      <button id="download-ios-btn" onclick="showInstallGuide()" class="btn-outline-white" style="padding:16px 32px;font-size:16px;min-width:200px;">
         <span>🍎</span> iPhone 설치 안내
       </button>
     </div>
+    <p id="desktop-msg" style="display:none;font-size:15px;color:rgba(255,255,255,.85);margin-bottom:20px;">📱 모바일 기기에서 앱을 설치하실 수 있습니다</p>
     <p id="download-hint" style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:0;"></p>
   </div>
 </section>
@@ -496,29 +497,16 @@
 
 
 <!-- ════════════════════════════════════════
-     앱 설치 팝업 (최초 1회)
-════════════════════════════════════════ -->
-<div id="install-popup" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:#fff;border-radius:20px;padding:32px 28px;max-width:340px;width:100%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.2);">
-    <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--orange),#FF8C5A);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;">📱</div>
-    <h3 style="font-size:19px;font-weight:900;margin-bottom:8px;color:var(--text);">콜팝 앱 설치</h3>
-    <p style="font-size:14px;color:var(--sub);line-height:1.7;margin-bottom:24px;">콜팝 앱을 설치하고<br>더 편리하게 주문하세요</p>
-    <button onclick="handleInstallFromPopup()" class="btn-primary" style="width:100%;padding:14px;font-size:15px;border-radius:10px;margin-bottom:10px;">앱 설치하기</button>
-    <button onclick="closeInstallPopup()" style="width:100%;padding:10px;font-size:14px;color:var(--mute);background:transparent;border:none;cursor:pointer;">나중에</button>
-  </div>
-</div>
-
-
-<!-- ════════════════════════════════════════
-     iOS 설치 가이드 모달
+     설치 가이드 모달 (iOS / Android 공용)
 ════════════════════════════════════════ -->
 <div id="ios-guide" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.55);align-items:flex-end;justify-content:center;">
   <div style="background:#fff;border-radius:20px 20px 0 0;padding:28px 24px 40px;width:100%;max-width:480px;box-shadow:0 -8px 40px rgba(0,0,0,.15);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-      <h3 style="font-size:18px;font-weight:900;color:var(--text);">iPhone 홈 화면에 추가</h3>
-      <button onclick="closeIOSGuide()" style="width:32px;height:32px;border-radius:50%;background:var(--bg);border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);">✕</button>
+      <h3 id="guide-title" style="font-size:18px;font-weight:900;color:var(--text);">앱 설치 방법</h3>
+      <button onclick="closeInstallGuide()" style="width:32px;height:32px;border-radius:50%;background:var(--bg);border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);">✕</button>
     </div>
-    <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
+    <!-- iOS 스텝 -->
+    <div id="guide-steps-ios" style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
       <div style="display:flex;gap:16px;align-items:flex-start;">
         <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
         <div>
@@ -548,7 +536,38 @@
         </div>
       </div>
     </div>
-    <button onclick="closeIOSGuide()" class="btn-primary" style="width:100%;padding:14px;font-size:15px;border-radius:10px;">확인</button>
+    <!-- Android 스텝 (프롬프트 미지원 시) -->
+    <div id="guide-steps-android" style="display:none;flex-direction:column;gap:16px;margin-bottom:24px;">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Chrome 브라우저로 열기</div>
+          <div style="font-size:13px;color:var(--sub);">Chrome 앱에서 이 페이지를 열어주세요.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">메뉴 버튼 탭하기</div>
+          <div style="font-size:13px;color:var(--sub);">주소창 오른쪽 <strong>⋮</strong> 버튼을 탭하세요.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">"홈 화면에 추가" 선택</div>
+          <div style="font-size:13px;color:var(--sub);">메뉴에서 <strong>홈 화면에 추가</strong> 또는 <strong>앱 설치</strong>를 선택하세요.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">"추가" 확인</div>
+          <div style="font-size:13px;color:var(--sub);"><strong>추가</strong>를 탭하면 홈 화면에 콜팝 아이콘이 생깁니다.</div>
+        </div>
+      </div>
+    </div>
+    <button onclick="closeInstallGuide()" class="btn-primary" style="width:100%;padding:14px;font-size:15px;border-radius:10px;">확인</button>
   </div>
 </div>
 
@@ -559,94 +578,88 @@
   var deferredPrompt = null;
   var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  var isAndroid = /Android/i.test(navigator.userAgent);
+  var isMobile = isIOS || isAndroid;
 
-  // Android beforeinstallprompt 캡처
+  // ── 데스크탑: 설치 UI 숨기기 ──
+  if (!isMobile) {
+    ['header-install-btn', 'hero-install-btn', 'install-btns-wrap'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    var dm = document.getElementById('desktop-msg');
+    if (dm) dm.style.display = 'block';
+    var hint = document.getElementById('hero-install-hint');
+    if (hint) hint.textContent = '모바일 기기에서 앱을 설치하세요.';
+  }
+
+  // ── 이미 설치된 경우 ──
+  if (isStandalone) {
+    var heroBtn = document.getElementById('hero-install-btn');
+    if (heroBtn) { heroBtn.textContent = '✓ 앱이 설치되어 있습니다'; heroBtn.disabled = true; heroBtn.style.opacity = '.7'; }
+    var headerBtn = document.getElementById('header-install-btn');
+    if (headerBtn) { headerBtn.textContent = '✓ 설치됨'; headerBtn.disabled = true; }
+  }
+
+  // ── Android: beforeinstallprompt 캡처 → 자동 트리거 ──
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
     deferredPrompt = e;
-    updateInstallButtons();
+    if (isAndroid && !isStandalone) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
+    }
   });
+
+  // ── iOS: 페이지 로드 후 자동으로 가이드 표시 ──
+  if (isIOS && !isStandalone) {
+    setTimeout(showInstallGuide, 1000);
+  }
 
   window.addEventListener('appinstalled', function() {
     deferredPrompt = null;
     isStandalone = true;
-    updateInstallButtons();
+    var heroBtn = document.getElementById('hero-install-btn');
+    if (heroBtn) { heroBtn.textContent = '✓ 앱이 설치되어 있습니다'; heroBtn.disabled = true; }
+    var headerBtn = document.getElementById('header-install-btn');
+    if (headerBtn) { headerBtn.textContent = '✓ 설치됨'; headerBtn.disabled = true; }
   });
 
-  function updateInstallButtons() {
-    var hint = document.getElementById('hero-install-hint');
-    if (isStandalone) {
-      document.getElementById('hero-install-btn').textContent = '✓ 앱이 설치되어 있습니다';
-      document.getElementById('header-install-btn').textContent = '✓ 설치됨';
-      document.getElementById('download-android-btn').textContent = '✓ 설치 완료';
-      if (hint) hint.textContent = '콜팝 앱이 이미 설치되어 있습니다.';
-    } else if (isIOS) {
-      document.getElementById('hero-install-btn').innerHTML = '🍎 홈 화면에 추가';
-      document.getElementById('hero-install-btn').onclick = showIOSGuide;
-      document.getElementById('header-install-btn').innerHTML = '📱 앱 추가';
-      document.getElementById('header-install-btn').onclick = showIOSGuide;
-      if (hint) hint.textContent = 'Safari 브라우저에서 홈 화면에 추가할 수 있습니다.';
-      document.getElementById('download-hint').textContent = 'iPhone은 Safari → 공유 → 홈 화면에 추가 순서로 설치하세요.';
-    } else if (deferredPrompt) {
-      if (hint) hint.textContent = '';
-    } else {
-      if (hint) hint.textContent = 'Chrome 또는 Edge 브라우저에서 설치할 수 있습니다.';
-    }
-  }
-
-  // 최초 1회 설치 팝업
-  if (!isStandalone && !localStorage.getItem('callpop_install_prompted')) {
-    setTimeout(function() {
-      if (!isStandalone) showInstallPopup();
-    }, 1500);
-  }
-
-  function showInstallPopup() {
-    localStorage.setItem('callpop_install_prompted', '1');
-    document.getElementById('install-popup').style.display = 'flex';
-  }
-
-  function closeInstallPopup() {
-    document.getElementById('install-popup').style.display = 'none';
-  }
-
+  // ── 버튼 클릭 핸들러 ──
   function handleInstall() {
-    if (isStandalone) return;
-    if (isIOS) {
-      showIOSGuide();
-    } else if (deferredPrompt) {
+    if (!isMobile || isStandalone) return;
+    if (deferredPrompt) {
       deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(function(result) {
-        deferredPrompt = null;
-        if (result.outcome === 'accepted') {
-          closeInstallPopup();
-        }
-      });
+      deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
     } else {
-      showIOSGuide();
+      // 프롬프트 미지원 시 가이드 표시 (Android 포함)
+      showInstallGuide();
     }
   }
 
-  function handleInstallFromPopup() {
-    closeInstallPopup();
-    handleInstall();
-  }
-
-  function showIOSGuide() {
-    closeInstallPopup();
+  function showInstallGuide() {
+    var title = document.getElementById('guide-title');
+    var stepsIOS = document.getElementById('guide-steps-ios');
+    var stepsAndroid = document.getElementById('guide-steps-android');
+    if (isIOS) {
+      if (title) title.textContent = 'iPhone 홈 화면에 추가';
+      if (stepsIOS) stepsIOS.style.display = 'flex';
+      if (stepsAndroid) stepsAndroid.style.display = 'none';
+    } else {
+      if (title) title.textContent = 'Android 앱 설치 방법';
+      if (stepsIOS) stepsIOS.style.display = 'none';
+      if (stepsAndroid) stepsAndroid.style.display = 'flex';
+    }
     document.getElementById('ios-guide').style.display = 'flex';
   }
 
-  function closeIOSGuide() {
+  function closeInstallGuide() {
     document.getElementById('ios-guide').style.display = 'none';
   }
 
-  // 팝업 외부 클릭 닫기
-  document.getElementById('install-popup').addEventListener('click', function(e) {
-    if (e.target === this) closeInstallPopup();
-  });
+  // 모달 외부 클릭 닫기
   document.getElementById('ios-guide').addEventListener('click', function(e) {
-    if (e.target === this) closeIOSGuide();
+    if (e.target === this) closeInstallGuide();
   });
 
   // 헤더 스크롤 그림자
@@ -655,9 +668,6 @@
       ? '0 2px 16px rgba(0,0,0,.1)'
       : 'none';
   });
-
-  // 초기 버튼 상태 설정
-  updateInstallButtons();
 </script>
 </body>
 </html>
