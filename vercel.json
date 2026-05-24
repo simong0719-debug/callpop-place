@@ -1,7 +1,9 @@
 {
   "rewrites": [
-    { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/place", "destination": "/place/index.html" }
+    { "source": "/admin",  "destination": "/admin.html" },
+    { "source": "/place",  "destination": "/index.html" },
+    { "source": "/store",  "destination": "/index.html" },
+    { "source": "/store/", "destination": "/index.html" }
   ],
   "headers": [
     {

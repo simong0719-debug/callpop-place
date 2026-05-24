@@ -5,12 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>콜팝 — 전화 한 통으로 완성되는 배달</title>
   <meta name="description" content="콜팝은 KT 기반의 배달 O2O 서비스입니다. 전화 한 통으로 간편하게 주문하세요.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --orange:      #FF6B35;
       --orange-dark: #E85A25;
+      --red:         #FF6B35;
+      --red-dark:    #E85A25;
       --navy:        #1A1A2E;
       --text:        #1A1A1A;
       --sub:         #555555;
@@ -21,123 +25,170 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Noto Sans KR', sans-serif;
-      color: var(--text);
-      background: #fff;
-    }
+    body { font-family: 'Noto Sans KR', sans-serif; color: var(--text); background: #fff; }
 
     /* ── 버튼 ── */
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: var(--orange);
-      color: #fff;
-      font-weight: 700;
-      border-radius: 6px;
-      cursor: pointer;
-      border: none;
+    .btn-primary, .btn-red {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--orange); color: #fff; font-weight: 700; border-radius: 6px;
+      cursor: pointer; border: none;
       transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
     }
-    .btn-primary:hover  { background: var(--orange-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255,107,53,.35); }
-    .btn-primary:active { transform: translateY(0) scale(0.98); box-shadow: none; }
-    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn-primary:hover, .btn-red:hover  { background: var(--orange-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255,107,53,.35); }
+    .btn-primary:active, .btn-red:active { transform: translateY(0) scale(0.98); box-shadow: none; }
+    .btn-primary:disabled,.btn-red:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+    .btn-primary:focus, .btn-red:focus { outline: none; box-shadow: 0 0 0 3px rgba(255,107,53,.3); }
 
     .btn-white {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: #fff;
-      color: var(--orange);
-      font-weight: 700;
-      border-radius: 6px;
-      border: 2px solid #fff;
-      cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      background: #fff; color: var(--orange); font-weight: 700; border-radius: 6px;
+      border: 2px solid #fff; cursor: pointer;
       transition: background 0.18s, transform 0.12s;
     }
     .btn-white:hover  { background: rgba(255,255,255,.9); transform: translateY(-1px); }
     .btn-white:active { transform: translateY(0) scale(0.98); }
 
     .btn-outline-white {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: transparent;
-      color: #fff;
-      font-weight: 600;
-      border-radius: 6px;
-      border: 2px solid rgba(255,255,255,.6);
-      cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      background: transparent; color: #fff; font-weight: 600; border-radius: 6px;
+      border: 2px solid rgba(255,255,255,.6); cursor: pointer;
       transition: border-color 0.18s, background 0.18s, transform 0.12s;
     }
-    .btn-outline-white:hover  { border-color: #fff; background: rgba(255,255,255,.1); transform: translateY(-1px); }
+    .btn-outline-white:hover  { border-color:#fff; background:rgba(255,255,255,.1); transform:translateY(-1px); }
     .btn-outline-white:active { transform: translateY(0) scale(0.98); }
 
+    .btn-outline {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      background: transparent; color: var(--text); font-weight: 600;
+      border: 1.5px solid var(--border); border-radius: 6px; cursor: pointer;
+      transition: border-color 0.18s, color 0.18s, transform 0.12s;
+    }
+    .btn-outline:hover  { border-color:var(--orange); color:var(--orange); transform:translateY(-1px); }
+    .btn-outline:active { transform: translateY(0) scale(0.98); }
+    .btn-outline:focus  { outline:none; box-shadow:0 0 0 3px rgba(255,107,53,.2); }
+
     /* ── 레이아웃 ── */
-    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
-    .section { padding: 88px 0; }
+    .wrap       { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 88px 0; }
     .section-sm { padding: 64px 0; }
+    .divider    { border: none; border-top: 1px solid var(--border); margin: 0; }
 
     /* ── 섹션 헤더 ── */
-    .section-label {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--orange);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-    .section-title {
-      font-size: clamp(26px, 4vw, 38px);
-      font-weight: 900;
-      line-height: 1.25;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
-    }
-    .section-desc {
-      font-size: 16px;
-      color: var(--sub);
-      line-height: 1.75;
-    }
+    .section-label { font-size:13px; font-weight:700; color:var(--orange); letter-spacing:.08em; text-transform:uppercase; margin-bottom:12px; }
+    .section-title { font-size:clamp(26px,4vw,38px); font-weight:900; line-height:1.25; letter-spacing:-.02em; margin-bottom:16px; }
+    .section-desc  { font-size:16px; color:var(--sub); line-height:1.75; }
 
     /* ── 카드 ── */
-    .card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      transition: box-shadow 0.2s, transform 0.2s;
-    }
-    .card:hover {
-      box-shadow: 0 8px 28px rgba(0,0,0,.08);
-      transform: translateY(-3px);
-    }
-
-    /* ── 구분선 ── */
-    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+    .card { background:#fff; border:1px solid var(--border); border-radius:12px; transition:box-shadow 0.2s,transform 0.2s; }
+    .card:hover { box-shadow:0 8px 28px rgba(0,0,0,.08); transform:translateY(-3px); }
 
     /* ── 그리드 ── */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+    .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; }
+    .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+    .grid-hero       { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+    .grid-features   { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:center; }
+    .grid-feat-cards { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .grid-howitworks { display:grid; grid-template-columns:1fr 2fr; gap:72px; align-items:start; }
+    .grid-form-2     { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .grid-form-3     { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+    .grid-steps      { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; }
+    .hero-btns       { display:flex; gap:12px; flex-wrap:wrap; }
+
+    /* ── 비교표 ── */
+    .comp-table { width:100%; border-collapse:separate; border-spacing:0; }
+    .comp-table th { background:var(--navy); color:#fff; padding:14px 20px; font-size:14px; font-weight:700; text-align:center; }
+    .comp-table th:first-child { text-align:left; border-radius:8px 0 0 0; }
+    .comp-table th:last-child  { background:var(--orange); border-radius:0 8px 0 0; }
+    .comp-table td { padding:13px 20px; font-size:14px; border-bottom:1px solid var(--border); text-align:center; }
+    .comp-table td:first-child { text-align:left; font-weight:600; }
+    .comp-table tr:last-child td { border-bottom:none; }
+    .comp-table tr:last-child td:first-child { border-radius:0 0 0 8px; }
+    .comp-table tr:last-child td:last-child  { border-radius:0 0 8px 0; }
+    .comp-table .col-callpop { color:var(--orange); font-weight:700; background:#FFF3EE; }
+    .comp-table .col-same    { color:var(--sub); font-weight:600; background:#FAFAFA; }
+    .comp-table tr:nth-child(odd) td:not(.col-callpop):not(.col-same) { background:#FAFAFA; }
+
+    /* ── 폼 ── */
+    .finput { width:100%; border:1.5px solid var(--border); border-radius:4px; padding:11px 14px; font-size:14px; font-family:'Noto Sans KR',sans-serif; color:var(--text); background:#fff; transition:border-color 0.18s,box-shadow 0.18s; }
+    .finput:focus { outline:none; border-color:var(--orange); box-shadow:0 0 0 3px rgba(255,107,53,.10); }
+    .finput::placeholder { color:#bbb; }
+    .flabel { display:block; font-size:13px; font-weight:700; color:var(--sub); margin-bottom:6px; }
+    .flabel .req { color:var(--orange); margin-left:2px; }
+    .form-section-title { font-size:14px; font-weight:700; color:var(--sub); letter-spacing:.05em; text-transform:uppercase; display:flex; align-items:center; gap:8px; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid var(--border); }
+    .form-section-title span.num { width:22px; height:22px; background:var(--orange); color:#fff; border-radius:50%; font-size:12px; display:flex; align-items:center; justify-content:center; }
+
+    /* ── 스텝 ── */
+    .step-num { width:36px; height:36px; border-radius:50%; background:var(--orange); color:#fff; font-weight:900; font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+    /* ── 체크 배지 ── */
+    .check-badge { display:inline-flex; align-items:center; gap:6px; background:#FFF3EE; color:var(--orange); font-size:13px; font-weight:700; padding:5px 12px; border-radius:20px; border:1px solid #FFD4C2; }
+
+    /* ── 히어로 언더라인 ── */
+    .red-underline { background:linear-gradient(to right,var(--orange) 0%,#FF5252 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+    /* ── 플레이스 검색 팝업 ── */
+    #place-popup-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:500; display:none; align-items:center; justify-content:center; padding:16px; }
+    #place-popup-overlay.open { display:flex; }
+    #place-popup { background:#fff; border-radius:12px; width:100%; max-width:700px; height:88vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 80px rgba(0,0,0,.28); }
+    .cons-btn { padding:5px 10px; border:1.5px solid var(--border); border-radius:4px; background:#fff; font-size:13px; font-weight:700; cursor:pointer; color:var(--text); transition:background 0.12s,border-color 0.12s,color 0.12s; }
+    .cons-btn:hover { border-color:var(--orange); color:var(--orange); }
+    .cons-btn.active { background:var(--orange); border-color:var(--orange); color:#fff; }
+    .popup-place-item { padding:9px 8px; border-bottom:1px solid #F0F0F3; cursor:pointer; font-size:12px; font-weight:500; color:var(--text); line-height:1.35; word-break:break-word; transition:background 0.1s; }
+    .popup-place-item:hover { background:#FFF5F6; }
+    .popup-place-item.selected { background:var(--orange); color:#fff; }
+    .popup-detail-table { width:100%; border-collapse:collapse; }
+    .popup-detail-table th { width:68px; padding:9px 10px; background:var(--bg); color:var(--navy); font-size:11px; font-weight:700; text-align:left; border:1px solid var(--border); border-left:3px solid var(--orange); vertical-align:top; }
+    .popup-detail-table td { padding:9px 10px; font-size:13px; color:var(--text); border:1px solid var(--border); background:#fff; vertical-align:top; }
+    .selected-chip { display:inline-flex; align-items:center; gap:6px; background:#EBF4FF; border:1px solid #93C5FD; border-radius:100px; padding:5px 12px; font-size:13px; font-weight:600; color:#1D4ED8; }
+    .selected-chip button { background:none; border:none; cursor:pointer; color:#6B7280; font-size:16px; padding:0; line-height:1; }
+    .selected-chip button:hover { color:var(--orange); }
+    .place-item { display:flex; align-items:flex-start; gap:10px; padding:12px 0; border-bottom:1px solid var(--border); cursor:pointer; }
+    .place-item:last-child { border-bottom:none; }
+    .place-item input[type="checkbox"] { width:16px; height:16px; accent-color:var(--orange); cursor:pointer; flex-shrink:0; margin-top:2px; }
+    .place-item label { font-size:14px; color:var(--text); cursor:pointer; flex:1; line-height:1.4; }
+    .place-item-name { font-weight:700; margin-bottom:3px; }
+    .place-item-phone { font-size:12px; color:var(--orange); font-weight:600; margin-bottom:2px; letter-spacing:.02em; }
+    .place-item-intro { font-size:12px; color:var(--mute); line-height:1.5; }
+
+    /* ── 탭 전환 버튼 ── */
+    .tab-btn { font-size:14px; font-weight:600; padding:5px 16px; border-radius:20px; border:1px solid var(--border); background:var(--bg); color:var(--sub); cursor:pointer; transition:background 0.15s,color 0.15s,border-color 0.15s; white-space:nowrap; }
+    .tab-btn.active { background:var(--orange); color:#fff; border-color:var(--orange); font-weight:700; }
 
     /* ── 반응형 ── */
     @media (max-width: 768px) {
-      .wrap { padding: 0 16px; }
-      .section { padding: 52px 0; }
-      .section-sm { padding: 40px 0; }
-      .hide-mob { display: none !important; }
-      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 16px; }
-      .grid-2-mob { grid-template-columns: 1fr 1fr !important; }
-      .section-title { font-size: 24px; }
-      .section-desc  { font-size: 14px; }
-      footer .wrap > .footer-inner { flex-direction: column; gap: 24px; }
+      .wrap { padding:0 16px; }
+      .section { padding:52px 0; }
+      .section-sm { padding:40px 0; }
+      .hide-mob { display:none !important; }
+      .grid-2,.grid-3,.grid-4 { grid-template-columns:1fr; gap:16px; }
+      .grid-2-mob { grid-template-columns:1fr 1fr !important; }
+      .grid-hero,.grid-features,.grid-howitworks { grid-template-columns:1fr; gap:28px; }
+      .grid-feat-cards { grid-template-columns:1fr 1fr; gap:12px; }
+      .grid-form-2,.grid-form-3 { grid-template-columns:1fr; gap:14px; }
+      .grid-steps { grid-template-columns:1fr; gap:24px; }
+      .hero-btns { flex-direction:column; }
+      .hero-btns a,.hero-btns button { width:100%; text-align:center; }
+      .section-title { font-size:24px; }
+      .section-desc  { font-size:14px; }
+      .comp-table th,.comp-table td { padding:10px 12px; font-size:13px; }
+      #place-hero-section { padding-top:88px; padding-bottom:48px; }
+      #store-hero-section { padding-top:88px; padding-bottom:48px; }
+      .grid-feat-cards > div { padding:18px 14px !important; }
+      .tab-btn { font-size:13px; padding:4px 12px; }
+    }
+    @media (max-width: 540px) {
+      #place-popup-overlay { padding:8px; }
+      #place-popup { border-radius:10px; height:92vh; }
+      .cons-btn { padding:4px 7px; font-size:12px; }
+      #popup-list-panel { width:20%; }
+      #popup-detail-panel { padding:10px; }
+      .popup-detail-table th { width:54px; padding:7px 6px; font-size:10px; }
+      .popup-detail-table td { padding:7px 8px; font-size:12px; }
+      .popup-place-item { padding:8px 6px; font-size:11px; }
     }
     @media (max-width: 480px) {
-      .grid-2-mob { grid-template-columns: 1fr !important; }
+      .grid-2-mob { grid-template-columns:1fr !important; }
     }
   </style>
 </head>
@@ -147,15 +198,15 @@
      HEADER
 ════════════════════════════════════════ -->
 <header id="site-header" style="position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;border-bottom:1px solid var(--border);transition:box-shadow 0.2s;">
-  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;height:60px;">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;height:72px;">
     <div style="display:flex;align-items:center;gap:14px;">
-      <a href="/" style="display:flex;align-items:center;text-decoration:none;">
+      <a href="#" onclick="goTab('home');return false;" style="display:flex;align-items:center;text-decoration:none;">
         <img src="./brand_logo/callpop_logo_orange.png" alt="콜팝" style="height:68px;width:auto;">
       </a>
-      <nav style="display:flex;align-items:center;gap:4px;" class="hide-mob">
-        <a href="/" style="font-size:14px;font-weight:700;color:#fff;background:var(--orange);padding:4px 14px;border-radius:20px;text-decoration:none;border:1px solid var(--orange);">홈</a>
-        <a href="/place" style="font-size:14px;font-weight:600;color:var(--sub);background:var(--bg);padding:4px 14px;border-radius:20px;text-decoration:none;border:1px solid var(--border);">플레이스</a>
-        <a href="/store/" style="font-size:14px;font-weight:600;color:var(--sub);background:var(--bg);padding:4px 14px;border-radius:20px;text-decoration:none;border:1px solid var(--border);">가맹점</a>
+      <nav style="display:flex;align-items:center;gap:4px;">
+        <button id="nav-home"  class="tab-btn active" onclick="goTab('home')">홈</button>
+        <button id="nav-place" class="tab-btn"        onclick="goTab('place')">플레이스</button>
+        <button id="nav-store" class="tab-btn"        onclick="goTab('store')">가맹점</button>
       </nav>
     </div>
     <button id="header-install-btn" onclick="handleInstall()" class="btn-primary" style="padding:9px 20px;font-size:13px;">
@@ -166,305 +217,959 @@
 
 
 <!-- ════════════════════════════════════════
-     HERO
+     TAB: 홈
 ════════════════════════════════════════ -->
-<section style="padding-top:60px;background:linear-gradient(135deg,#FF6B35 0%,#FF8C5A 60%,#FFA875 100%);min-height:100svh;display:flex;align-items:center;">
-  <div class="wrap" style="padding-top:60px;padding-bottom:60px;width:100%;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;" class="hero-grid">
+<div id="tab-home">
 
-      <!-- 카피 -->
-      <div>
-        <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:28px;padding:7px 16px;background:rgba(255,255,255,.2);border-radius:20px;font-size:12px;font-weight:700;color:#fff;backdrop-filter:blur(4px);">
-          <span style="width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 2s infinite;"></span>
-          KT 기반 배달 서비스
+  <!-- HERO -->
+  <section style="padding-top:72px;background:linear-gradient(135deg,#FF6B35 0%,#FF8C5A 60%,#FFA875 100%);min-height:100svh;display:flex;align-items:center;">
+    <div class="wrap" style="padding-top:60px;padding-bottom:60px;width:100%;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;" class="hero-grid">
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:28px;padding:7px 16px;background:rgba(255,255,255,.2);border-radius:20px;font-size:12px;font-weight:700;color:#fff;backdrop-filter:blur(4px);">
+            <span style="width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 2s infinite;"></span>
+            KT 기반 배달 서비스
+          </div>
+          <h1 style="font-size:clamp(34px,5vw,58px);font-weight:900;line-height:1.15;letter-spacing:-.03em;color:#fff;margin-bottom:24px;">
+            배달이<br>이렇게<br>쉬울 수 없습니다
+          </h1>
+          <p style="font-size:clamp(15px,2vw,18px);color:rgba(255,255,255,.85);line-height:1.8;margin-bottom:40px;">
+            전화 한 통으로 맛있는 배달을 경험하세요.<br>
+            콜팝 앱으로 더 빠르고 편리하게.
+          </p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button id="hero-install-btn" onclick="handleInstall()" class="btn-white" style="padding:14px 28px;font-size:15px;">
+              📱 앱 설치하기
+            </button>
+            <a href="#features">
+              <button class="btn-outline-white" style="padding:14px 24px;font-size:15px;">서비스 알아보기 ↓</button>
+            </a>
+          </div>
+          <p id="hero-install-hint" style="margin-top:16px;font-size:12px;color:rgba(255,255,255,.6);"></p>
         </div>
-        <h1 style="font-size:clamp(34px,5vw,58px);font-weight:900;line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:24px;">
-          배달이<br>이렇게<br>쉬울 수 없습니다
-        </h1>
-        <p style="font-size:clamp(15px,2vw,18px);color:rgba(255,255,255,.85);line-height:1.8;margin-bottom:40px;">
-          전화 한 통으로 맛있는 배달을 경험하세요.<br>
-          콜팝 앱으로 더 빠르고 편리하게.
-        </p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <button id="hero-install-btn" onclick="handleInstall()" class="btn-white" style="padding:14px 28px;font-size:15px;">
-            📱 앱 설치하기
-          </button>
-          <a href="#features">
-            <button class="btn-outline-white" style="padding:14px 24px;font-size:15px;">서비스 알아보기 ↓</button>
-          </a>
-        </div>
-        <p id="hero-install-hint" style="margin-top:16px;font-size:12px;color:rgba(255,255,255,.6);"></p>
-      </div>
-
-      <!-- 폰 목업 -->
-      <div class="hide-mob" style="display:flex;justify-content:center;align-items:center;">
-        <div style="position:relative;">
-          <!-- 폰 프레임 -->
-          <div style="width:240px;height:480px;background:var(--navy);border-radius:36px;border:8px solid rgba(255,255,255,.2);box-shadow:0 30px 80px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.1);overflow:hidden;position:relative;">
-            <!-- 상단 노치 -->
-            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:80px;height:24px;background:var(--navy);border-radius:0 0 16px 16px;z-index:2;"></div>
-            <!-- 앱 화면 -->
-            <div style="height:100%;background:linear-gradient(180deg,#fff 0%,#F7F8FA 100%);padding:32px 16px 16px;">
-              <!-- 앱 헤더 -->
-              <div style="background:var(--orange);border-radius:12px;padding:12px;margin-bottom:12px;">
-                <div style="font-size:10px;font-weight:900;color:#fff;margin-bottom:2px;">콜팝</div>
-                <div style="font-size:8px;color:rgba(255,255,255,.8);">지금 배달 가능한 가맹점</div>
-              </div>
-              <!-- 카테고리 칩 -->
-              <div style="display:flex;gap:4px;margin-bottom:10px;overflow:hidden;">
-                <div style="background:var(--orange);color:#fff;font-size:7px;font-weight:700;padding:3px 8px;border-radius:8px;white-space:nowrap;">전체</div>
-                <div style="background:#F0F0F0;font-size:7px;padding:3px 8px;border-radius:8px;white-space:nowrap;">한식</div>
-                <div style="background:#F0F0F0;font-size:7px;padding:3px 8px;border-radius:8px;white-space:nowrap;">중식</div>
-                <div style="background:#F0F0F0;font-size:7px;padding:3px 8px;border-radius:8px;white-space:nowrap;">치킨</div>
-              </div>
-              <!-- 가맹점 카드들 -->
-              <div style="display:flex;flex-direction:column;gap:6px;">
-                <div style="background:#fff;border:1px solid #eee;border-radius:8px;padding:8px;display:flex;gap:8px;align-items:center;">
-                  <div style="width:32px;height:32px;background:#FFF3E0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🍔</div>
-                  <div>
-                    <div style="font-size:8px;font-weight:700;">버거&amp;치킨</div>
-                    <div style="font-size:7px;color:#888;">배달 20분 · ★ 4.8</div>
-                  </div>
+        <div class="hide-mob" style="display:flex;justify-content:center;align-items:center;">
+          <div style="position:relative;">
+            <div style="width:240px;height:480px;background:var(--navy);border-radius:36px;border:8px solid rgba(255,255,255,.2);box-shadow:0 30px 80px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.1);overflow:hidden;position:relative;">
+              <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:80px;height:24px;background:var(--navy);border-radius:0 0 16px 16px;z-index:2;"></div>
+              <div style="height:100%;background:linear-gradient(180deg,#fff 0%,#F7F8FA 100%);padding:32px 16px 16px;">
+                <div style="background:var(--orange);border-radius:12px;padding:12px;margin-bottom:12px;">
+                  <div style="font-size:10px;font-weight:900;color:#fff;margin-bottom:2px;">콜팝</div>
+                  <div style="font-size:8px;color:rgba(255,255,255,.8);">지금 배달 가능한 가맹점</div>
                 </div>
-                <div style="background:#fff;border:1px solid #eee;border-radius:8px;padding:8px;display:flex;gap:8px;align-items:center;">
-                  <div style="width:32px;height:32px;background:#E8F5E9;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🍜</div>
-                  <div>
-                    <div style="font-size:8px;font-weight:700;">중화요리</div>
-                    <div style="font-size:7px;color:#888;">배달 30분 · ★ 4.6</div>
-                  </div>
+                <div style="display:flex;gap:4px;margin-bottom:10px;overflow:hidden;">
+                  <div style="background:var(--orange);color:#fff;font-size:7px;font-weight:700;padding:3px 8px;border-radius:8px;white-space:nowrap;">전체</div>
+                  <div style="background:#F0F0F0;font-size:7px;padding:3px 8px;border-radius:8px;white-space:nowrap;">한식</div>
+                  <div style="background:#F0F0F0;font-size:7px;padding:3px 8px;border-radius:8px;white-space:nowrap;">중식</div>
+                  <div style="background:#F0F0F0;font-size:7px;padding:3px 8px;border-radius:8px;white-space:nowrap;">치킨</div>
                 </div>
-                <div style="background:#fff;border:1px solid #eee;border-radius:8px;padding:8px;display:flex;gap:8px;align-items:center;">
-                  <div style="width:32px;height:32px;background:#FFF3E0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🍕</div>
-                  <div>
-                    <div style="font-size:8px;font-weight:700;">피자&amp;파스타</div>
-                    <div style="font-size:7px;color:#888;">배달 35분 · ★ 4.7</div>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <div style="background:#fff;border:1px solid #eee;border-radius:8px;padding:8px;display:flex;gap:8px;align-items:center;">
+                    <div style="width:32px;height:32px;background:#FFF3E0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🍔</div>
+                    <div><div style="font-size:8px;font-weight:700;">버거&amp;치킨</div><div style="font-size:7px;color:#888;">배달 20분 · ★ 4.8</div></div>
+                  </div>
+                  <div style="background:#fff;border:1px solid #eee;border-radius:8px;padding:8px;display:flex;gap:8px;align-items:center;">
+                    <div style="width:32px;height:32px;background:#E8F5E9;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🍜</div>
+                    <div><div style="font-size:8px;font-weight:700;">중화요리</div><div style="font-size:7px;color:#888;">배달 30분 · ★ 4.6</div></div>
+                  </div>
+                  <div style="background:#fff;border:1px solid #eee;border-radius:8px;padding:8px;display:flex;gap:8px;align-items:center;">
+                    <div style="width:32px;height:32px;background:#FFF3E0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🍕</div>
+                    <div><div style="font-size:8px;font-weight:700;">피자&amp;파스타</div><div style="font-size:7px;color:#888;">배달 35분 · ★ 4.7</div></div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <!-- 배지 -->
-          <div style="position:absolute;top:-16px;right:-20px;background:#fff;border-radius:12px;padding:8px 14px;box-shadow:0 4px 20px rgba(0,0,0,.15);font-size:12px;font-weight:700;color:var(--orange);">
-            📞 전화 주문 가능
-          </div>
-          <div style="position:absolute;bottom:-16px;left:-20px;background:#fff;border-radius:12px;padding:8px 14px;box-shadow:0 4px 20px rgba(0,0,0,.15);font-size:12px;font-weight:700;color:var(--navy);">
-            🗺️ 30km 반경 배달
+            <div style="position:absolute;top:-16px;right:-20px;background:#fff;border-radius:12px;padding:8px 14px;box-shadow:0 4px 20px rgba(0,0,0,.15);font-size:12px;font-weight:700;color:var(--orange);">📞 전화 주문 가능</div>
+            <div style="position:absolute;bottom:-16px;left:-20px;background:#fff;border-radius:12px;padding:8px 14px;box-shadow:0 4px 20px rgba(0,0,0,.15);font-size:12px;font-weight:700;color:var(--navy);">🗺️ 30km 반경 배달</div>
           </div>
         </div>
       </div>
-
     </div>
-  </div>
-</section>
+  </section>
+  <style>
+    @media (max-width:768px) { .hero-grid { grid-template-columns:1fr !important; gap:0 !important; } }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  </style>
 
-<!-- 모바일 히어로 스타일 수정 -->
-<style>
-  @media (max-width: 768px) {
-    .hero-grid { grid-template-columns: 1fr !important; gap: 0 !important; }
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: .4; }
-  }
-</style>
+  <hr class="divider">
 
-<hr class="divider">
+  <!-- STATS -->
+  <section style="background:#fff;padding:36px 0;">
+    <div class="wrap">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;text-align:center;" class="stats-grid">
+        <div style="padding:20px;border-right:1px solid var(--border);">
+          <div style="font-size:clamp(28px,4vw,42px);font-weight:900;color:var(--orange);line-height:1;letter-spacing:-1px;">30km</div>
+          <div style="font-size:13px;color:var(--sub);margin-top:6px;">배달 가능 반경</div>
+        </div>
+        <div style="padding:20px;border-right:1px solid var(--border);">
+          <div style="font-size:clamp(28px,4vw,42px);font-weight:900;color:var(--orange);line-height:1;letter-spacing:-1px;">0원</div>
+          <div style="font-size:13px;color:var(--sub);margin-top:6px;">중개 수수료</div>
+        </div>
+        <div style="padding:20px;">
+          <div style="font-size:clamp(28px,4vw,42px);font-weight:900;color:var(--orange);line-height:1;letter-spacing:-1px;">KT</div>
+          <div style="font-size:13px;color:var(--sub);margin-top:6px;">기반 안전 서비스</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <style>
+    @media (max-width:480px) {
+      .stats-grid { grid-template-columns:1fr !important; }
+      .stats-grid > div { border-right:none !important; border-bottom:1px solid var(--border); }
+      .stats-grid > div:last-child { border-bottom:none; }
+    }
+  </style>
+
+  <hr class="divider">
+
+  <!-- FEATURES -->
+  <section id="features" class="section" style="background:var(--bg);">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:52px;">
+        <div class="section-label">서비스 특징</div>
+        <h2 class="section-title">왜 콜팝인가요?</h2>
+        <p class="section-desc">기존 배달앱이 해결하지 못한 불편함을 콜팝이 해결합니다</p>
+      </div>
+      <div class="grid-4 grid-2-mob">
+        <div class="card" style="padding:28px 24px;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">📞</div>
+          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">전화로도 주문</h3>
+          <p style="font-size:13px;color:var(--sub);line-height:1.7;">앱 없이 전화 한 통으로. 어르신도 스마트폰 없이 간편하게 주문합니다.</p>
+        </div>
+        <div class="card" style="padding:28px 24px;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">🗺️</div>
+          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">넓은 배달 반경</h3>
+          <p style="font-size:13px;color:var(--sub);line-height:1.7;">최대 30km. 기존 배달앱(4km)보다 7배 넓어서 더 많은 가맹점 이용이 가능합니다.</p>
+        </div>
+        <div class="card" style="padding:28px 24px;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">💳</div>
+          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">안전한 결제</h3>
+          <p style="font-size:13px;color:var(--sub);line-height:1.7;">KT 기반의 검증된 결제 시스템. 중개 수수료 없이 가맹점에 전액 정산됩니다.</p>
+        </div>
+        <div class="card" style="padding:28px 24px;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">🏪</div>
+          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">다양한 가맹점</h3>
+          <p style="font-size:13px;color:var(--sub);line-height:1.7;">지역 맛집부터 프랜차이즈까지. 다양한 음식점이 콜팝과 함께합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- HOW TO ORDER -->
+  <section class="section" style="background:#fff;">
+    <div class="wrap">
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:72px;align-items:start;" class="how-grid">
+        <div>
+          <div class="section-label">주문 방법</div>
+          <h2 class="section-title">주문이<br>이렇게<br>쉽습니다</h2>
+          <p class="section-desc" style="font-size:14px;">콜팝 앱 하나로 빠르고 간편하게</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="display:flex;gap:20px;padding:28px 0;border-bottom:1px solid var(--border);">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+            <div>
+              <div style="font-size:17px;font-weight:800;margin-bottom:8px;">앱 설치 또는 전화</div>
+              <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">콜팝 앱을 설치하거나, 앱 없이 플레이스 대표번호로 전화해도 됩니다.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:20px;padding:28px 0;border-bottom:1px solid var(--border);">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+            <div>
+              <div style="font-size:17px;font-weight:800;margin-bottom:8px;">메뉴 선택 &amp; 주문</div>
+              <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">가까운 가맹점 목록에서 원하는 메뉴를 선택하고 주문합니다.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:20px;padding:28px 0;">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+            <div>
+              <div style="font-size:17px;font-weight:800;margin-bottom:8px;">빠른 배달 완료</div>
+              <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">넓은 반경의 가맹점이 빠르게 배달해 드립니다. 실시간 주문 현황도 확인 가능합니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <style>
+    @media (max-width:768px) { .how-grid { grid-template-columns:1fr !important; gap:28px !important; } }
+  </style>
+
+  <hr class="divider">
+
+  <!-- COMPARISON -->
+  <section id="comparison" class="section" style="background:var(--bg);">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:48px;">
+        <div class="section-label">서비스 비교</div>
+        <h2 class="section-title">기존 배달앱 vs 콜팝</h2>
+        <p class="section-desc">숫자로 보는 명확한 차이</p>
+      </div>
+      <div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border);">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th style="width:30%;">구분</th>
+              <th>기존 배달앱</th>
+              <th>콜팝</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>결제수수료</td>
+              <td>3.0% (D+3)</td>
+              <td class="col-same">3.0% (D+3) — 동일</td>
+            </tr>
+            <tr>
+              <td>중개수수료</td>
+              <td>6 ~ 13%</td>
+              <td class="col-callpop">없음 ✓</td>
+            </tr>
+            <tr>
+              <td>광고비</td>
+              <td>월 수십만 원</td>
+              <td class="col-callpop">없음 ✓</td>
+            </tr>
+            <tr>
+              <td>가맹 반경</td>
+              <td>4km</td>
+              <td class="col-callpop">최대 30km ✓</td>
+            </tr>
+            <tr>
+              <td>최소 주문 금액</td>
+              <td>있음</td>
+              <td class="col-callpop">없음 ✓</td>
+            </tr>
+            <tr>
+              <td>고객 정보</td>
+              <td>플랫폼 독점</td>
+              <td class="col-callpop">직접 보유 ✓</td>
+            </tr>
+            <tr>
+              <td>주문 방식</td>
+              <td>앱 설치 필수</td>
+              <td class="col-callpop">전화 주문 가능 ✓</td>
+            </tr>
+            <tr>
+              <td>플레이스 수익</td>
+              <td>없음</td>
+              <td class="col-callpop">최대 1.5% ✓</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:16px;padding:14px 16px;background:#fff;border-radius:6px;border:1px solid var(--border);font-size:13px;color:var(--mute);line-height:1.6;">
+        ※ 결제수수료 3.0%(D+3)는 기존 배달앱과 동일하게 적용됩니다. 중개수수료 및 광고비는 없습니다.
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- APP DOWNLOAD -->
+  <section id="download" class="section" style="background:linear-gradient(135deg,#FF6B35 0%,#FF8C5A 100%);">
+    <div class="wrap" style="text-align:center;">
+      <div style="font-size:52px;margin-bottom:20px;">📱</div>
+      <h2 style="font-size:clamp(26px,4vw,40px);font-weight:900;color:#fff;letter-spacing:-.02em;margin-bottom:16px;">
+        지금 바로 콜팝 앱을<br>설치하세요
+      </h2>
+      <p style="font-size:16px;color:rgba(255,255,255,.8);line-height:1.8;margin-bottom:40px;">
+        설치 후 바로 주문 가능합니다.<br>앱스토어 없이 홈 화면에 바로 추가됩니다.
+      </p>
+      <div id="install-btns-wrap" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;">
+        <button id="download-android-btn" onclick="handleInstall()" class="btn-white" style="padding:16px 32px;font-size:16px;min-width:200px;">
+          <span>🤖</span> Android 설치
+        </button>
+        <button id="download-ios-btn" onclick="showInstallGuide()" class="btn-outline-white" style="padding:16px 32px;font-size:16px;min-width:200px;">
+          <span>🍎</span> iPhone 설치 안내
+        </button>
+      </div>
+      <p id="desktop-msg" style="display:none;font-size:15px;color:rgba(255,255,255,.85);margin-bottom:20px;">📱 모바일 기기에서 앱을 설치하실 수 있습니다</p>
+      <p id="download-hint" style="font-size:13px;color:rgba(255,255,255,.6);"></p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- PARTNERS CTA -->
+  <section class="section" style="background:var(--bg);">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:48px;">
+        <div class="section-label">파트너십</div>
+        <h2 class="section-title">콜팝과 함께하세요</h2>
+        <p class="section-desc">플레이스 운영자와 가맹점 모두를 위한 기회가 있습니다</p>
+      </div>
+      <div class="grid-2">
+        <div class="card" style="padding:40px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:linear-gradient(135deg,rgba(255,107,53,.06),transparent);border-radius:0 12px 0 120px;"></div>
+          <div style="font-size:40px;margin-bottom:20px;">🏢</div>
+          <h3 style="font-size:22px;font-weight:900;margin-bottom:12px;">플레이스 운영하기</h3>
+          <p style="font-size:14px;color:var(--sub);line-height:1.8;margin-bottom:28px;">
+            우리 조직만의 배달 플랫폼을 무료로 만드세요.<br>
+            주문마다 최대 1.5% 수익이 쌓입니다.<br>
+            교회, 동문회, 기업 모두 가능합니다.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+            <span style="background:#FFF3EE;color:var(--orange);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">무료 개설</span>
+            <span style="background:#FFF3EE;color:var(--orange);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">최대 1.5% 수익</span>
+            <span style="background:#FFF3EE;color:var(--orange);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">전용 번호 제공</span>
+          </div>
+          <button class="btn-primary" style="padding:13px 28px;font-size:15px;width:100%;" onclick="goTabAndScroll('place','place-apply-form')">플레이스 신청하기 →</button>
+        </div>
+        <div class="card" style="padding:40px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:linear-gradient(135deg,rgba(26,26,46,.06),transparent);border-radius:0 12px 0 120px;"></div>
+          <div style="font-size:40px;margin-bottom:20px;">🍽️</div>
+          <h3 style="font-size:22px;font-weight:900;margin-bottom:12px;">가맹점 등록하기</h3>
+          <p style="font-size:14px;color:var(--sub);line-height:1.8;margin-bottom:28px;">
+            콜팝 가맹점으로 등록하고 새로운 고객을 만나세요.<br>
+            중개 수수료 없이 운영할 수 있습니다.<br>
+            30km 넓은 배달 반경으로 더 많은 주문을.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+            <span style="background:#EEF2FF;color:var(--navy);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">수수료 없음</span>
+            <span style="background:#EEF2FF;color:var(--navy);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">30km 반경</span>
+            <span style="background:#EEF2FF;color:var(--navy);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">간편 등록</span>
+          </div>
+          <button style="padding:13px 28px;font-size:15px;width:100%;background:var(--navy);color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;transition:background 0.18s,transform 0.12s;" onmouseover="this.style.background='#2a2a4e'" onmouseout="this.style.background='var(--navy)'" onmousedown="this.style.transform='scale(0.98)'" onmouseup="this.style.transform=''" onclick="goTabAndScroll('store','store-inquiry-form')">가맹점 신청하기 →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /tab-home -->
+
 
 <!-- ════════════════════════════════════════
-     STATS
+     TAB: 플레이스
 ════════════════════════════════════════ -->
-<section style="background:#fff;padding:36px 0;">
-  <div class="wrap">
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;text-align:center;" class="stats-grid">
-      <div style="padding:20px;border-right:1px solid var(--border);">
-        <div style="font-size:clamp(28px,4vw,42px);font-weight:900;color:var(--orange);line-height:1;letter-spacing:-1px;">30km</div>
-        <div style="font-size:13px;color:var(--sub);margin-top:6px;">배달 가능 반경</div>
-      </div>
-      <div style="padding:20px;border-right:1px solid var(--border);">
-        <div style="font-size:clamp(28px,4vw,42px);font-weight:900;color:var(--orange);line-height:1;letter-spacing:-1px;">0원</div>
-        <div style="font-size:13px;color:var(--sub);margin-top:6px;">중개 수수료</div>
-      </div>
-      <div style="padding:20px;">
-        <div style="font-size:clamp(28px,4vw,42px);font-weight:900;color:var(--orange);line-height:1;letter-spacing:-1px;">KT</div>
-        <div style="font-size:13px;color:var(--sub);margin-top:6px;">기반 안전 서비스</div>
-      </div>
-    </div>
-  </div>
-</section>
-<style>
-  @media (max-width: 480px) {
-    .stats-grid { grid-template-columns: 1fr !important; }
-    .stats-grid > div { border-right: none !important; border-bottom: 1px solid var(--border); }
-    .stats-grid > div:last-child { border-bottom: none; }
-  }
-</style>
+<div id="tab-place" style="display:none;">
 
-<hr class="divider">
-
-<!-- ════════════════════════════════════════
-     FEATURES
-════════════════════════════════════════ -->
-<section id="features" class="section" style="background:var(--bg);">
-  <div class="wrap">
-    <div style="text-align:center;margin-bottom:52px;">
-      <div class="section-label">서비스 특징</div>
-      <h2 class="section-title">왜 콜팝인가요?</h2>
-      <p class="section-desc">기존 배달앱이 해결하지 못한 불편함을 콜팝이 해결합니다</p>
-    </div>
-    <div class="grid-4 grid-2-mob">
-      <div class="card" style="padding:28px 24px;">
-        <div style="width:52px;height:52px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">📞</div>
-        <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;color:var(--text);">전화로도 주문</h3>
-        <p style="font-size:13px;color:var(--sub);line-height:1.7;">앱 없이 전화 한 통으로. 어르신도 스마트폰 없이 간편하게 주문합니다.</p>
-      </div>
-      <div class="card" style="padding:28px 24px;">
-        <div style="width:52px;height:52px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">🗺️</div>
-        <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;color:var(--text);">넓은 배달 반경</h3>
-        <p style="font-size:13px;color:var(--sub);line-height:1.7;">최대 30km. 기존 배달앱(4km)보다 7배 넓어서 더 많은 가맹점 이용이 가능합니다.</p>
-      </div>
-      <div class="card" style="padding:28px 24px;">
-        <div style="width:52px;height:52px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">💳</div>
-        <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;color:var(--text);">안전한 결제</h3>
-        <p style="font-size:13px;color:var(--sub);line-height:1.7;">KT 기반의 검증된 결제 시스템. 중개 수수료 없이 가맹점에 전액 정산됩니다.</p>
-      </div>
-      <div class="card" style="padding:28px 24px;">
-        <div style="width:52px;height:52px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">🏪</div>
-        <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;color:var(--text);">다양한 가맹점</h3>
-        <p style="font-size:13px;color:var(--sub);line-height:1.7;">지역 맛집부터 프랜차이즈까지. 다양한 음식점이 콜팝과 함께합니다.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="divider">
-
-<!-- ════════════════════════════════════════
-     HOW TO ORDER
-════════════════════════════════════════ -->
-<section class="section" style="background:#fff;">
-  <div class="wrap">
-    <div style="display:grid;grid-template-columns:1fr 2fr;gap:72px;align-items:start;" class="how-grid">
-      <div>
-        <div class="section-label">주문 방법</div>
-        <h2 class="section-title">주문이<br>이렇게<br>쉽습니다</h2>
-        <p class="section-desc" style="font-size:14px;">콜팝 앱 하나로 빠르고 간편하게</p>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:0;">
-        <div style="display:flex;gap:20px;padding:28px 0;border-bottom:1px solid var(--border);">
-          <div style="width:40px;height:40px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-          <div>
-            <div style="font-size:17px;font-weight:800;margin-bottom:8px;">앱 설치 또는 전화</div>
-            <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">콜팝 앱을 설치하거나, 앱 없이 플레이스 대표번호로 전화해도 됩니다.</p>
+  <!-- HERO -->
+  <section id="place-hero-section" style="padding-top:120px;padding-bottom:80px;background:#fff;">
+    <div class="wrap">
+      <div class="grid-hero">
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:24px;padding:6px 14px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:700;color:var(--sub);">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--orange);"></span>
+            콜팝 플레이스
+          </div>
+          <h1 style="font-size:clamp(32px,4.5vw,50px);font-weight:900;line-height:1.2;letter-spacing:-.03em;margin-bottom:24px;">
+            우리 조직만의<br>
+            <span class="red-underline">배달 플랫폼</span>을<br>
+            무료로 만드세요
+          </h1>
+          <p style="font-size:17px;color:var(--sub);line-height:1.8;margin-bottom:36px;">
+            앱 개발 비용 <strong style="color:var(--text);font-weight:700;">0원</strong>.
+            기술 지식 불필요.<br>
+            주문마다 우리 조직에
+            <strong style="color:var(--orange);font-weight:700;">최대 1.5% 수익</strong>이 쌓입니다.
+          </p>
+          <div class="hero-btns">
+            <a href="#place-apply-form">
+              <button class="btn-red" style="padding:14px 32px;font-size:15px;">플레이스 신청하기</button>
+            </a>
           </div>
         </div>
-        <div style="display:flex;gap:20px;padding:28px 0;border-bottom:1px solid var(--border);">
-          <div style="width:40px;height:40px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-          <div>
-            <div style="font-size:17px;font-weight:800;margin-bottom:8px;">메뉴 선택 &amp; 주문</div>
-            <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">가까운 가맹점 목록에서 원하는 메뉴를 선택하고 주문합니다.</p>
-          </div>
-        </div>
-        <div style="display:flex;gap:20px;padding:28px 0;">
-          <div style="width:40px;height:40px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-          <div>
-            <div style="font-size:17px;font-weight:800;margin-bottom:8px;">빠른 배달 완료</div>
-            <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">넓은 반경의 가맹점이 빠르게 배달해 드립니다. 실시간 주문 현황도 확인 가능합니다.</p>
+        <div class="hide-mob">
+          <div class="card" style="padding:36px;border-radius:12px;">
+            <div style="text-align:center;padding-bottom:28px;border-bottom:1px solid var(--border);margin-bottom:24px;">
+              <div style="font-size:13px;color:var(--mute);margin-bottom:8px;">이용자 구매금액 기준</div>
+              <div style="font-size:52px;font-weight:900;color:var(--orange);line-height:1;letter-spacing:-2px;">1.5%</div>
+              <div style="font-size:14px;color:var(--sub);margin-top:8px;">플레이스 운영자 수익 지급</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border-radius:6px;">
+                <span style="font-size:26px;">⛪</span>
+                <div><div style="font-size:14px;font-weight:700;">교회</div><div style="font-size:12px;color:var(--mute);">성도들이 주문하면 교회에 수익</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border-radius:6px;">
+                <span style="font-size:26px;">🎓</span>
+                <div><div style="font-size:14px;font-weight:700;">동문회 · 종친회</div><div style="font-size:12px;color:var(--mute);">회원 이용으로 기금 자동 적립</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border-radius:6px;">
+                <span style="font-size:26px;">🏪</span>
+                <div><div style="font-size:14px;font-weight:700;">프랜차이즈 · 기업</div><div style="font-size:12px;color:var(--mute);">자체 브랜드 주문 채널 운영</div></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
-<style>
-  @media (max-width: 768px) {
-    .how-grid { grid-template-columns: 1fr !important; gap: 28px !important; }
-  }
-</style>
+  </section>
 
-<hr class="divider">
+  <hr class="divider">
 
-<!-- ════════════════════════════════════════
-     APP DOWNLOAD
-════════════════════════════════════════ -->
-<section id="download" class="section" style="background:linear-gradient(135deg,#FF6B35 0%,#FF8C5A 100%);">
-  <div class="wrap" style="text-align:center;">
-    <div style="font-size:52px;margin-bottom:20px;">📱</div>
-    <h2 style="font-size:clamp(26px,4vw,40px);font-weight:900;color:#fff;letter-spacing:-0.02em;margin-bottom:16px;">
-      지금 바로 콜팝 앱을<br>설치하세요
-    </h2>
-    <p style="font-size:16px;color:rgba(255,255,255,.8);line-height:1.8;margin-bottom:40px;">
-      설치 후 바로 주문 가능합니다.<br>앱스토어 없이 홈 화면에 바로 추가됩니다.
-    </p>
-    <div id="install-btns-wrap" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;">
-      <button id="download-android-btn" onclick="handleInstall()" class="btn-white" style="padding:16px 32px;font-size:16px;min-width:200px;">
-        <span>🤖</span> Android 설치
-      </button>
-      <button id="download-ios-btn" onclick="showInstallGuide()" class="btn-outline-white" style="padding:16px 32px;font-size:16px;min-width:200px;">
-        <span>🍎</span> iPhone 설치 안내
-      </button>
-    </div>
-    <p id="desktop-msg" style="display:none;font-size:15px;color:rgba(255,255,255,.85);margin-bottom:20px;">📱 모바일 기기에서 앱을 설치하실 수 있습니다</p>
-    <p id="download-hint" style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:0;"></p>
-  </div>
-</section>
-
-<hr class="divider">
-
-<!-- ════════════════════════════════════════
-     PARTNERS CTA
-════════════════════════════════════════ -->
-<section class="section" style="background:var(--bg);">
-  <div class="wrap">
-    <div style="text-align:center;margin-bottom:48px;">
-      <div class="section-label">파트너십</div>
-      <h2 class="section-title">콜팝과 함께하세요</h2>
-      <p class="section-desc">플레이스 운영자와 가맹점 모두를 위한 기회가 있습니다</p>
-    </div>
-    <div class="grid-2">
-      <div class="card" style="padding:40px;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:linear-gradient(135deg,rgba(255,107,53,.06),transparent);border-radius:0 12px 0 120px;"></div>
-        <div style="font-size:40px;margin-bottom:20px;">🏢</div>
-        <h3 style="font-size:22px;font-weight:900;margin-bottom:12px;color:var(--text);">플레이스 운영하기</h3>
-        <p style="font-size:14px;color:var(--sub);line-height:1.8;margin-bottom:28px;">
-          우리 조직만의 배달 플랫폼을 무료로 만드세요.<br>
-          주문마다 최대 1.5% 수익이 쌓입니다.<br>
-          교회, 동문회, 기업 모두 가능합니다.
-        </p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
-          <span style="background:#FFF3EE;color:var(--orange);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">무료 개설</span>
-          <span style="background:#FFF3EE;color:var(--orange);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">최대 1.5% 수익</span>
-          <span style="background:#FFF3EE;color:var(--orange);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">전용 번호 제공</span>
-        </div>
-        <a href="/place" style="text-decoration:none;">
-          <button class="btn-primary" style="padding:13px 28px;font-size:15px;width:100%;">플레이스 신청하기 →</button>
-        </a>
+  <!-- PAIN POINTS -->
+  <section class="section" style="background:var(--bg);">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:52px;">
+        <div class="section-label">문제 인식</div>
+        <h2 class="section-title">이런 고민, 있지 않으신가요?</h2>
+        <p class="section-desc">나만의 배달앱을 갖고 싶었지만, 이런 이유로 포기했습니다</p>
       </div>
-      <div class="card" style="padding:40px;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:linear-gradient(135deg,rgba(26,26,46,.06),transparent);border-radius:0 12px 0 120px;"></div>
-        <div style="font-size:40px;margin-bottom:20px;">🍽️</div>
-        <h3 style="font-size:22px;font-weight:900;margin-bottom:12px;color:var(--text);">가맹점 등록하기</h3>
-        <p style="font-size:14px;color:var(--sub);line-height:1.8;margin-bottom:28px;">
-          콜팝 가맹점으로 등록하고 새로운 고객을 만나세요.<br>
-          중개 수수료 없이 운영할 수 있습니다.<br>
-          30km 넓은 배달 반경으로 더 많은 주문을.
-        </p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
-          <span style="background:#EEF2FF;color:var(--navy);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">수수료 없음</span>
-          <span style="background:#EEF2FF;color:var(--navy);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">30km 반경</span>
-          <span style="background:#EEF2FF;color:var(--navy);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">간편 등록</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
+        <div class="card" style="padding:32px;">
+          <div style="width:44px;height:44px;background:#FFF3EE;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;">💸</div>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;">앱 개발 비용이 너무 비싸요</h3>
+          <p style="font-size:14px;color:var(--sub);line-height:1.7;">배달앱 하나 만들려면 수천만 원 이상. 아이디어는 있는데 자본이 없어서 시작도 못했습니다.</p>
         </div>
-        <a href="/store/" style="text-decoration:none;">
-          <button style="padding:13px 28px;font-size:15px;width:100%;background:var(--navy);color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;transition:background 0.18s,transform 0.12s;" onmouseover="this.style.background='#2a2a4e'" onmouseout="this.style.background='var(--navy)'" onmousedown="this.style.transform='scale(0.98)'" onmouseup="this.style.transform='scale(1)'">가맹점 신청하기 →</button>
-        </a>
+        <div class="card" style="padding:32px;">
+          <div style="width:44px;height:44px;background:#FFF3EE;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;">🔧</div>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;">가맹점 모집 막막해요.</h3>
+          <p style="font-size:14px;color:var(--sub);line-height:1.7;">영업사원도 없고, 자본도 없고 가맹점 모집은 절대 불가능하다고 생각했어요.</p>
+        </div>
+        <div class="card" style="padding:32px;">
+          <div style="width:44px;height:44px;background:#FFF3EE;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;">📊</div>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;">안정적인 수익 채널이 없어요</h3>
+          <p style="font-size:14px;color:var(--sub);line-height:1.7;">교회 운영비, 동문회 재정, 종친회 기금—지속 가능한 수익을 만들 방법이 없었습니다.</p>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<hr class="divider">
+  <hr class="divider">
+
+  <!-- FEATURES -->
+  <section class="section" style="background:#fff;">
+    <div class="wrap">
+      <div class="grid-features">
+        <div>
+          <div class="section-label">콜팝 플레이스 솔루션</div>
+          <h2 class="section-title">5분 만에 우리 조직의<br>배달 플랫폼 완성</h2>
+          <p class="section-desc">검증된 인프라를 그대로 사용합니다.<br>개발 없이, 비용 없이, 우리 이름의 전화 주문 플랫폼이 생깁니다.</p>
+        </div>
+        <div class="grid-feat-cards">
+          <div style="padding:24px;background:var(--bg);border-radius:8px;border:1px solid var(--border);">
+            <div style="font-size:28px;margin-bottom:12px;">📞</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">전화 한 통으로 주문</div>
+            <div style="font-size:13px;color:var(--sub);line-height:1.6;">앱 설치 없이 전화로. 어르신도 쉽게 이용합니다.</div>
+          </div>
+          <div style="padding:24px;background:#FFF3EE;border-radius:8px;border:1px solid #FFD4C2;">
+            <div style="font-size:28px;margin-bottom:12px;">💰</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;color:var(--orange);">최대 1.5% 수익</div>
+            <div style="font-size:13px;color:var(--sub);line-height:1.6;">주문마다 지정 계좌로 자동 정산됩니다.</div>
+          </div>
+          <div style="padding:24px;background:var(--bg);border-radius:8px;border:1px solid var(--border);">
+            <div style="font-size:28px;margin-bottom:12px;">🆓</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">완전 무료 개설</div>
+            <div style="font-size:13px;color:var(--sub);line-height:1.6;">플레이스 개설 및 운영 비용 0원.</div>
+          </div>
+          <div style="padding:24px;background:var(--bg);border-radius:8px;border:1px solid var(--border);">
+            <div style="font-size:28px;margin-bottom:12px;">🗺️</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">최대 30km 반경</div>
+            <div style="font-size:13px;color:var(--sub);line-height:1.6;">기존 배달앱(4km) 대비 7배 넓은 가맹 반경.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- HOW IT WORKS -->
+  <section class="section" style="background:#fff;">
+    <div class="wrap">
+      <div class="grid-howitworks">
+        <div>
+          <div class="section-label">운영 방법</div>
+          <h2 class="section-title">신청부터<br>수익 정산까지<br>단 3단계</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="display:flex;gap:20px;padding:28px 0;border-bottom:1px solid var(--border);">
+            <div class="step-num">1</div>
+            <div>
+              <div style="font-size:17px;font-weight:700;margin-bottom:8px;">플레이스 신청 &amp; 개설</div>
+              <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">아래 신청 폼을 작성하면 담당자가 연락드립니다. 플레이스 개설은 완전 무료이며, 전국대표번호(1577·1588 등)가 부여됩니다.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:20px;padding:28px 0;border-bottom:1px solid var(--border);">
+            <div class="step-num">2</div>
+            <div>
+              <div style="font-size:17px;font-weight:700;margin-bottom:8px;">가맹점 모집 &amp; 운영</div>
+              <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">교회 성도, 동문회 회원, 임직원 등 우리 조직 내 음식점을 가맹점으로 등록합니다. 기존 콜팝 가맹점 배정 지원도 가능합니다.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:20px;padding:28px 0;">
+            <div class="step-num">3</div>
+            <div>
+              <div style="font-size:17px;font-weight:700;margin-bottom:8px;">수익 정산 (매월)</div>
+              <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0;">주문마다 결제금액의 최대 1.5%가 수익으로 쌓입니다. 매월 익월 15영업일 이내에 지정 계좌로 자동 정산됩니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- TARGET -->
+  <section class="section-sm" style="background:var(--navy);">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:44px;">
+        <h2 style="font-size:clamp(22px,3vw,32px);font-weight:900;color:#fff;letter-spacing:-.02em;margin-bottom:12px;">이런 분들께 딱 맞습니다</h2>
+        <p style="font-size:15px;color:rgba(255,255,255,.55);">구성원이 많을수록 수익도 커집니다</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+        <div style="padding:24px;border:1px solid rgba(255,255,255,.12);border-radius:8px;text-align:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.06)'" onmouseout="this.style.background='transparent'">
+          <div style="font-size:36px;margin-bottom:12px;">⛪</div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">교회</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.5);">성도들의 주문으로 교회 재정 수익 창출</div>
+        </div>
+        <div style="padding:24px;border:1px solid rgba(255,255,255,.12);border-radius:8px;text-align:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.06)'" onmouseout="this.style.background='transparent'">
+          <div style="font-size:36px;margin-bottom:12px;">🎓</div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">동문회 · 종친회</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.5);">회비 부담 없이 회원 이용으로 기금 마련</div>
+        </div>
+        <div style="padding:24px;border:1px solid rgba(255,255,255,.12);border-radius:8px;text-align:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.06)'" onmouseout="this.style.background='transparent'">
+          <div style="font-size:36px;margin-bottom:12px;">🏢</div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">기업 · 단체</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.5);">임직원 전용 배달 서비스로 복지 제공</div>
+        </div>
+        <div style="padding:24px;border:1px solid rgba(255,255,255,.12);border-radius:8px;text-align:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.06)'" onmouseout="this.style.background='transparent'">
+          <div style="font-size:36px;margin-bottom:12px;">🏪</div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">프랜차이즈</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.5);">자체 브랜드 주문 채널로 고객 직접 확보</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- APPLICATION FORM -->
+  <section id="place-apply-form" class="section" style="background:#fff;">
+    <div class="wrap" style="max-width:720px;">
+      <div style="text-align:center;margin-bottom:52px;">
+        <div class="section-label">이용 신청</div>
+        <h2 class="section-title">콜팝 플레이스 신청하기</h2>
+        <p class="section-desc">작성하신 내용으로 담당자가 빠르게 연락드립니다</p>
+      </div>
+
+      <form id="place-form" style="display:flex;flex-direction:column;gap:36px;">
+
+        <div>
+          <div class="form-section-title"><span class="num">1</span>신청인 정보</div>
+          <div class="grid-form-2">
+            <div>
+              <label class="flabel">플레이스명 (한글) <span class="req">*</span></label>
+              <input type="text" name="place_name_kr" placeholder="예: 한마음교회 콜팝" class="finput" required>
+            </div>
+            <div>
+              <label class="flabel">플레이스명 (영문) <span class="req">*</span></label>
+              <input type="text" name="place_name_en" placeholder="예: Hanmaeum CallPop" class="finput" required>
+            </div>
+            <div>
+              <label class="flabel">플레이스 유형 <span class="req">*</span></label>
+              <select name="place_type" class="finput" required>
+                <option value="">유형 선택</option>
+                <option value="기업·단체">기업·단체</option>
+                <option value="교회">교회</option>
+                <option value="동문회·종친회">동문회·종친회</option>
+                <option value="프랜차이즈">프랜차이즈</option>
+                <option value="방송·미디어">방송·미디어</option>
+                <option value="지역커뮤니티">지역 커뮤니티</option>
+                <option value="개인">개인</option>
+                <option value="기타">기타</option>
+              </select>
+            </div>
+            <div>
+              <label class="flabel">사업자명</label>
+              <input type="text" name="biz_name" placeholder="사업자 등록증 상의 상호명" class="finput">
+            </div>
+            <div>
+              <label class="flabel">대표자명 <span class="req">*</span></label>
+              <input type="text" name="representative" placeholder="홍길동" class="finput" required>
+            </div>
+            <div>
+              <label class="flabel">담당자명</label>
+              <input type="text" name="manager" placeholder="담당자 이름 (없으면 비워두세요)" class="finput">
+            </div>
+            <div>
+              <label class="flabel">연락처 <span class="req">*</span></label>
+              <input type="tel" name="phone" placeholder="010-0000-0000" class="finput" required>
+            </div>
+            <div>
+              <label class="flabel">이메일 <span class="req">*</span></label>
+              <input type="email" name="email" placeholder="example@email.com" class="finput" required>
+            </div>
+            <div style="grid-column:1/-1;">
+              <label class="flabel">주소</label>
+              <input type="text" name="address" placeholder="도로명 주소" class="finput">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="form-section-title"><span class="num">2</span>플레이스 개설 정보</div>
+          <div class="grid-form-2">
+            <div style="grid-column:1/-1;">
+              <label class="flabel">플레이스 소개</label>
+              <textarea name="place_intro" rows="3" placeholder="우리 플레이스를 간단히 소개해 주세요." class="finput" style="resize:vertical;"></textarea>
+            </div>
+            <div style="grid-column:1/-1;">
+              <label class="flabel">타겟 이용자</label>
+              <input type="text" name="target_users" placeholder="예: 교회 성도, 동문회 회원, 지역 주민" class="finput">
+            </div>
+            <div>
+              <label class="flabel">예상 가맹점 수</label>
+              <input type="number" name="expected_stores" placeholder="0" min="0" class="finput">
+            </div>
+            <div>
+              <label class="flabel">운영 시작 희망일</label>
+              <input type="date" name="start_date" class="finput">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="form-section-title"><span class="num">3</span>정산 계좌 정보</div>
+          <div style="background:#FFF8F5;border:1px solid #FFD4C2;border-radius:6px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:var(--sub);line-height:1.6;">
+            ※ 플레이스 수익은 매월 익월 15영업일 이내에 아래 계좌로 정산됩니다. 정확히 입력해 주세요.
+          </div>
+          <div class="grid-form-3">
+            <div>
+              <label class="flabel">은행명 <span class="req">*</span></label>
+              <select name="bank_name" class="finput" required>
+                <option value="">은행 선택</option>
+                <option>국민은행</option><option>신한은행</option><option>우리은행</option>
+                <option>하나은행</option><option>농협은행</option><option>기업은행</option>
+                <option>카카오뱅크</option><option>토스뱅크</option><option>SC제일은행</option>
+                <option>씨티은행</option><option>대구은행</option><option>부산은행</option>
+                <option>경남은행</option><option>광주은행</option><option>전북은행</option>
+                <option>제주은행</option><option>새마을금고</option><option>신협</option>
+                <option>우체국</option><option>기타</option>
+              </select>
+            </div>
+            <div>
+              <label class="flabel">계좌번호 <span class="req">*</span></label>
+              <input type="text" name="account_number" placeholder="- 없이 숫자만" class="finput" required inputmode="numeric">
+            </div>
+            <div>
+              <label class="flabel">예금주 <span class="req">*</span></label>
+              <input type="text" name="account_holder" placeholder="예금주명" class="finput" required>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="form-section-title"><span class="num">4</span>추가 문의 사항</div>
+          <textarea name="message" rows="4" placeholder="궁금한 점이나 추가로 전달하실 내용을 자유롭게 작성해 주세요." class="finput" style="resize:vertical;"></textarea>
+        </div>
+
+        <div id="place-form-error" style="display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px;font-size:14px;color:#B91C1C;"></div>
+        <div id="place-form-success" style="display:none;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:24px;text-align:center;">
+          <div style="font-size:28px;margin-bottom:8px;">✅</div>
+          <div style="font-size:17px;font-weight:700;color:#166534;margin-bottom:4px;">신청이 접수되었습니다!</div>
+          <div style="font-size:14px;color:#4B7A5A;">담당자가 2~3 영업일 이내에 연락드립니다.</div>
+          <button type="button" id="place-reset-btn" class="btn-outline" style="margin-top:18px;padding:10px 28px;font-size:14px;">다시 신청하기</button>
+        </div>
+
+        <div>
+          <button type="submit" id="place-submit-btn" class="btn-red" style="width:100%;padding:16px;font-size:16px;border-radius:6px;">
+            콜팝 플레이스 이용 신청하기
+          </button>
+          <p style="margin-top:14px;text-align:center;font-size:12px;color:var(--mute);line-height:1.7;">
+            입력하신 개인정보는 서비스 상담 목적으로만 활용되며 관련 법령에 따라 보호됩니다.<br>
+            계좌 정보는 수익 정산 외 다른 목적으로 사용되지 않습니다.
+          </p>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+</div><!-- /tab-place -->
+
 
 <!-- ════════════════════════════════════════
-     FOOTER
+     TAB: 가맹점
+════════════════════════════════════════ -->
+<div id="tab-store" style="display:none;">
+
+  <!-- HERO -->
+  <section id="store-hero-section" style="padding-top:120px;padding-bottom:80px;background:linear-gradient(155deg,#FAFAFA 45%,#FFE8EB 100%);">
+    <div class="wrap">
+      <div class="grid-hero">
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:24px;padding:6px 14px;background:#FFDDE3;border:1px solid #FFA8B5;border-radius:20px;font-size:12px;font-weight:700;color:var(--orange);">
+            <span style="width:7px;height:7px;border-radius:50%;background:var(--orange);display:inline-block;"></span>
+            콜팝 가맹점
+          </div>
+          <h1 style="font-size:clamp(30px,4.5vw,50px);font-weight:900;line-height:1.18;letter-spacing:-.03em;margin-bottom:24px;">
+            배달플랫폼이<br>빼앗아간 고객,<br>
+            <span class="red-underline">이제 되찾으세요</span>
+          </h1>
+          <p style="font-size:16px;color:var(--sub);line-height:1.85;margin-bottom:36px;">
+            중개수수료 <strong style="color:var(--text);font-weight:700;">0원</strong>.
+            광고비 <strong style="color:var(--text);font-weight:700;">0원</strong>.<br>
+            전화 한 통으로 주문받고,
+            <strong style="color:var(--orange);font-weight:700;">고객을 직접 보유</strong>하세요.
+          </p>
+          <div style="display:flex;gap:24px;margin-bottom:36px;flex-wrap:wrap;">
+            <div>
+              <div style="font-size:26px;font-weight:900;color:var(--orange);line-height:1;letter-spacing:-1px;">0%</div>
+              <div style="font-size:12px;color:var(--mute);margin-top:3px;">중개수수료</div>
+            </div>
+            <div style="width:1px;background:var(--border);"></div>
+            <div>
+              <div style="font-size:26px;font-weight:900;color:var(--orange);line-height:1;letter-spacing:-1px;">0원</div>
+              <div style="font-size:12px;color:var(--mute);margin-top:3px;">광고비</div>
+            </div>
+            <div style="width:1px;background:var(--border);"></div>
+            <div>
+              <div style="font-size:26px;font-weight:900;color:var(--orange);line-height:1;letter-spacing:-1px;">3%</div>
+              <div style="font-size:12px;color:var(--mute);margin-top:3px;">결제수수료(D+3)</div>
+            </div>
+          </div>
+          <div class="hero-btns">
+            <a href="#store-inquiry-form">
+              <button class="btn-red" style="padding:15px 34px;font-size:15px;border-radius:6px;">가맹점 신청하기</button>
+            </a>
+          </div>
+        </div>
+        <div class="hide-mob">
+          <div style="background:var(--navy);border-radius:14px;padding:36px;box-shadow:0 16px 48px rgba(26,26,46,.18);">
+            <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;">수수료 비교</div>
+            <div style="padding:20px;background:rgba(255,255,255,.06);border-radius:8px;margin-bottom:12px;text-align:center;">
+              <div style="font-size:12px;color:rgba(255,255,255,.45);margin-bottom:8px;">기존 배달앱</div>
+              <div style="font-size:42px;font-weight:900;color:rgba(255,255,255,.3);line-height:1;letter-spacing:-2px;text-decoration:line-through;">16%+</div>
+              <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:6px;">중개 13% + 결제 3% + 광고비</div>
+            </div>
+            <div style="padding:20px;background:var(--orange);border-radius:8px;margin-bottom:24px;text-align:center;">
+              <div style="font-size:12px;color:rgba(255,255,255,.7);margin-bottom:8px;">콜팝 가맹점</div>
+              <div style="font-size:42px;font-weight:900;color:#fff;line-height:1;letter-spacing:-2px;">3%</div>
+              <div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:6px;">결제수수료만 (D+3 기준)</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.65);">
+                <span style="width:20px;height:20px;border-radius:50%;background:rgba(255,107,53,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--orange);flex-shrink:0;">✓</span>
+                중개수수료 없음
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.65);">
+                <span style="width:20px;height:20px;border-radius:50%;background:rgba(255,107,53,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--orange);flex-shrink:0;">✓</span>
+                광고비 없음
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.65);">
+                <span style="width:20px;height:20px;border-radius:50%;background:rgba(255,107,53,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--orange);flex-shrink:0;">✓</span>
+                고객 정보 직접 보유
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.65);">
+                <span style="width:20px;height:20px;border-radius:50%;background:rgba(255,107,53,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--orange);flex-shrink:0;">✓</span>
+                앱 설치 없이 전화 주문
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- PAIN POINTS -->
+  <section class="section" style="background:var(--bg);">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:52px;">
+        <div class="section-label">소상공인의 현실</div>
+        <h2 class="section-title">이런 고민, 공감하시나요?</h2>
+        <p class="section-desc">열심히 만든 음식인데, 정작 내 손엔 남는 게 없습니다</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;" class="grid-pain">
+        <div style="background:#fff;border-radius:10px;border:1px solid var(--border);border-top:4px solid var(--orange);padding:32px;transition:box-shadow 0.2s,transform 0.2s;" onmouseover="this.style.boxShadow='0 8px 28px rgba(0,0,0,.08)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='';this.style.transform=''">
+          <div style="width:48px;height:48px;background:#FFEAED;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">💸</div>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;line-height:1.4;letter-spacing:-.02em;">수수료가 너무 높아<br>남는 게 없어요</h3>
+          <p style="font-size:14px;color:var(--sub);line-height:1.8;margin:0 0 16px;">중개수수료 6~13%에 결제수수료 3%, 광고비까지 내고 나면 배달 매출이 적자입니다.</p>
+          <div style="font-size:12px;font-weight:700;color:var(--orange);padding:6px 12px;background:#FFDDE2;border-radius:4px;display:inline-block;">최대 16%+ 부담</div>
+        </div>
+        <div style="background:#fff;border-radius:10px;border:1px solid var(--border);border-top:4px solid var(--orange);padding:32px;transition:box-shadow 0.2s,transform 0.2s;" onmouseover="this.style.boxShadow='0 8px 28px rgba(0,0,0,.08)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='';this.style.transform=''">
+          <div style="width:48px;height:48px;background:#FFEAED;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">📢</div>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;line-height:1.4;letter-spacing:-.02em;">광고 안 하면<br>노출조차 안 돼요</h3>
+          <p style="font-size:14px;color:var(--sub);line-height:1.8;margin:0 0 16px;">검색 상단 노출을 위해 매달 수십만 원의 광고비가 필수입니다. 광고를 끊으면 매출도 사라집니다.</p>
+          <div style="font-size:12px;font-weight:700;color:var(--orange);padding:6px 12px;background:#FFDDE2;border-radius:4px;display:inline-block;">월 수십만 원 추가 부담</div>
+        </div>
+        <div style="background:#fff;border-radius:10px;border:1px solid var(--border);border-top:4px solid var(--orange);padding:32px;transition:box-shadow 0.2s,transform 0.2s;" onmouseover="this.style.boxShadow='0 8px 28px rgba(0,0,0,.08)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='';this.style.transform=''">
+          <div style="width:48px;height:48px;background:#FFEAED;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;">🔒</div>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;line-height:1.4;letter-spacing:-.02em;">내 고객인데<br>연락처도 못 봐요</h3>
+          <p style="font-size:14px;color:var(--sub);line-height:1.8;margin:0 0 16px;">단골이 생겨도 고객 정보는 플랫폼이 독점합니다. 플랫폼을 떠나는 순간 고객도 함께 사라집니다.</p>
+          <div style="font-size:12px;font-weight:700;color:var(--orange);padding:6px 12px;background:#FFDDE2;border-radius:4px;display:inline-block;">고객 데이터 플랫폼 독점</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <style>
+    @media (max-width:768px) { .grid-pain { grid-template-columns:1fr !important; gap:16px !important; } }
+  </style>
+
+  <hr class="divider">
+
+  <!-- HOW IT WORKS -->
+  <section class="section" style="background:var(--bg);">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:56px;">
+        <div class="section-label">가입 절차</div>
+        <h2 class="section-title">신청부터 가입까지<br>단 3단계</h2>
+        <p class="section-desc">복잡한 절차 없이, 빠르게 시작할 수 있습니다</p>
+      </div>
+      <div class="grid-steps">
+        <div style="background:#fff;border-radius:12px;border:1px solid var(--border);padding:32px;position:relative;">
+          <div style="position:absolute;top:-16px;left:28px;width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(255,107,53,.3);">1</div>
+          <div style="font-size:36px;margin-bottom:16px;margin-top:8px;">📋</div>
+          <div style="font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">STEP 1</div>
+          <h3 style="font-size:18px;font-weight:900;line-height:1.3;letter-spacing:-.02em;margin-bottom:12px;">가입 신청 &amp; 개설</h3>
+          <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0 0 16px;">신청 폼을 작성하면 콜팝 담당자가 연락드립니다. 매장 정보와 희망 플레이스를 선택해 주시면 신속히 안내해 드립니다.</p>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);"><span style="width:5px;height:5px;border-radius:50%;background:var(--orange);flex-shrink:0;display:inline-block;"></span> 가입신청서 작성</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);"><span style="width:5px;height:5px;border-radius:50%;background:var(--orange);flex-shrink:0;display:inline-block;"></span> 담당자 확인 전화</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);"><span style="width:5px;height:5px;border-radius:50%;background:var(--orange);flex-shrink:0;display:inline-block;"></span> 플레이스 배정 완료</div>
+          </div>
+        </div>
+        <div style="background:#fff;border-radius:12px;border:1px solid var(--border);padding:32px;position:relative;">
+          <div style="position:absolute;top:-16px;left:28px;width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(255,107,53,.3);">2</div>
+          <div style="font-size:36px;margin-bottom:16px;margin-top:8px;">🍽️</div>
+          <div style="font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">STEP 2</div>
+          <h3 style="font-size:18px;font-weight:900;line-height:1.3;letter-spacing:-.02em;margin-bottom:12px;">메뉴 등록 &amp; PG 계약</h3>
+          <p style="font-size:14px;color:var(--sub);line-height:1.75;margin:0 0 16px;">담당자 안내에 따라 메뉴를 등록하고 결제(PG) 계약을 진행합니다. 결제수수료 3.0%(D+3), 중개수수료 없음.</p>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);"><span style="width:5px;height:5px;border-radius:50%;background:var(--orange);flex-shrink:0;display:inline-block;"></span> 메뉴 사진 및 가격 등록</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);"><span style="width:5px;height:5px;border-radius:50%;background:var(--orange);flex-shrink:0;display:inline-block;"></span> PG사 계약 (결제수수료 3%)</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);"><span style="width:5px;height:5px;border-radius:50%;background:var(--orange);flex-shrink:0;display:inline-block;"></span> 정산 계좌 등록</div>
+          </div>
+        </div>
+        <div style="background:var(--navy);border-radius:12px;border:1px solid var(--navy);padding:32px;position:relative;">
+          <div style="position:absolute;top:-16px;left:28px;width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(255,107,53,.4);">3</div>
+          <div style="font-size:36px;margin-bottom:16px;margin-top:8px;">🚀</div>
+          <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">STEP 3</div>
+          <h3 style="font-size:18px;font-weight:900;line-height:1.3;letter-spacing:-.02em;margin-bottom:12px;color:#fff;">매장 오픈 &amp; 운영</h3>
+          <p style="font-size:14px;color:rgba(255,255,255,.65);line-height:1.75;margin:0 0 16px;">설정 완료 후 콜팝 플레이스를 통해 전화 주문을 받습니다. 주문마다 자동 결제 처리, D+3 자동 정산.</p>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.6);"><span style="width:5px;height:5px;border-radius:50%;background:var(--orange);flex-shrink:0;display:inline-block;"></span> 전화 주문 수신 시작</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.6);"><span style="width:5px;height:5px;border-radius:50%;background:var(--orange);flex-shrink:0;display:inline-block;"></span> 자동 결제 처리</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.6);"><span style="width:5px;height:5px;border-radius:50%;background:var(--orange);flex-shrink:0;display:inline-block;"></span> D+3 자동 정산</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- INQUIRY FORM -->
+  <section id="store-inquiry-form" class="section" style="background:#fff;">
+    <div class="wrap" style="max-width:720px;">
+      <div style="text-align:center;margin-bottom:52px;">
+        <div class="section-label">가입 문의</div>
+        <h2 class="section-title">콜팝 가맹점 신청하기</h2>
+        <p class="section-desc">정보를 남겨주시면 담당자가 빠르게 연락드립니다</p>
+      </div>
+
+      <form id="store-form" style="display:flex;flex-direction:column;gap:36px;">
+
+        <div>
+          <div class="form-section-title"><span class="num">1</span>매장 정보</div>
+          <div class="grid-form-2">
+            <div style="grid-column:1/-1;">
+              <label class="flabel">매장명 <span class="req">*</span></label>
+              <input type="text" name="store_name" placeholder="예: 홍길동 치킨" class="finput" required>
+            </div>
+            <div style="grid-column:1/-1;">
+              <label class="flabel">매장 주소 <span class="req">*</span></label>
+              <input type="text" name="store_address" placeholder="도로명 주소를 입력해 주세요" class="finput" required>
+            </div>
+            <div style="grid-column:1/-1;">
+              <label class="flabel">카테고리 <span class="req">*</span></label>
+              <select name="category" class="finput" required>
+                <option value="">카테고리 선택</option>
+                <option value="한식">한식</option><option value="중식">중식</option>
+                <option value="일식·돈가스">일식·돈가스</option><option value="양식·스테이크">양식·스테이크</option>
+                <option value="치킨·구이">치킨·구이</option><option value="피자·버거">피자·버거</option>
+                <option value="분식·떡볶이">분식·떡볶이</option><option value="족발·보쌈">족발·보쌈</option>
+                <option value="카페·디저트">카페·디저트·베이커리</option>
+                <option value="편의점·마트">편의점·마트</option><option value="기타">기타</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="form-section-title"><span class="num">2</span>대표자 정보</div>
+          <div class="grid-form-2">
+            <div>
+              <label class="flabel">대표자명 <span class="req">*</span></label>
+              <input type="text" name="representative" placeholder="홍길동" class="finput" required>
+            </div>
+            <div>
+              <label class="flabel">연락처 <span class="req">*</span></label>
+              <input type="tel" name="phone" placeholder="010-0000-0000" class="finput" required>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="form-section-title"><span class="num">3</span>희망 플레이스 선택</div>
+          <label class="flabel" style="margin-bottom:14px;">
+            입점을 희망하는 플레이스를 선택해 주세요 <span class="req">*</span>
+          </label>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <label id="label-scope-all" style="display:flex;align-items:center;gap:14px;padding:16px 18px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;transition:border-color 0.15s,background 0.15s;">
+              <input type="radio" name="place_scope" value="all" id="scope-all" style="width:18px;height:18px;accent-color:var(--orange);flex-shrink:0;">
+              <div>
+                <div style="font-size:15px;font-weight:700;">콜팝내 전체 플레이스</div>
+                <div style="font-size:13px;color:var(--mute);margin-top:3px;">현재 운영 중인 모든 플레이스에 입점을 희망합니다</div>
+              </div>
+            </label>
+            <label id="label-scope-some" style="display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;transition:border-color 0.15s,background 0.15s;">
+              <input type="radio" name="place_scope" value="some" id="scope-some" style="width:18px;height:18px;accent-color:var(--orange);flex-shrink:0;margin-top:2px;">
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:15px;font-weight:700;">콜팝내 일부 플레이스</div>
+                <div style="font-size:13px;color:var(--mute);margin-top:3px;">특정 플레이스를 선택해 입점을 희망합니다</div>
+                <div id="place-select-wrap" style="display:none;margin-top:14px;">
+                  <button type="button" id="open-place-popup-btn" style="padding:10px 20px;border:1.5px solid var(--orange);border-radius:6px;background:#fff;color:var(--orange);font-size:14px;font-weight:700;cursor:pointer;">
+                    🔍 플레이스 검색
+                  </button>
+                  <div id="recommended-chip" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"></div>
+                  <div id="selected-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;"></div>
+                  <div id="place-error" style="display:none;margin-top:8px;font-size:12px;color:var(--mute);">
+                    플레이스 목록을 불러올 수 없습니다. 추가 문의사항에 희망 플레이스를 직접 입력해 주세요.
+                  </div>
+                </div>
+              </div>
+            </label>
+          </div>
+          <input type="hidden" name="desired_places" id="desired-places-input">
+        </div>
+
+        <div>
+          <div class="form-section-title"><span class="num">4</span>추가 문의 사항</div>
+          <textarea name="message" rows="4" placeholder="궁금한 점이나 추가로 전달하실 내용을 자유롭게 작성해 주세요." class="finput" style="resize:vertical;"></textarea>
+        </div>
+
+        <div id="store-form-error" style="display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:16px;font-size:14px;color:#B91C1C;"></div>
+        <div id="store-form-success" style="display:none;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:24px;text-align:center;">
+          <div style="font-size:28px;margin-bottom:8px;">✅</div>
+          <div style="font-size:17px;font-weight:700;color:#166534;margin-bottom:4px;">신청이 접수되었습니다!</div>
+          <div style="font-size:14px;color:#4B7A5A;">담당자가 2~3 영업일 이내에 연락드립니다.</div>
+          <button type="button" id="store-reset-btn" class="btn-outline" style="margin-top:18px;padding:10px 28px;font-size:14px;">다시 신청하기</button>
+        </div>
+
+        <div>
+          <button type="submit" id="store-submit-btn" class="btn-red" style="width:100%;padding:16px;font-size:16px;border-radius:6px;">
+            가맹점 신청하기
+          </button>
+          <p style="margin-top:14px;text-align:center;font-size:12px;color:var(--mute);line-height:1.7;">
+            입력하신 개인정보는 서비스 상담 목적으로만 활용되며 관련 법령에 따라 보호됩니다.
+          </p>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+</div><!-- /tab-store -->
+
+
+<!-- ════════════════════════════════════════
+     FOOTER (공통)
 ════════════════════════════════════════ -->
 <footer style="background:#111;color:rgba(255,255,255,.5);padding:48px 0;">
   <div class="wrap">
@@ -473,7 +1178,7 @@
         <div style="margin-bottom:16px;">
           <img src="./brand_logo/callpop_logo_dark.png" alt="콜팝" style="height:36px;width:auto;">
         </div>
-        <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">관리운영사</div>
+        <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">관리운영사</div>
         <div style="font-size:13px;line-height:2;color:rgba(255,255,255,.55);">
           회사명 : (주)네이스<br>
           대표전화 : <a href="tel:0502-777-0909" style="color:rgba(255,255,255,.55);text-decoration:none;">0502-777-0909</a><br>
@@ -481,10 +1186,11 @@
         </div>
       </div>
       <div>
-        <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">바로가기</div>
+        <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">바로가기</div>
         <div style="display:flex;flex-direction:column;gap:8px;">
-          <a href="/place#apply-form" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">플레이스 신청</a>
-          <a href="/store/#inquiry-form" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">가맹점 신청</a>
+          <a href="#" onclick="goTab('home');window.scrollTo(0,0);return false;" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">홈</a>
+          <a href="#" onclick="goTabAndScroll('place','place-apply-form');return false;" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">플레이스 신청</a>
+          <a href="#" onclick="goTabAndScroll('store','store-inquiry-form');return false;" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">가맹점 신청</a>
           <a href="/admin" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">관리자 로그인</a>
         </div>
       </div>
@@ -494,10 +1200,13 @@
     </div>
   </div>
 </footer>
+<style>
+  @media (max-width:768px) { .footer-inner { flex-direction:column; gap:24px; } }
+</style>
 
 
 <!-- ════════════════════════════════════════
-     설치 가이드 모달 (iOS / Android 공용)
+     PWA 설치 가이드 모달
 ════════════════════════════════════════ -->
 <div id="ios-guide" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.55);align-items:flex-end;justify-content:center;">
   <div style="background:#fff;border-radius:20px 20px 0 0;padding:28px 24px 40px;width:100%;max-width:480px;box-shadow:0 -8px 40px rgba(0,0,0,.15);">
@@ -505,66 +1214,40 @@
       <h3 id="guide-title" style="font-size:18px;font-weight:900;color:var(--text);">앱 설치 방법</h3>
       <button onclick="closeInstallGuide()" style="width:32px;height:32px;border-radius:50%;background:var(--bg);border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);">✕</button>
     </div>
-    <!-- iOS 스텝 -->
     <div id="guide-steps-ios" style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
       <div style="display:flex;gap:16px;align-items:flex-start;">
         <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-        <div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Safari로 이 페이지 열기</div>
-          <div style="font-size:13px;color:var(--sub);">Chrome이나 다른 브라우저가 아닌 Safari 앱에서 열어주세요.</div>
-        </div>
+        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">Safari로 이 페이지 열기</div><div style="font-size:13px;color:var(--sub);">Chrome이나 다른 브라우저가 아닌 Safari 앱에서 열어주세요.</div></div>
       </div>
       <div style="display:flex;gap:16px;align-items:flex-start;">
         <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-        <div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">공유 버튼 탭하기</div>
-          <div style="font-size:13px;color:var(--sub);">하단 가운데 <strong>⬆</strong> 공유 버튼을 탭하세요.</div>
-        </div>
+        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">공유 버튼 탭하기</div><div style="font-size:13px;color:var(--sub);">하단 가운데 <strong>⬆</strong> 공유 버튼을 탭하세요.</div></div>
       </div>
       <div style="display:flex;gap:16px;align-items:flex-start;">
         <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-        <div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">"홈 화면에 추가" 선택</div>
-          <div style="font-size:13px;color:var(--sub);">메뉴에서 <strong>홈 화면에 추가</strong>를 찾아 탭하세요.</div>
-        </div>
+        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">"홈 화면에 추가" 선택</div><div style="font-size:13px;color:var(--sub);">메뉴에서 <strong>홈 화면에 추가</strong>를 찾아 탭하세요.</div></div>
       </div>
       <div style="display:flex;gap:16px;align-items:flex-start;">
         <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
-        <div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">"추가" 버튼 탭하기</div>
-          <div style="font-size:13px;color:var(--sub);">오른쪽 상단의 <strong>추가</strong>를 탭하면 설치 완료입니다.</div>
-        </div>
+        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">"추가" 버튼 탭하기</div><div style="font-size:13px;color:var(--sub);">오른쪽 상단의 <strong>추가</strong>를 탭하면 설치 완료입니다.</div></div>
       </div>
     </div>
-    <!-- Android 스텝 (프롬프트 미지원 시) -->
     <div id="guide-steps-android" style="display:none;flex-direction:column;gap:16px;margin-bottom:24px;">
       <div style="display:flex;gap:16px;align-items:flex-start;">
         <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-        <div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Chrome 브라우저로 열기</div>
-          <div style="font-size:13px;color:var(--sub);">Chrome 앱에서 이 페이지를 열어주세요.</div>
-        </div>
+        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">Chrome 브라우저로 열기</div><div style="font-size:13px;color:var(--sub);">Chrome 앱에서 이 페이지를 열어주세요.</div></div>
       </div>
       <div style="display:flex;gap:16px;align-items:flex-start;">
         <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-        <div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">메뉴 버튼 탭하기</div>
-          <div style="font-size:13px;color:var(--sub);">주소창 오른쪽 <strong>⋮</strong> 버튼을 탭하세요.</div>
-        </div>
+        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">메뉴 버튼 탭하기</div><div style="font-size:13px;color:var(--sub);">주소창 오른쪽 <strong>⋮</strong> 버튼을 탭하세요.</div></div>
       </div>
       <div style="display:flex;gap:16px;align-items:flex-start;">
         <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-        <div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">"홈 화면에 추가" 선택</div>
-          <div style="font-size:13px;color:var(--sub);">메뉴에서 <strong>홈 화면에 추가</strong> 또는 <strong>앱 설치</strong>를 선택하세요.</div>
-        </div>
+        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">"홈 화면에 추가" 선택</div><div style="font-size:13px;color:var(--sub);">메뉴에서 <strong>홈 화면에 추가</strong> 또는 <strong>앱 설치</strong>를 선택하세요.</div></div>
       </div>
       <div style="display:flex;gap:16px;align-items:flex-start;">
         <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
-        <div>
-          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">"추가" 확인</div>
-          <div style="font-size:13px;color:var(--sub);"><strong>추가</strong>를 탭하면 홈 화면에 콜팝 아이콘이 생깁니다.</div>
-        </div>
+        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">"추가" 확인</div><div style="font-size:13px;color:var(--sub);"><strong>추가</strong>를 탭하면 홈 화면에 콜팝 아이콘이 생깁니다.</div></div>
       </div>
     </div>
     <button onclick="closeInstallGuide()" class="btn-primary" style="width:100%;padding:14px;font-size:15px;border-radius:10px;">확인</button>
@@ -572,102 +1255,561 @@
 </div>
 
 
+<!-- ════════════════════════════════════════
+     플레이스 검색 팝업
+════════════════════════════════════════ -->
+<div id="place-popup-overlay">
+  <div id="place-popup">
+    <div style="padding:18px 24px;border-bottom:1px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+      <h3 style="font-size:17px;font-weight:700;margin:0;">플레이스 검색</h3>
+      <button id="close-place-popup" style="background:none;border:none;font-size:22px;cursor:pointer;color:#888;padding:0;line-height:1;">✕</button>
+    </div>
+    <div style="padding:12px 24px;border-bottom:1px solid #E5E7EB;flex-shrink:0;">
+      <div id="consonant-filter" style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="cons-btn active" data-cons="">전체</button>
+        <button class="cons-btn" data-cons="ㄱ">ㄱ</button><button class="cons-btn" data-cons="ㄴ">ㄴ</button>
+        <button class="cons-btn" data-cons="ㄷ">ㄷ</button><button class="cons-btn" data-cons="ㄹ">ㄹ</button>
+        <button class="cons-btn" data-cons="ㅁ">ㅁ</button><button class="cons-btn" data-cons="ㅂ">ㅂ</button>
+        <button class="cons-btn" data-cons="ㅅ">ㅅ</button><button class="cons-btn" data-cons="ㅇ">ㅇ</button>
+        <button class="cons-btn" data-cons="ㅈ">ㅈ</button><button class="cons-btn" data-cons="ㅊ">ㅊ</button>
+        <button class="cons-btn" data-cons="ㅋ">ㅋ</button><button class="cons-btn" data-cons="ㅌ">ㅌ</button>
+        <button class="cons-btn" data-cons="ㅍ">ㅍ</button><button class="cons-btn" data-cons="ㅎ">ㅎ</button>
+      </div>
+    </div>
+    <div id="popup-body-wrap" style="display:flex;flex:1;overflow:hidden;min-height:0;">
+      <div id="popup-detail-panel" style="flex:1;overflow-y:auto;padding:16px 18px;border-right:1px solid var(--border);">
+        <div style="color:#aaa;font-size:12px;text-align:center;margin-top:40px;">오른쪽 목록에서 플레이스를 선택하면<br>상세 정보가 표시됩니다.</div>
+      </div>
+      <div id="popup-list-panel" style="width:150px;border-left:1px solid var(--border);overflow-y:auto;flex-shrink:0;">
+        <div id="popup-list-loading" style="padding:12px 8px;text-align:center;color:#888;font-size:11px;">불러오는 중...</div>
+      </div>
+    </div>
+    <div style="padding:12px 20px;border-top:1px solid #E5E7EB;flex-shrink:0;">
+      <div id="popup-chips-area" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:0;"></div>
+      <div style="display:flex;justify-content:flex-end;">
+        <button type="button" id="confirm-place-btn" class="btn-red" style="padding:10px 28px;font-size:14px;">선택하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script>
-  // ── PWA 설치 로직 ──────────────────────────────
+// ══════════════════════════════════════
+// TAB 전환
+// ══════════════════════════════════════
+var TABS = ['home', 'place', 'store'];
 
-  var deferredPrompt = null;
-  var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  var isAndroid = /Android/i.test(navigator.userAgent);
-  var isMobile = isIOS || isAndroid;
+function showTab(tab) {
+  TABS.forEach(function(t) {
+    var panel = document.getElementById('tab-' + t);
+    if (panel) panel.style.display = t === tab ? 'block' : 'none';
+    var btn = document.getElementById('nav-' + t);
+    if (btn) {
+      if (t === tab) { btn.classList.add('active'); }
+      else           { btn.classList.remove('active'); }
+    }
+  });
+  // 앱 다운로드 버튼은 홈 탭에서만 표시
+  var dlBtn = document.getElementById('header-install-btn');
+  if (dlBtn) dlBtn.style.display = tab === 'home' ? '' : 'none';
+  // URL 업데이트
+  var path = tab === 'home' ? '/' : '/' + tab;
+  history.replaceState(null, '', path);
+}
 
-  // ── 데스크탑: 설치 UI 숨기기 ──
-  if (!isMobile) {
-    ['header-install-btn', 'hero-install-btn', 'install-btns-wrap'].forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el) el.style.display = 'none';
+function goTab(tab) {
+  showTab(tab);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goTabAndScroll(tab, sectionId) {
+  showTab(tab);
+  window.scrollTo(0, 0);
+  setTimeout(function() {
+    var el = document.getElementById(sectionId);
+    if (el) {
+      var top = el.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+  }, 50);
+}
+
+// 최초 탭 결정 (URL pathname 기반)
+(function() {
+  var path = window.location.pathname;
+  var initial = 'home';
+  if (path.startsWith('/place')) initial = 'place';
+  else if (path.startsWith('/store')) initial = 'store';
+  showTab(initial);
+})();
+
+// ══════════════════════════════════════
+// PWA 설치
+// ══════════════════════════════════════
+var deferredPrompt = null;
+var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+var isAndroid = /Android/i.test(navigator.userAgent);
+var isMobile = isIOS || isAndroid;
+
+if (!isMobile) {
+  ['header-install-btn', 'hero-install-btn', 'install-btns-wrap'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  var dm = document.getElementById('desktop-msg');
+  if (dm) dm.style.display = 'block';
+  var hint = document.getElementById('hero-install-hint');
+  if (hint) hint.textContent = '모바일 기기에서 앱을 설치하세요.';
+}
+
+if (isStandalone) {
+  var heroBtn = document.getElementById('hero-install-btn');
+  if (heroBtn) { heroBtn.textContent = '✓ 앱이 설치되어 있습니다'; heroBtn.disabled = true; heroBtn.style.opacity = '.7'; }
+  var headerBtn = document.getElementById('header-install-btn');
+  if (headerBtn) { headerBtn.textContent = '✓ 설치됨'; headerBtn.disabled = true; }
+}
+
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (isAndroid && !isStandalone) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
+  }
+});
+
+if (isIOS && !isStandalone) { setTimeout(showInstallGuide, 1000); }
+
+window.addEventListener('appinstalled', function() {
+  deferredPrompt = null; isStandalone = true;
+  var heroBtn = document.getElementById('hero-install-btn');
+  if (heroBtn) { heroBtn.textContent = '✓ 앱이 설치되어 있습니다'; heroBtn.disabled = true; }
+  var headerBtn = document.getElementById('header-install-btn');
+  if (headerBtn) { headerBtn.textContent = '✓ 설치됨'; headerBtn.disabled = true; }
+});
+
+function handleInstall() {
+  if (!isMobile || isStandalone) return;
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
+  } else { showInstallGuide(); }
+}
+
+function showInstallGuide() {
+  var title = document.getElementById('guide-title');
+  var stepsIOS = document.getElementById('guide-steps-ios');
+  var stepsAndroid = document.getElementById('guide-steps-android');
+  if (isIOS) {
+    if (title) title.textContent = 'iPhone 홈 화면에 추가';
+    if (stepsIOS) stepsIOS.style.display = 'flex';
+    if (stepsAndroid) stepsAndroid.style.display = 'none';
+  } else {
+    if (title) title.textContent = 'Android 앱 설치 방법';
+    if (stepsIOS) stepsIOS.style.display = 'none';
+    if (stepsAndroid) stepsAndroid.style.display = 'flex';
+  }
+  document.getElementById('ios-guide').style.display = 'flex';
+}
+
+function closeInstallGuide() { document.getElementById('ios-guide').style.display = 'none'; }
+document.getElementById('ios-guide').addEventListener('click', function(e) { if (e.target === this) closeInstallGuide(); });
+
+// 헤더 스크롤 그림자
+window.addEventListener('scroll', function() {
+  document.getElementById('site-header').style.boxShadow = pageYOffset > 10 ? '0 2px 16px rgba(0,0,0,.1)' : 'none';
+});
+
+// ══════════════════════════════════════
+// Supabase
+// ══════════════════════════════════════
+const { createClient } = supabase;
+let _sb;
+async function getSb() {
+  if (_sb) return _sb;
+  const { supabaseUrl, supabaseKey } = await fetch('/api/config').then(r => r.json());
+  _sb = createClient(supabaseUrl, supabaseKey);
+  return _sb;
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ══════════════════════════════════════
+// 플레이스 신청 폼
+// ══════════════════════════════════════
+document.getElementById('place-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var btn   = document.getElementById('place-submit-btn');
+  var errEl = document.getElementById('place-form-error');
+  btn.textContent = '처리 중...'; btn.disabled = true; errEl.style.display = 'none';
+  var fd = new FormData(this);
+  var payload = {
+    place_name_kr:   fd.get('place_name_kr')   || null,
+    place_name_en:   fd.get('place_name_en')   || null,
+    place_type:      fd.get('place_type')       || null,
+    biz_name:        fd.get('biz_name')         || null,
+    representative:  fd.get('representative')   || null,
+    manager:         fd.get('manager')          || null,
+    phone:           fd.get('phone')            || null,
+    email:           fd.get('email')            || null,
+    address:         fd.get('address')          || null,
+    place_intro:     fd.get('place_intro')      || null,
+    target_users:    fd.get('target_users')     || null,
+    expected_stores: fd.get('expected_stores')  ? parseInt(fd.get('expected_stores')) : null,
+    start_date:      fd.get('start_date')       || null,
+    bank_name:       fd.get('bank_name')        || null,
+    account_number:  fd.get('account_number')   || null,
+    account_holder:  fd.get('account_holder')   || null,
+    message:         fd.get('message')          || null,
+  };
+  try {
+    var sb = await getSb();
+    var { error } = await sb.from('callpop_applications').insert(payload);
+    if (error) throw error;
+  } catch (err) {
+    console.error(err);
+    errEl.textContent = '오류가 발생했습니다: ' + (err.message || '잠시 후 다시 시도해 주세요.');
+    errEl.style.display = 'block';
+    btn.textContent = '콜팝 플레이스 이용 신청하기'; btn.disabled = false;
+    return;
+  }
+  try {
+    await fetch('/api/notify', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+  } catch(e) { console.warn('이메일 발송 오류:', e); }
+  document.getElementById('place-form-success').style.display = 'block';
+  btn.textContent = '✓ 신청 완료'; btn.style.background = '#16a34a';
+  this.reset();
+  document.getElementById('place-form-success').scrollIntoView({ behavior:'smooth', block:'center' });
+});
+
+document.getElementById('place-reset-btn').addEventListener('click', function() {
+  document.getElementById('place-form-success').style.display = 'none';
+  var btn = document.getElementById('place-submit-btn');
+  btn.textContent = '콜팝 플레이스 이용 신청하기'; btn.disabled = false; btn.style.background = '';
+  document.getElementById('place-form').reset();
+  document.getElementById('place-apply-form').scrollIntoView({ behavior:'smooth', block:'start' });
+});
+
+// ══════════════════════════════════════
+// 가맹점 신청 폼
+// ══════════════════════════════════════
+var allPlacesData      = [];
+var placesLoaded       = false;
+var popupSelectedIds   = new Set();
+var featuredPlace      = null;
+var currentDetailPlace = null;
+
+var consonantGroups = {
+  'ㄱ':['ㄱ','ㄲ'],'ㄴ':['ㄴ'],'ㄷ':['ㄷ','ㄸ'],'ㄹ':['ㄹ'],
+  'ㅁ':['ㅁ'],'ㅂ':['ㅂ','ㅃ'],'ㅅ':['ㅅ','ㅆ'],'ㅇ':['ㅇ'],
+  'ㅈ':['ㅈ','ㅉ'],'ㅊ':['ㅊ'],'ㅋ':['ㅋ'],'ㅌ':['ㅌ'],'ㅍ':['ㅍ'],'ㅎ':['ㅎ']
+};
+var engLetterConsonant = {
+  'A':'ㅇ','B':'ㅂ','C':'ㅅ','D':'ㄷ','E':'ㅇ','F':'ㅇ','G':'ㅈ','H':'ㅇ',
+  'I':'ㅇ','J':'ㅈ','K':'ㅋ','L':'ㅇ','M':'ㅇ','N':'ㅇ','O':'ㅇ','P':'ㅍ',
+  'Q':'ㅋ','R':'ㅇ','S':'ㅇ','T':'ㅌ','U':'ㅇ','V':'ㅂ','W':'ㄷ','X':'ㅇ','Y':'ㅇ','Z':'ㅈ'
+};
+
+function getInitialConsonant(char) {
+  var upper = char.toUpperCase();
+  if (upper >= 'A' && upper <= 'Z') return engLetterConsonant[upper] || 'ㅇ';
+  var code = char.charCodeAt(0) - 0xAC00;
+  if (code < 0 || code > 11171) return char;
+  var initials = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+  return initials[Math.floor(code / (21 * 28))];
+}
+
+function sortPlaces(places) {
+  var consOrder = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+  function key(name) {
+    if (!name) return [2,99,''];
+    var first = name.charAt(0);
+    var isEng = first.toUpperCase() >= 'A' && first.toUpperCase() <= 'Z';
+    var cons = getInitialConsonant(first);
+    var ci = consOrder.indexOf(cons); if (ci < 0) ci = 99;
+    return [isEng ? 1 : 0, ci, name];
+  }
+  return places.slice().sort(function(a,b) {
+    var ka=key(a.place_name_kr), kb=key(b.place_name_kr);
+    if (ka[0]!==kb[0]) return ka[0]-kb[0];
+    if (ka[1]!==kb[1]) return ka[1]-kb[1];
+    return (ka[2]||'').localeCompare(kb[2]||'','ko');
+  });
+}
+
+function renderRecommendedChip() {
+  var container = document.getElementById('recommended-chip');
+  if (!featuredPlace) { container.innerHTML=''; return; }
+  container.innerHTML =
+    '<span class="selected-chip" style="background:#FFF0F3;border-color:#FECDD3;color:var(--orange);">' +
+    '<span style="font-size:10px;background:var(--orange);color:#fff;border-radius:2px;padding:1px 5px;margin-right:5px;font-weight:700;">기본</span>' +
+    escapeHtml(featuredPlace.place_name_kr) + '</span>';
+}
+
+async function loadPlacesData() {
+  if (placesLoaded) return;
+  try {
+    var sb = await getSb();
+    var { data, error } = await sb
+      .from('callpop_applications')
+      .select('id,place_name_kr,place_type,callpop_phone,start_date,expected_stores,place_intro,status,is_featured')
+      .eq('status','운영중')
+      .not('place_name_kr','is',null);
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      var el = document.getElementById('popup-list-loading');
+      if (el) el.innerHTML = '<div style="padding:12px 8px;text-align:center;color:#aaa;font-size:11px;">플레이스 준비중입니다.</div>';
+      return;
+    }
+    placesLoaded = true;
+    allPlacesData = sortPlaces(data);
+    featuredPlace = allPlacesData.find(function(p){return p.is_featured;})||null;
+    renderRecommendedChip();
+    renderPopupList('');
+    updatePopupBottomBar();
+  } catch(e) {
+    console.warn('플레이스 로드 실패:',e);
+    var el = document.getElementById('popup-list-loading');
+    if (el) el.innerHTML = '<div style="padding:12px 8px;text-align:center;color:#aaa;font-size:11px;">목록을 불러올 수 없습니다.<br><button onclick="location.reload()" style="margin-top:6px;font-size:10px;padding:3px 8px;border:1px solid #ddd;border-radius:3px;cursor:pointer;background:#f5f5f5;">새로고침</button></div>';
+  }
+}
+
+function renderPopupList(filterCons) {
+  var panel = document.getElementById('popup-list-panel');
+  var filtered = filterCons
+    ? allPlacesData.filter(function(p){
+        var first=( p.place_name_kr||'').charAt(0);
+        var initial=getInitialConsonant(first);
+        return (consonantGroups[filterCons]||[filterCons]).indexOf(initial)!==-1;
+      })
+    : allPlacesData;
+  var nonFeatFiltered = filtered.filter(function(p){return !p.is_featured;});
+  if (nonFeatFiltered.length===0 && !featuredPlace) {
+    panel.innerHTML='<div style="padding:20px;text-align:center;color:#888;font-size:13px;">해당 플레이스가 없습니다.</div>';
+    return;
+  }
+  var featHtml='';
+  if (featuredPlace) {
+    featHtml='<div class="popup-place-item" data-id="'+escapeHtml(featuredPlace.id)+'" data-featured="true" style="cursor:pointer;background:#FFF5F6;border-left:3px solid var(--orange);">'+
+      '<span style="font-size:9px;background:var(--orange);color:#fff;border-radius:2px;padding:1px 4px;margin-right:4px;font-weight:700;display:inline-block;line-height:1.4;vertical-align:middle;">기본</span>'+
+      '<span style="font-weight:600;">'+escapeHtml(featuredPlace.place_name_kr)+'</span></div>';
+  }
+  panel.innerHTML = featHtml + nonFeatFiltered.map(function(p){
+    var sel=popupSelectedIds.has(p.id)?' selected':'';
+    return '<div class="popup-place-item'+sel+'" data-id="'+escapeHtml(p.id)+'">'+escapeHtml(p.place_name_kr)+'</div>';
+  }).join('');
+  panel.querySelectorAll('.popup-place-item').forEach(function(el){
+    el.addEventListener('click', function(){
+      var place=allPlacesData.find(function(p){return p.id===el.dataset.id;});
+      if (place) showPopupDetail(place);
     });
-    var dm = document.getElementById('desktop-msg');
-    if (dm) dm.style.display = 'block';
-    var hint = document.getElementById('hero-install-hint');
-    if (hint) hint.textContent = '모바일 기기에서 앱을 설치하세요.';
-  }
+  });
+}
 
-  // ── 이미 설치된 경우 ──
-  if (isStandalone) {
-    var heroBtn = document.getElementById('hero-install-btn');
-    if (heroBtn) { heroBtn.textContent = '✓ 앱이 설치되어 있습니다'; heroBtn.disabled = true; heroBtn.style.opacity = '.7'; }
-    var headerBtn = document.getElementById('header-install-btn');
-    if (headerBtn) { headerBtn.textContent = '✓ 설치됨'; headerBtn.disabled = true; }
-  }
+function showPopupDetail(place) {
+  currentDetailPlace=place;
+  var rows=[
+    ['플레이스명',place.place_name_kr],['플레이스유형',place.place_type],
+    ['콜팝번호',place.callpop_phone],['운영개시일',place.start_date],
+    ['가맹점수',place.expected_stores?place.expected_stores+'개':null],['플레이스소개',place.place_intro]
+  ];
+  document.getElementById('popup-detail-panel').innerHTML=
+    '<table class="popup-detail-table">'+
+    rows.map(function(r){
+      return '<tr><th>'+escapeHtml(r[0])+'</th><td>'+(r[1]?escapeHtml(String(r[1])):'<span style="color:#bbb;">—</span>')+'</td></tr>';
+    }).join('')+'</table>';
+  updatePopupBottomBar();
+}
 
-  // ── Android: beforeinstallprompt 캡처 → 자동 트리거 ──
-  window.addEventListener('beforeinstallprompt', function(e) {
+function updatePopupBottomBar() {
+  var chipsArea=document.getElementById('popup-chips-area');
+  var btn=document.getElementById('confirm-place-btn');
+  var maxSel=featuredPlace?1:2;
+  var canAdd=popupSelectedIds.size<maxSel;
+  var selPlaces=allPlacesData.filter(function(p){return popupSelectedIds.has(p.id);});
+  chipsArea.innerHTML=selPlaces.map(function(p){
+    return '<span class="selected-chip">'+escapeHtml(p.place_name_kr)+
+      '<button type="button" data-id="'+escapeHtml(p.id)+'" class="popup-rm-chip">×</button></span>';
+  }).join('');
+  chipsArea.querySelectorAll('.popup-rm-chip').forEach(function(b){
+    b.addEventListener('click',function(){
+      popupSelectedIds.delete(b.dataset.id);
+      var activeCons=document.querySelector('.cons-btn.active').dataset.cons;
+      renderPopupList(activeCons);
+      updatePopupBottomBar();
+      if (currentDetailPlace) showPopupDetail(currentDetailPlace);
+    });
+  });
+  var isSelectable=currentDetailPlace&&!currentDetailPlace.is_featured&&!popupSelectedIds.has(currentDetailPlace.id)&&canAdd;
+  btn.textContent=isSelectable?'선택하기':'선택완료';
+}
+
+function renderSelectedChips() {
+  var container=document.getElementById('selected-chips');
+  var names=allPlacesData.filter(function(p){return popupSelectedIds.has(p.id);}).map(function(p){return p.place_name_kr;});
+  container.innerHTML=names.map(function(name){
+    return '<span class="selected-chip">'+escapeHtml(name)+
+      '<button type="button" data-name="'+escapeHtml(name)+'" class="remove-chip-btn">×</button></span>';
+  }).join('');
+  container.querySelectorAll('.remove-chip-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var place=allPlacesData.find(function(p){return p.place_name_kr===btn.dataset.name;});
+      if (place){popupSelectedIds.delete(place.id); renderSelectedChips();}
+    });
+  });
+}
+
+document.getElementById('open-place-popup-btn').addEventListener('click',function(){
+  document.getElementById('place-popup-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  currentDetailPlace=null;
+  document.querySelectorAll('.cons-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelector('.cons-btn[data-cons=""]').classList.add('active');
+  document.getElementById('popup-detail-panel').innerHTML=
+    '<div style="color:#888;font-size:13px;text-align:center;margin-top:40px;">오른쪽 목록에서 플레이스를 선택하면<br>상세 정보가 표시됩니다.</div>';
+  if (placesLoaded){renderPopupList('');updatePopupBottomBar();}
+  else loadPlacesData();
+});
+function closePlacePopup(){
+  document.getElementById('place-popup-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.getElementById('close-place-popup').addEventListener('click',closePlacePopup);
+document.getElementById('place-popup-overlay').addEventListener('click',function(e){if(e.target===this)closePlacePopup();});
+
+document.getElementById('consonant-filter').addEventListener('click',function(e){
+  var btn=e.target.closest('.cons-btn');
+  if (!btn) return;
+  document.querySelectorAll('.cons-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  currentDetailPlace=null;
+  renderPopupList(btn.dataset.cons);
+  document.getElementById('popup-detail-panel').innerHTML=
+    '<div style="color:#888;font-size:13px;text-align:center;margin-top:40px;">오른쪽 목록에서 플레이스를 선택하면<br>상세 정보가 표시됩니다.</div>';
+  updatePopupBottomBar();
+});
+
+document.getElementById('confirm-place-btn').addEventListener('click',function(){
+  var maxSel=featuredPlace?1:2;
+  var canAdd=popupSelectedIds.size<maxSel;
+  var isSelectable=currentDetailPlace&&!currentDetailPlace.is_featured&&!popupSelectedIds.has(currentDetailPlace.id)&&canAdd;
+  if (isSelectable){
+    popupSelectedIds.add(currentDetailPlace.id);
+    var activeCons=document.querySelector('.cons-btn.active').dataset.cons;
+    renderPopupList(activeCons);
+    updatePopupBottomBar();
+    showPopupDetail(currentDetailPlace);
+  } else {
+    renderSelectedChips();
+    closePlacePopup();
+  }
+});
+
+function updateScopeStyle(){
+  var allRadio=document.getElementById('scope-all');
+  var someRadio=document.getElementById('scope-some');
+  var wrap=document.getElementById('place-select-wrap');
+  var labelAll=document.getElementById('label-scope-all');
+  var labelSome=document.getElementById('label-scope-some');
+  if (allRadio.checked){
+    labelAll.style.borderColor='var(--orange)'; labelAll.style.background='#FFDDE3';
+    labelSome.style.borderColor='var(--border)'; labelSome.style.background='';
+    wrap.style.display='none';
+  } else if (someRadio.checked){
+    labelSome.style.borderColor='var(--orange)'; labelSome.style.background='#FFDDE3';
+    labelAll.style.borderColor='var(--border)'; labelAll.style.background='';
+    wrap.style.display='block';
+  }
+}
+document.getElementById('scope-all').addEventListener('change',updateScopeStyle);
+document.getElementById('scope-some').addEventListener('change',updateScopeStyle);
+
+function getSelectedPlaces(){
+  var allRadio=document.getElementById('scope-all');
+  if (allRadio.checked) return '전체 플레이스';
+  var selected=[];
+  if (featuredPlace) selected.push(featuredPlace.place_name_kr);
+  allPlacesData.filter(function(p){return popupSelectedIds.has(p.id);}).forEach(function(p){selected.push(p.place_name_kr);});
+  return selected.join(', ');
+}
+
+document.getElementById('store-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var btn=document.getElementById('store-submit-btn');
+  var errEl=document.getElementById('store-form-error');
+  errEl.style.display='none';
+  var scope=document.querySelector('input[name="place_scope"]:checked');
+  if (!scope){
+    errEl.textContent='희망 플레이스를 선택해 주세요.';
+    errEl.style.display='block';
+    document.getElementById('label-scope-all').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  if (scope.value==='some' && popupSelectedIds.size===0 && !featuredPlace){
+    errEl.textContent='일부 플레이스를 선택하신 경우 하나 이상 선택해 주세요.';
+    errEl.style.display='block';
+    document.getElementById('place-select-wrap').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  btn.textContent='처리 중...'; btn.disabled=true;
+  var fd=new FormData(this);
+  var selectedPlaces=getSelectedPlaces();
+  var payload={
+    store_name:     fd.get('store_name')     ||null,
+    store_address:  fd.get('store_address')  ||null,
+    category:       fd.get('category')       ||null,
+    representative: fd.get('representative') ||null,
+    phone:          fd.get('phone')          ||null,
+    desired_places: selectedPlaces,
+    desired_all:    scope.value==='all',
+    message:        fd.get('message')        ||null,
+  };
+  try {
+    var sb=await getSb();
+    var {error}=await sb.from('store_inquiries').insert(payload);
+    if (error) throw error;
+    try {
+      await fetch('/api/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,type:'store_inquiry'})});
+    } catch(ne){console.warn('알림 발송 오류:',ne);}
+    document.getElementById('store-form-success').style.display='block';
+    btn.textContent='✓ 신청 완료'; btn.style.background='#16a34a';
+    this.reset();
+    placesLoaded=false;
+    document.getElementById('place-select-wrap').style.display='none';
+    document.getElementById('label-scope-all').style.borderColor='var(--border)'; document.getElementById('label-scope-all').style.background='';
+    document.getElementById('label-scope-some').style.borderColor='var(--border)'; document.getElementById('label-scope-some').style.background='';
+    document.getElementById('store-form-success').scrollIntoView({behavior:'smooth',block:'center'});
+  } catch(err){
+    console.error(err);
+    errEl.textContent='오류가 발생했습니다: '+(err.message||'잠시 후 다시 시도해 주세요.');
+    errEl.style.display='block';
+    btn.textContent='가맹점 신청하기'; btn.disabled=false;
+  }
+});
+
+document.getElementById('store-reset-btn').addEventListener('click',function(){
+  document.getElementById('store-form-success').style.display='none';
+  var btn=document.getElementById('store-submit-btn');
+  btn.textContent='가맹점 신청하기'; btn.disabled=false; btn.style.background='';
+  document.getElementById('store-form').reset();
+  document.getElementById('store-inquiry-form').scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+// 앵커 스크롤 (탭 내부용)
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var href=this.getAttribute('href');
+    if (href==='#') return;
     e.preventDefault();
-    deferredPrompt = e;
-    if (isAndroid && !isStandalone) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
-    }
+    var el=document.querySelector(href);
+    if (el) window.scrollTo({top:el.getBoundingClientRect().top+pageYOffset-80,behavior:'smooth'});
   });
-
-  // ── iOS: 페이지 로드 후 자동으로 가이드 표시 ──
-  if (isIOS && !isStandalone) {
-    setTimeout(showInstallGuide, 1000);
-  }
-
-  window.addEventListener('appinstalled', function() {
-    deferredPrompt = null;
-    isStandalone = true;
-    var heroBtn = document.getElementById('hero-install-btn');
-    if (heroBtn) { heroBtn.textContent = '✓ 앱이 설치되어 있습니다'; heroBtn.disabled = true; }
-    var headerBtn = document.getElementById('header-install-btn');
-    if (headerBtn) { headerBtn.textContent = '✓ 설치됨'; headerBtn.disabled = true; }
-  });
-
-  // ── 버튼 클릭 핸들러 ──
-  function handleInstall() {
-    if (!isMobile || isStandalone) return;
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
-    } else {
-      // 프롬프트 미지원 시 가이드 표시 (Android 포함)
-      showInstallGuide();
-    }
-  }
-
-  function showInstallGuide() {
-    var title = document.getElementById('guide-title');
-    var stepsIOS = document.getElementById('guide-steps-ios');
-    var stepsAndroid = document.getElementById('guide-steps-android');
-    if (isIOS) {
-      if (title) title.textContent = 'iPhone 홈 화면에 추가';
-      if (stepsIOS) stepsIOS.style.display = 'flex';
-      if (stepsAndroid) stepsAndroid.style.display = 'none';
-    } else {
-      if (title) title.textContent = 'Android 앱 설치 방법';
-      if (stepsIOS) stepsIOS.style.display = 'none';
-      if (stepsAndroid) stepsAndroid.style.display = 'flex';
-    }
-    document.getElementById('ios-guide').style.display = 'flex';
-  }
-
-  function closeInstallGuide() {
-    document.getElementById('ios-guide').style.display = 'none';
-  }
-
-  // 모달 외부 클릭 닫기
-  document.getElementById('ios-guide').addEventListener('click', function(e) {
-    if (e.target === this) closeInstallGuide();
-  });
-
-  // 헤더 스크롤 그림자
-  window.addEventListener('scroll', function() {
-    document.getElementById('site-header').style.boxShadow = pageYOffset > 10
-      ? '0 2px 16px rgba(0,0,0,.1)'
-      : 'none';
-  });
+});
 </script>
 </body>
 </html>

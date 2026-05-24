@@ -68,9 +68,11 @@ function makeResHelpers(res) {
 
 http.createServer(async (req, res) => {
   let urlPath = req.url.split('?')[0];
-  if (urlPath === '/')       urlPath = '/index.html';
-  if (urlPath === '/admin')  urlPath = '/admin.html';
-  if (urlPath === '/place')  urlPath = '/place/index.html';
+  if (urlPath === '/')        urlPath = '/index.html';
+  if (urlPath === '/admin')   urlPath = '/admin.html';
+  if (urlPath === '/place')   urlPath = '/index.html';
+  if (urlPath === '/store')   urlPath = '/index.html';
+  if (urlPath === '/store/')  urlPath = '/index.html';
 
   // ── API routes ──────────────────────────────────
   if (urlPath.startsWith('/api/')) {
