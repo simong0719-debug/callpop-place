@@ -209,9 +209,6 @@
         <button id="nav-store" class="tab-btn"        onclick="goTab('store')">가맹점</button>
       </nav>
     </div>
-    <button id="header-install-btn" onclick="handleInstall()" class="btn-primary" style="padding:9px 20px;font-size:13px;">
-      📱 앱 다운로드
-    </button>
   </div>
 </header>
 
@@ -1310,12 +1307,6 @@ function showTab(tab) {
       else           { btn.classList.remove('active'); }
     }
   });
-  // 앱 다운로드 버튼은 홈 탭에서만 표시
-  var dlBtn = document.getElementById('header-install-btn');
-  if (dlBtn) dlBtn.style.display = tab === 'home' ? '' : 'none';
-  // URL 업데이트
-  var path = tab === 'home' ? '/' : '/' + tab;
-  history.replaceState(null, '', path);
 }
 
 function goTab(tab) {
@@ -1354,7 +1345,7 @@ var isAndroid = /Android/i.test(navigator.userAgent);
 var isMobile = isIOS || isAndroid;
 
 if (!isMobile) {
-  ['header-install-btn', 'hero-install-btn', 'install-btns-wrap'].forEach(function(id) {
+  ['hero-install-btn', 'install-btns-wrap'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -1367,8 +1358,6 @@ if (!isMobile) {
 if (isStandalone) {
   var heroBtn = document.getElementById('hero-install-btn');
   if (heroBtn) { heroBtn.textContent = '✓ 앱이 설치되어 있습니다'; heroBtn.disabled = true; heroBtn.style.opacity = '.7'; }
-  var headerBtn = document.getElementById('header-install-btn');
-  if (headerBtn) { headerBtn.textContent = '✓ 설치됨'; headerBtn.disabled = true; }
 }
 
 window.addEventListener('beforeinstallprompt', function(e) {
@@ -1386,8 +1375,6 @@ window.addEventListener('appinstalled', function() {
   deferredPrompt = null; isStandalone = true;
   var heroBtn = document.getElementById('hero-install-btn');
   if (heroBtn) { heroBtn.textContent = '✓ 앱이 설치되어 있습니다'; heroBtn.disabled = true; }
-  var headerBtn = document.getElementById('header-install-btn');
-  if (headerBtn) { headerBtn.textContent = '✓ 설치됨'; headerBtn.disabled = true; }
 });
 
 function handleInstall() {
