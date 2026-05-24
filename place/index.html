@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -10,8 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --red:      #E3001B;
-      --red-dark: #C0001A;
+      --red:      #FF6B35;
+      --red-dark: #E85A25;
       --navy:     #1A1A2E;
       --text:     #1A1A1A;
       --sub:      #555555;
@@ -41,7 +41,7 @@
       transition: background 0.18s, transform 0.12s;
     }
     .btn-red:hover  { background: var(--red-dark); transform: translateY(-1px); }
-    .btn-red:focus  { outline: none; box-shadow: 0 0 0 3px rgba(227,0,27,.3); }
+    .btn-red:focus  { outline: none; box-shadow: 0 0 0 3px rgba(255,107,53,.3); }
     .btn-red:active { transform: translateY(0) scale(0.98); }
     .btn-red:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 
@@ -56,7 +56,7 @@
       transition: border-color 0.18s, color 0.18s, transform 0.12s;
     }
     .btn-outline:hover  { border-color: var(--red); color: var(--red); transform: translateY(-1px); }
-    .btn-outline:focus  { outline: none; box-shadow: 0 0 0 3px rgba(227,0,27,.2); }
+    .btn-outline:focus  { outline: none; box-shadow: 0 0 0 3px rgba(255,107,53,.2); }
     .btn-outline:active { transform: translateY(0) scale(0.98); }
 
     /* ── 폼 인풋 ── */
@@ -74,7 +74,7 @@
     .finput:focus {
       outline: none;
       border-color: var(--red);
-      box-shadow: 0 0 0 3px rgba(227,0,27,.10);
+      box-shadow: 0 0 0 3px rgba(255,107,53,.10);
     }
     .finput::placeholder { color: #bbb; }
 
@@ -134,7 +134,7 @@
     .comp-table tr:last-child td { border-bottom: none; }
     .comp-table tr:last-child td:first-child { border-radius: 0 0 0 8px; }
     .comp-table tr:last-child td:last-child  { border-radius: 0 0 8px 0; }
-    .comp-table .col-callpop { color: var(--red); font-weight: 700; background: #FFF5F5; }
+    .comp-table .col-callpop { color: var(--red); font-weight: 700; background: #FFF3EE; }
     .comp-table tr:nth-child(odd) td:not(.col-callpop) { background: #FAFAFA; }
 
     /* ── 스텝 넘버 ── */
@@ -154,13 +154,13 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #FFF5F5;
+      background: #FFF3EE;
       color: var(--red);
       font-size: 13px;
       font-weight: 700;
       padding: 5px 12px;
       border-radius: 20px;
-      border: 1px solid #FFCDD2;
+      border: 1px solid #FFD4C2;
     }
 
     /* ── 레이아웃 헬퍼 ── */
@@ -384,17 +384,17 @@
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
       <div class="card" style="padding:32px;">
-        <div style="width:44px;height:44px;background:#FFF5F5;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;">💸</div>
+        <div style="width:44px;height:44px;background:#FFF3EE;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;">💸</div>
         <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;">앱 개발 비용이 너무 비싸요</h3>
         <p style="font-size:14px;color:var(--sub);line-height:1.7;">배달앱 하나 만들려면 수천만 원 이상. 아이디어는 있는데 자본이 없어서 시작도 못했습니다.</p>
       </div>
       <div class="card" style="padding:32px;">
-        <div style="width:44px;height:44px;background:#FFF5F5;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;">🔧</div>
+        <div style="width:44px;height:44px;background:#FFF3EE;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;">🔧</div>
         <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;">가맹점 모집 막막해요.</h3>
         <p style="font-size:14px;color:var(--sub);line-height:1.7;">영업사원도 없고, 자본도 없고 가맹점 모집은 절대 불가능하다고 생각했어요.</p>
       </div>
       <div class="card" style="padding:32px;">
-        <div style="width:44px;height:44px;background:#FFF5F5;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;">📊</div>
+        <div style="width:44px;height:44px;background:#FFF3EE;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;">📊</div>
         <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;">안정적인 수익 채널이 없어요</h3>
         <p style="font-size:14px;color:var(--sub);line-height:1.7;">교회 운영비, 동문회 재정, 종친회 기금—지속 가능한 수익을 만들 방법이 없었습니다.</p>
       </div>
@@ -421,7 +421,7 @@
           <div style="font-size:15px;font-weight:700;margin-bottom:6px;">전화 한 통으로 주문</div>
           <div style="font-size:13px;color:var(--sub);line-height:1.6;">앱 설치 없이 전화로. 어르신도 쉽게 이용합니다.</div>
         </div>
-        <div style="padding:24px;background:#FFF5F5;border-radius:8px;border:1px solid #FFCDD2;">
+        <div style="padding:24px;background:#FFF3EE;border-radius:8px;border:1px solid #FFD4C2;">
           <div style="font-size:28px;margin-bottom:12px;">💰</div>
           <div style="font-size:15px;font-weight:700;margin-bottom:6px;color:var(--red);">최대 1.5% 수익</div>
           <div style="font-size:13px;color:var(--sub);line-height:1.6;">주문마다 지정 계좌로 자동 정산됩니다.</div>
@@ -679,7 +679,7 @@
         <div class="form-section-title">
           <span class="num">3</span>정산 계좌 정보
         </div>
-        <div style="background:#FFF9F9;border:1px solid #FFCDD2;border-radius:6px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:var(--sub);line-height:1.6;">
+        <div style="background:#FFF8F5;border:1px solid #FFD4C2;border-radius:6px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:var(--sub);line-height:1.6;">
           ※ 플레이스 수익은 매월 익월 15영업일 이내에 아래 계좌로 정산됩니다. 정확히 입력해 주세요.
         </div>
         <div class="grid-form-3">
