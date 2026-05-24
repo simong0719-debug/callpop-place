@@ -1366,7 +1366,6 @@ window.addEventListener('beforeinstallprompt', function(e) {
   }
 });
 
-if (isIOS && !isStandalone) { setTimeout(showInstallGuide, 1000); }
 
 window.addEventListener('appinstalled', function() {
   deferredPrompt = null; isStandalone = true;
