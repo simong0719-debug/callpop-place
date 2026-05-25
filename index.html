@@ -30,8 +30,9 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Noto Sans KR', sans-serif; color: var(--text); background: #fff; }
+    html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+    body { font-family: 'Noto Sans KR', sans-serif; color: var(--text); background: #fff; overflow-x: hidden; max-width: 100%; }
+    img  { max-width: 100%; }
 
     /* ── 버튼 ── */
     .btn-primary, .btn-red {
@@ -180,8 +181,14 @@
       .comp-table th,.comp-table td { padding:10px 12px; font-size:13px; }
       #place-hero-section { padding-top:88px; padding-bottom:48px; }
       #store-hero-section { padding-top:88px; padding-bottom:48px; }
+      #home-hero-section  { padding-top:88px; padding-bottom:48px; }
       .grid-feat-cards > div { padding:18px 14px !important; }
-      .tab-btn { font-size:13px; padding:4px 12px; }
+      .tab-btn { font-size:12px; padding:4px 9px; }
+      #site-header img[alt="콜팝"] { height:36px !important; }
+      #install-btns-wrap { flex-direction:column; align-items:stretch; }
+      #install-btns-wrap button { width:100%; min-width:0 !important; }
+      .auto-fit-grid { grid-template-columns:1fr !important; }
+      .section-stats { flex-direction:row !important; gap:16px !important; }
     }
     @media (max-width: 540px) {
       #place-popup-overlay { padding:8px; }
@@ -236,7 +243,7 @@
 <div id="tab-home">
 
   <!-- HERO (place page tone/manner) -->
-  <section style="padding-top:120px;padding-bottom:80px;background:#fff;">
+  <section id="home-hero-section" style="padding-top:120px;padding-bottom:80px;background:#fff;">
     <div class="wrap">
       <div class="grid-hero">
         <!-- LEFT: Text -->
@@ -575,7 +582,7 @@
         <h2 class="section-title">이런 고민, 있지 않으신가요?</h2>
         <p class="section-desc">나만의 배달앱을 갖고 싶었지만, 이런 이유로 포기했습니다</p>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
+      <div class="auto-fit-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
         <div class="card" style="padding:32px;">
           <div style="width:44px;height:44px;background:#FFF3EE;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;">💸</div>
           <h3 style="font-size:17px;font-weight:700;margin-bottom:10px;">앱 개발 비용이 너무 비싸요</h3>
@@ -678,7 +685,7 @@
         <h2 style="font-size:clamp(22px,3vw,32px);font-weight:900;color:#fff;letter-spacing:-.02em;margin-bottom:12px;">이런 분들께 딱 맞습니다</h2>
         <p style="font-size:15px;color:rgba(255,255,255,.55);">구성원이 많을수록 수익도 커집니다</p>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+      <div class="auto-fit-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
         <div style="padding:24px;border:1px solid rgba(255,255,255,.12);border-radius:8px;text-align:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.06)'" onmouseout="this.style.background='transparent'">
           <div style="font-size:36px;margin-bottom:12px;">⛪</div>
           <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">교회</div>
@@ -874,7 +881,7 @@
             전화 한 통으로 주문받고,
             <strong style="color:var(--orange);font-weight:700;">고객을 직접 보유</strong>하세요.
           </p>
-          <div style="display:flex;gap:24px;margin-bottom:36px;flex-wrap:wrap;">
+          <div class="section-stats" style="display:flex;gap:24px;margin-bottom:36px;flex-wrap:wrap;align-items:center;">
             <div>
               <div style="font-size:26px;font-weight:900;color:var(--orange);line-height:1;letter-spacing:-1px;">0%</div>
               <div style="font-size:12px;color:var(--mute);margin-top:3px;">중개수수료</div>
