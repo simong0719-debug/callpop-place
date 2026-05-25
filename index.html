@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>콜팝 — 전화 한 통으로 완성되는 배달</title>
   <meta name="description" content="콜팝은 전화 한 통으로 주문하는 배달 O2O 서비스입니다. 중개 수수료 없이 더 넓은 반경으로 배달하세요.">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FF6B35">
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="콜팝">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1323,6 +1329,15 @@ function goTabAndScroll(tab, sectionId) {
   else if (path.startsWith('/store')) initial = 'store';
   showTab(initial);
 })();
+
+// ══════════════════════════════════════
+// 서비스워커 등록
+// ══════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function() {});
+  });
+}
 
 // ══════════════════════════════════════
 // PWA 설치
