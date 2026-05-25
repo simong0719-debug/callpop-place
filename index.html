@@ -1372,12 +1372,7 @@ if (isStandalone) {
 }
 
 window.addEventListener('beforeinstallprompt', function(e) {
-  e.preventDefault();
-  deferredPrompt = e;
-  if (isAndroid && !isStandalone) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
-  }
+  e.preventDefault(); // callpop.co.kr 자체 설치 배너 차단
 });
 
 
@@ -1388,11 +1383,12 @@ window.addEventListener('appinstalled', function() {
 });
 
 function handleInstall() {
-  if (!isMobile || isStandalone) return;
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
-  } else { showInstallGuide(); }
+  if (!isMobile) return;
+  if (isAndroid) {
+    window.location.href = 'https://callpop.vercel.app';
+    return;
+  }
+  showInstallGuide(); // iOS는 가이드 표시
 }
 
 function showInstallGuide() {
