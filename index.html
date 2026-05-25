@@ -219,294 +219,144 @@
 <div id="tab-home">
 
   <!-- HERO -->
-  <section style="padding-top:72px;background:linear-gradient(135deg,#FF6B35 0%,#FF8C5A 60%,#FFA875 100%);min-height:100svh;display:flex;align-items:center;">
-    <div class="wrap" style="padding-top:60px;padding-bottom:60px;width:100%;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;" class="hero-grid">
-        <div>
-          <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:28px;padding:7px 16px;background:rgba(255,255,255,.2);border-radius:20px;font-size:12px;font-weight:700;color:#fff;backdrop-filter:blur(4px);">
-            <span style="width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 2s infinite;"></span>
-            신개념 배달플랫폼
-          </div>
-          <h1 style="font-size:clamp(34px,5vw,58px);font-weight:900;line-height:1.15;letter-spacing:-.03em;color:#fff;margin-bottom:16px;">
-            이제 모두가<br>행복한 배달
-          </h1>
-          <p style="font-size:clamp(14px,1.8vw,16px);color:rgba(255,255,255,.9);line-height:1.7;margin-bottom:12px;font-weight:700;">
-            소상공인도 행복 · 소비자도 행복 · 플랫폼운영자도 행복
-          </p>
-          <p style="font-size:clamp(13px,1.6vw,15px);color:rgba(255,255,255,.75);line-height:1.8;margin-bottom:28px;">
-            수수료와 광고비 없이, 전화 한 통으로<br>배달서비스 <strong style="color:#fff;">'콜팝'</strong>을 경험해 보세요!
-          </p>
-          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:32px;">
-            <span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;">최소주문금액 NO</span>
-            <span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;">거리제한 NO</span>
-            <span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;">앱설치 NO (선택적)</span>
-            <span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;">높은 수수료 NO</span>
-            <span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;">광고 필수 NO</span>
-            <span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;">배달비 부담 NO</span>
-            <span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;">플랫폼 개발비 NO</span>
-            <span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;">가맹점 모집 NO</span>
-            <span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;">개인정보취급 NO</span>
-          </div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <button id="hero-install-btn" onclick="handleInstall()" class="btn-white" style="padding:14px 28px;font-size:15px;">
-              📱 앱 설치하기
-            </button>
-          </div>
-          <p id="hero-install-hint" style="margin-top:16px;font-size:12px;color:rgba(255,255,255,.6);"></p>
+  <section style="padding-top:72px;background:linear-gradient(135deg,#FF6B35 0%,#FF8C5A 60%,#FFA875 100%);">
+    <div style="max-width:600px;margin:0 auto;padding:64px 24px 56px;text-align:center;">
+      <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:24px;padding:7px 16px;background:rgba(255,255,255,.2);border-radius:20px;font-size:12px;font-weight:700;color:#fff;">
+        <span style="width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 2s infinite;flex-shrink:0;display:block;"></span>
+        신개념 배달플랫폼
+      </div>
+      <h1 style="font-size:clamp(28px,6vw,52px);font-weight:900;line-height:1.2;letter-spacing:-.03em;color:#fff;margin-bottom:8px;">이제 모두가 행복한<br>배달서비스</h1>
+      <p style="font-size:clamp(22px,4vw,38px);font-weight:900;color:rgba(255,255,255,.95);margin-bottom:20px;letter-spacing:-.02em;">'콜팝'을 경험해 보세요!!</p>
+      <p style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.75;margin-bottom:40px;">소상공인도 행복 · 소비자도 행복 · 플랫폼운영자도 행복</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;margin:0 auto 40px;">
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:16px 6px;text-align:center;">
+          <div style="font-size:10px;font-weight:900;color:#fff;background:rgba(255,255,255,.25);display:inline-block;padding:2px 8px;border-radius:8px;margin-bottom:8px;letter-spacing:.06em;">NO</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;line-height:1.4;">최소주문<br>금액</div>
         </div>
-        <div class="hide-mob" style="display:flex;justify-content:center;align-items:center;">
-          <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:24px;padding:32px;backdrop-filter:blur(8px);max-width:360px;width:100%;">
-            <p style="font-size:12px;font-weight:700;color:rgba(255,255,255,.65);margin-bottom:20px;letter-spacing:.06em;text-transform:uppercase;">콜팝이 없앤 것들</p>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-              <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px 8px;text-align:center;">
-                <div style="font-size:22px;margin-bottom:6px;">💸</div>
-                <div style="font-size:10px;font-weight:700;color:#fff;line-height:1.4;">높은<br>수수료</div>
-              </div>
-              <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px 8px;text-align:center;">
-                <div style="font-size:22px;margin-bottom:6px;">📢</div>
-                <div style="font-size:10px;font-weight:700;color:#fff;line-height:1.4;">광고<br>필수</div>
-              </div>
-              <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px 8px;text-align:center;">
-                <div style="font-size:22px;margin-bottom:6px;">🚚</div>
-                <div style="font-size:10px;font-weight:700;color:#fff;line-height:1.4;">배달비<br>부담</div>
-              </div>
-              <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px 8px;text-align:center;">
-                <div style="font-size:22px;margin-bottom:6px;">📏</div>
-                <div style="font-size:10px;font-weight:700;color:#fff;line-height:1.4;">거리<br>제한</div>
-              </div>
-              <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px 8px;text-align:center;">
-                <div style="font-size:22px;margin-bottom:6px;">📱</div>
-                <div style="font-size:10px;font-weight:700;color:#fff;line-height:1.4;">앱설치<br>강제</div>
-              </div>
-              <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px 8px;text-align:center;">
-                <div style="font-size:22px;margin-bottom:6px;">💰</div>
-                <div style="font-size:10px;font-weight:700;color:#fff;line-height:1.4;">최소주문<br>금액</div>
-              </div>
-              <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px 8px;text-align:center;">
-                <div style="font-size:22px;margin-bottom:6px;">💻</div>
-                <div style="font-size:10px;font-weight:700;color:#fff;line-height:1.4;">플랫폼<br>개발비</div>
-              </div>
-              <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px 8px;text-align:center;">
-                <div style="font-size:22px;margin-bottom:6px;">🏪</div>
-                <div style="font-size:10px;font-weight:700;color:#fff;line-height:1.4;">가맹점<br>모집</div>
-              </div>
-              <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px 8px;text-align:center;">
-                <div style="font-size:22px;margin-bottom:6px;">🔒</div>
-                <div style="font-size:10px;font-weight:700;color:#fff;line-height:1.4;">개인정보<br>취급</div>
-              </div>
-            </div>
-          </div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:16px 6px;text-align:center;">
+          <div style="font-size:10px;font-weight:900;color:#fff;background:rgba(255,255,255,.25);display:inline-block;padding:2px 8px;border-radius:8px;margin-bottom:8px;letter-spacing:.06em;">NO</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;line-height:1.4;">거리<br>제한</div>
+        </div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:16px 6px;text-align:center;">
+          <div style="font-size:10px;font-weight:900;color:#fff;background:rgba(255,255,255,.25);display:inline-block;padding:2px 8px;border-radius:8px;margin-bottom:8px;letter-spacing:.06em;">NO</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;line-height:1.4;">앱설치<br>(선택)</div>
+        </div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:16px 6px;text-align:center;">
+          <div style="font-size:10px;font-weight:900;color:#fff;background:rgba(255,255,255,.25);display:inline-block;padding:2px 8px;border-radius:8px;margin-bottom:8px;letter-spacing:.06em;">NO</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;line-height:1.4;">높은<br>수수료</div>
+        </div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:16px 6px;text-align:center;">
+          <div style="font-size:10px;font-weight:900;color:#fff;background:rgba(255,255,255,.25);display:inline-block;padding:2px 8px;border-radius:8px;margin-bottom:8px;letter-spacing:.06em;">NO</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;line-height:1.4;">광고<br>필수</div>
+        </div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:16px 6px;text-align:center;">
+          <div style="font-size:10px;font-weight:900;color:#fff;background:rgba(255,255,255,.25);display:inline-block;padding:2px 8px;border-radius:8px;margin-bottom:8px;letter-spacing:.06em;">NO</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;line-height:1.4;">배달비<br>부담</div>
+        </div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:16px 6px;text-align:center;">
+          <div style="font-size:10px;font-weight:900;color:#fff;background:rgba(255,255,255,.25);display:inline-block;padding:2px 8px;border-radius:8px;margin-bottom:8px;letter-spacing:.06em;">NO</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;line-height:1.4;">플랫폼<br>개발비</div>
+        </div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:16px 6px;text-align:center;">
+          <div style="font-size:10px;font-weight:900;color:#fff;background:rgba(255,255,255,.25);display:inline-block;padding:2px 8px;border-radius:8px;margin-bottom:8px;letter-spacing:.06em;">NO</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;line-height:1.4;">가맹점<br>모집</div>
+        </div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:16px 6px;text-align:center;">
+          <div style="font-size:10px;font-weight:900;color:#fff;background:rgba(255,255,255,.25);display:inline-block;padding:2px 8px;border-radius:8px;margin-bottom:8px;letter-spacing:.06em;">NO</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;line-height:1.4;">개인정보<br>취급</div>
         </div>
       </div>
+      <button id="hero-install-btn" onclick="handleInstall()" class="btn-white" style="padding:14px 32px;font-size:15px;">📱 앱 설치하기</button>
+      <p id="hero-install-hint" style="margin-top:14px;font-size:12px;color:rgba(255,255,255,.6);"></p>
     </div>
   </section>
-  <style>
-    @media (max-width:768px) { .hero-grid { grid-template-columns:1fr !important; gap:0 !important; } }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-  </style>
-
-  <hr class="divider">
+  <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
 
   <!-- 콜팝이란 -->
-  <section class="section" style="background:#fff;">
-    <div class="wrap">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;" class="about-grid">
-        <div>
-          <div class="section-label">'콜팝'이란</div>
-          <h2 class="section-title">소상공인을 위한<br>신개념 배달주문<br>플랫폼</h2>
-          <p style="font-size:15px;color:var(--sub);line-height:1.85;margin-bottom:20px;">
-            높은 수수료 및 악순환의 광고구조로 인하여 어려움을 겪고 있는 소상공인을 지원하기 위해 만든 상생협력 신개념 배달주문 플랫폼입니다.
-          </p>
-          <p style="font-size:15px;color:var(--sub);line-height:1.85;">
-            콜팝 서비스는 다양한 회사의 개별 서비스들이 결합된 <strong style="color:var(--text);">통합 서비스 브랜드</strong>로, 다양한 방법으로 편리하게 이용하실 수 있습니다.
-          </p>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--bg);border-radius:12px;border:1px solid var(--border);">
-            <div style="width:40px;height:40px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📱</div>
-            <div>
-              <div style="font-size:14px;font-weight:700;margin-bottom:2px;">앱·웹 서비스</div>
-              <div style="font-size:12px;color:var(--sub);">(주)네이스 — 콜팝/콜팝플레이스 플랫폼</div>
-            </div>
+  <section style="background:#F7F8FA;padding:56px 0;">
+    <div style="max-width:640px;margin:0 auto;padding:0 20px;">
+      <div style="background:#fff;border-radius:20px;border:1px solid #E5E5E5;padding:36px 32px;box-shadow:0 2px 12px rgba(0,0,0,.04);">
+        <div style="font-size:11px;font-weight:700;color:#FF6B35;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">'콜팝'이란</div>
+        <h2 style="font-size:clamp(22px,4vw,30px);font-weight:900;line-height:1.3;letter-spacing:-.02em;margin-bottom:18px;">소상공인을 위한<br>신개념 배달주문 플랫폼</h2>
+        <p style="font-size:14px;color:#555;line-height:1.9;margin-bottom:16px;">높은 수수료 및 악순환의 광고구조로 인하여 어려움을 겪고 있는 소상공인을 지원하기 위해 만든 상생협력 신개념 배달주문 플랫폼입니다.</p>
+        <p style="font-size:14px;color:#555;line-height:1.9;margin-bottom:28px;">콜팝 서비스는 다양한 서비스들이 결합된 <strong style="color:#1A1A1A;">통합 서비스 브랜드</strong>로, 다양한 방법으로 서비스를 이용할 수 있어 편리합니다.</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:14px;padding:12px 16px;background:#F7F8FA;border-radius:10px;">
+            <span style="font-size:20px;flex-shrink:0;">📱</span><span style="font-size:13px;font-weight:600;color:#1A1A1A;">앱·웹 서비스</span>
           </div>
-          <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--bg);border-radius:12px;border:1px solid var(--border);">
-            <div style="width:40px;height:40px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🗺️</div>
-            <div>
-              <div style="font-size:14px;font-weight:700;margin-bottom:2px;">위치기반 배달주문 서비스</div>
-              <div style="font-size:12px;color:var(--sub);">(주)오투오페이먼트 — 오더앤</div>
-            </div>
+          <div style="display:flex;align-items:center;gap:14px;padding:12px 16px;background:#F7F8FA;border-radius:10px;">
+            <span style="font-size:20px;flex-shrink:0;">🗺️</span><span style="font-size:13px;font-weight:600;color:#1A1A1A;">위치기반 배달주문 서비스</span>
           </div>
-          <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--bg);border-radius:12px;border:1px solid var(--border);">
-            <div style="width:40px;height:40px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🚴</div>
-            <div>
-              <div style="font-size:14px;font-weight:700;margin-bottom:2px;">배달대행 서비스</div>
-              <div style="font-size:12px;color:var(--sub);">(주)바로고 — 배달대행 플랫폼</div>
-            </div>
+          <div style="display:flex;align-items:center;gap:14px;padding:12px 16px;background:#F7F8FA;border-radius:10px;">
+            <span style="font-size:20px;flex-shrink:0;">🚴</span><span style="font-size:13px;font-weight:600;color:#1A1A1A;">배달대행사 배달 플랫폼</span>
           </div>
-          <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--bg);border-radius:12px;border:1px solid var(--border);">
-            <div style="width:40px;height:40px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📞</div>
-            <div>
-              <div style="font-size:14px;font-weight:700;margin-bottom:2px;">전화·결제 서비스</div>
-              <div style="font-size:12px;color:var(--sub);">KT 및 그룹사</div>
-            </div>
+          <div style="display:flex;align-items:center;gap:14px;padding:12px 16px;background:#F7F8FA;border-radius:10px;">
+            <span style="font-size:20px;flex-shrink:0;">📞</span><span style="font-size:13px;font-weight:600;color:#1A1A1A;">전화·결제 서비스</span>
           </div>
-          <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--bg);border-radius:12px;border:1px solid var(--border);">
-            <div style="width:40px;height:40px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔗</div>
-            <div>
-              <div style="font-size:14px;font-weight:700;margin-bottom:2px;">콜투웹(Call-to-Web) 서비스</div>
-              <div style="font-size:12px;color:var(--sub);">(주)콜게이트</div>
-            </div>
+          <div style="display:flex;align-items:center;gap:14px;padding:12px 16px;background:#F7F8FA;border-radius:10px;">
+            <span style="font-size:20px;flex-shrink:0;">🔗</span><span style="font-size:13px;font-weight:600;color:#1A1A1A;">콜투웹 (Call-to-Web) 서비스</span>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <style>
-    @media (max-width:768px) { .about-grid { grid-template-columns:1fr !important; gap:28px !important; } }
-  </style>
-
-  <hr class="divider">
 
   <!-- 콜팝플레이스란 -->
-  <section class="section" style="background:var(--bg);">
-    <div class="wrap">
-      <div style="text-align:center;margin-bottom:52px;">
-        <div class="section-label">'콜팝플레이스'란</div>
-        <h2 class="section-title">우리 조직만의<br>배달 플랫폼</h2>
-        <p class="section-desc">특정 지역, 이용자 그룹 또는 운영 목적에 따라 구성된<br>가맹점 운영 단위를 <strong style="color:var(--orange);">"플레이스"</strong>라 합니다</p>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
-        <div class="card" style="padding:32px;text-align:center;">
-          <div style="font-size:44px;margin-bottom:16px;">⛪</div>
-          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">교회</h3>
-          <p style="font-size:13px;color:var(--sub);line-height:1.7;">성도들의 주문으로 교회 재정 수익 창출</p>
-        </div>
-        <div class="card" style="padding:32px;text-align:center;">
-          <div style="font-size:44px;margin-bottom:16px;">🎓</div>
-          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">동문회·종친회</h3>
-          <p style="font-size:13px;color:var(--sub);line-height:1.7;">회원 이용으로 기금 자동 적립</p>
-        </div>
-        <div class="card" style="padding:32px;text-align:center;">
-          <div style="font-size:44px;margin-bottom:16px;">🏢</div>
-          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">기업·단체</h3>
-          <p style="font-size:13px;color:var(--sub);line-height:1.7;">임직원 전용 배달 서비스로 복지 제공</p>
-        </div>
-        <div class="card" style="padding:32px;text-align:center;">
-          <div style="font-size:44px;margin-bottom:16px;">🏪</div>
-          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">프랜차이즈</h3>
-          <p style="font-size:13px;color:var(--sub);line-height:1.7;">자체 브랜드 주문 채널로 고객 직접 확보</p>
-        </div>
-      </div>
-      <div style="margin-top:36px;text-align:center;">
-        <button class="btn-primary" style="padding:14px 36px;font-size:15px;" onclick="goTabAndScroll('place','place-apply-form')">플레이스 신청하기 →</button>
+  <section style="background:#fff;padding:56px 0;">
+    <div style="max-width:640px;margin:0 auto;padding:0 20px;">
+      <div style="background:#FFF8F5;border:1px solid rgba(255,107,53,.18);border-radius:20px;padding:36px 32px;">
+        <div style="font-size:11px;font-weight:700;color:#FF6B35;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">'콜팝플레이스'란</div>
+        <h2 style="font-size:clamp(22px,4vw,30px);font-weight:900;line-height:1.3;letter-spacing:-.02em;margin-bottom:18px;">우리 조직만의<br>배달 플랫폼</h2>
+        <p style="font-size:14px;color:#555;line-height:1.9;margin-bottom:28px;">특정 지역, 이용자 그룹 또는 운영 목적에 따라 구성된 가맹점 운영 단위를 <strong style="color:#FF6B35;">"플레이스"</strong>라 합니다.</p>
+        <button class="btn-primary" style="padding:12px 28px;font-size:14px;" onclick="goTabAndScroll('place','place-apply-form')">플레이스 신청하기 →</button>
       </div>
     </div>
   </section>
-
-  <hr class="divider">
 
   <!-- 이용방법 -->
-  <section class="section" style="background:#fff;">
-    <div class="wrap">
-      <div style="text-align:center;margin-bottom:52px;">
-        <div class="section-label">이용 방법</div>
-        <h2 class="section-title">다양한 방법으로<br>편리하게</h2>
-        <p class="section-desc">콜팝은 여러 가지 방법으로 이용할 수 있어 편리합니다</p>
+  <section style="background:#F7F8FA;padding:56px 0;">
+    <div style="max-width:640px;margin:0 auto;padding:0 20px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;font-weight:700;color:#FF6B35;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">이용 방법</div>
+        <h2 style="font-size:clamp(22px,4vw,30px);font-weight:900;line-height:1.3;letter-spacing:-.02em;">다양한 방법으로<br>편리하게</h2>
       </div>
-      <div class="grid-4 grid-2-mob">
-        <div class="card" style="padding:28px 24px;text-align:center;">
-          <div style="width:64px;height:64px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;">📱</div>
-          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">앱 (APP)</h3>
-          <p style="font-size:13px;color:var(--sub);line-height:1.7;">콜팝 앱을 설치하여 메뉴 검색, 결제, 배달 현황까지 한 번에.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div style="background:#fff;border:1px solid #E5E5E5;border-radius:16px;padding:28px 18px;text-align:center;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 16px;">📱</div>
+          <h3 style="font-size:14px;font-weight:800;margin-bottom:8px;">앱 (APP)</h3>
+          <p style="font-size:12px;color:#666;line-height:1.7;">메뉴 검색, 결제, 배달 현황까지 한 번에.</p>
         </div>
-        <div class="card" style="padding:28px 24px;text-align:center;">
-          <div style="width:64px;height:64px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;">📞</div>
-          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">전화주문 (콜투웹)</h3>
-          <p style="font-size:13px;color:var(--sub);line-height:1.7;">앱 없이 전화 한 통으로. KT 콜투웹 연결로 바로 주문 화면 접속.</p>
+        <div style="background:#fff;border:1px solid #E5E5E5;border-radius:16px;padding:28px 18px;text-align:center;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 16px;">📞</div>
+          <h3 style="font-size:14px;font-weight:800;margin-bottom:8px;">전화주문<br>(콜투웹)</h3>
+          <p style="font-size:12px;color:#666;line-height:1.7;">앱 없이 전화 한 통으로 주문 화면 접속.</p>
         </div>
-        <div class="card" style="padding:28px 24px;text-align:center;">
-          <div style="width:64px;height:64px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;">📷</div>
-          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">QR &amp; 링크</h3>
-          <p style="font-size:13px;color:var(--sub);line-height:1.7;">QR코드 스캔 또는 링크 클릭으로 바로 플레이스 주문 화면에 접속.</p>
+        <div style="background:#fff;border:1px solid #E5E5E5;border-radius:16px;padding:28px 18px;text-align:center;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 16px;">📷</div>
+          <h3 style="font-size:14px;font-weight:800;margin-bottom:8px;">QR &amp; 링크</h3>
+          <p style="font-size:12px;color:#666;line-height:1.7;">QR코드 스캔 또는 링크로 바로 접속.</p>
         </div>
-        <div class="card" style="padding:28px 24px;text-align:center;">
-          <div style="width:64px;height:64px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;">🏠</div>
-          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">홈 바로가기</h3>
-          <p style="font-size:13px;color:var(--sub);line-height:1.7;">스마트폰 홈 화면에 콜팝 아이콘을 추가하여 앱처럼 빠르게 접속.</p>
+        <div style="background:#fff;border:1px solid #E5E5E5;border-radius:16px;padding:28px 18px;text-align:center;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#FF6B35,#FF8C5A);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 16px;">🏠</div>
+          <h3 style="font-size:14px;font-weight:800;margin-bottom:8px;">홈 바로가기</h3>
+          <p style="font-size:12px;color:#666;line-height:1.7;">홈 화면에 추가하여 앱처럼 빠르게 접속.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <hr class="divider">
-
-  <!-- APP DOWNLOAD -->
-  <section id="download" class="section" style="background:linear-gradient(135deg,#FF6B35 0%,#FF8C5A 100%);">
-    <div class="wrap" style="text-align:center;">
-      <div style="font-size:52px;margin-bottom:20px;">📱</div>
-      <h2 style="font-size:clamp(26px,4vw,40px);font-weight:900;color:#fff;letter-spacing:-.02em;margin-bottom:16px;">
-        지금 바로 콜팝 앱을<br>설치하세요
-      </h2>
-      <p style="font-size:16px;color:rgba(255,255,255,.8);line-height:1.8;margin-bottom:40px;">
-        설치 후 바로 주문 가능합니다.<br>앱스토어 없이 홈 화면에 바로 추가됩니다.
-      </p>
-      <div id="install-btns-wrap" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;">
-        <button id="download-android-btn" onclick="handleInstall()" class="btn-white" style="padding:16px 32px;font-size:16px;min-width:200px;">
-          <span>🤖</span> Android 설치
-        </button>
-        <button id="download-ios-btn" onclick="showInstallGuide()" class="btn-outline-white" style="padding:16px 32px;font-size:16px;min-width:200px;">
-          <span>🍎</span> iPhone 설치 안내
-        </button>
+  <!-- APP DOWNLOAD CTA -->
+  <section id="download" style="background:linear-gradient(135deg,#FF6B35 0%,#FF8C5A 100%);padding:60px 0;">
+    <div style="max-width:560px;margin:0 auto;padding:0 24px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:16px;">📱</div>
+      <h2 style="font-size:clamp(22px,4vw,34px);font-weight:900;color:#fff;letter-spacing:-.02em;margin-bottom:12px;">지금 바로 콜팝 앱을<br>설치하세요</h2>
+      <p style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.8;margin-bottom:36px;">설치 후 바로 주문 가능합니다.<br>앱스토어 없이 홈 화면에 바로 추가됩니다.</p>
+      <div id="install-btns-wrap" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
+        <button id="download-android-btn" onclick="handleInstall()" class="btn-white" style="padding:14px 28px;font-size:15px;min-width:170px;"><span>🤖</span> Android 설치</button>
+        <button id="download-ios-btn" onclick="showInstallGuide()" class="btn-outline-white" style="padding:14px 28px;font-size:15px;min-width:170px;"><span>🍎</span> iPhone 설치 안내</button>
       </div>
-      <p id="desktop-msg" style="display:none;font-size:15px;color:rgba(255,255,255,.85);margin-bottom:20px;">📱 모바일 기기에서 앱을 설치하실 수 있습니다</p>
-      <p id="download-hint" style="font-size:13px;color:rgba(255,255,255,.6);"></p>
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <!-- PARTNERS CTA -->
-  <section class="section" style="background:var(--bg);">
-    <div class="wrap">
-      <div style="text-align:center;margin-bottom:48px;">
-        <div class="section-label">파트너십</div>
-        <h2 class="section-title">콜팝과 함께하세요</h2>
-        <p class="section-desc">플레이스 운영자와 가맹점 모두를 위한 기회가 있습니다</p>
-      </div>
-      <div class="grid-2">
-        <div class="card" style="padding:40px;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:linear-gradient(135deg,rgba(255,107,53,.06),transparent);border-radius:0 12px 0 120px;"></div>
-          <div style="font-size:40px;margin-bottom:20px;">🏢</div>
-          <h3 style="font-size:22px;font-weight:900;margin-bottom:12px;">플레이스 운영하기</h3>
-          <p style="font-size:14px;color:var(--sub);line-height:1.8;margin-bottom:28px;">
-            우리 조직만의 배달 플랫폼을 무료로 만드세요.<br>
-            주문마다 최대 1.5% 수익이 쌓입니다.<br>
-            교회, 동문회, 기업 모두 가능합니다.
-          </p>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
-            <span style="background:#FFF3EE;color:var(--orange);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">무료 개설</span>
-            <span style="background:#FFF3EE;color:var(--orange);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">최대 1.5% 수익</span>
-            <span style="background:#FFF3EE;color:var(--orange);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">전용 번호 제공</span>
-          </div>
-          <button class="btn-primary" style="padding:13px 28px;font-size:15px;width:100%;" onclick="goTabAndScroll('place','place-apply-form')">플레이스 신청하기 →</button>
-        </div>
-        <div class="card" style="padding:40px;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:linear-gradient(135deg,rgba(26,26,46,.06),transparent);border-radius:0 12px 0 120px;"></div>
-          <div style="font-size:40px;margin-bottom:20px;">🍽️</div>
-          <h3 style="font-size:22px;font-weight:900;margin-bottom:12px;">가맹점 등록하기</h3>
-          <p style="font-size:14px;color:var(--sub);line-height:1.8;margin-bottom:28px;">
-            콜팝 가맹점으로 등록하고 새로운 고객을 만나세요.<br>
-            중개 수수료 없이 운영할 수 있습니다.<br>
-            최소주문금액·거리제한 없이 더 많은 주문을.
-          </p>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
-            <span style="background:#EEF2FF;color:var(--navy);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">수수료 없음</span>
-            <span style="background:#EEF2FF;color:var(--navy);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">거리제한 없음</span>
-            <span style="background:#EEF2FF;color:var(--navy);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;">간편 등록</span>
-          </div>
-          <button style="padding:13px 28px;font-size:15px;width:100%;background:var(--navy);color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;transition:background 0.18s,transform 0.12s;" onmouseover="this.style.background='#2a2a4e'" onmouseout="this.style.background='var(--navy)'" onmousedown="this.style.transform='scale(0.98)'" onmouseup="this.style.transform=''" onclick="goTabAndScroll('store','store-inquiry-form')">가맹점 신청하기 →</button>
-        </div>
-      </div>
+      <p id="desktop-msg" style="display:none;font-size:14px;color:rgba(255,255,255,.85);margin-bottom:16px;">📱 모바일 기기에서 앱을 설치하실 수 있습니다</p>
+      <p id="download-hint" style="font-size:12px;color:rgba(255,255,255,.6);"></p>
     </div>
   </section>
 
