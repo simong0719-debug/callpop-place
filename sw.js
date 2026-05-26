@@ -14,6 +14,8 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  // Only intercept same-origin requests — never touch external CDNs
+  if (!e.request.url.startsWith(self.location.origin)) return;
   e.respondWith(
     fetch(e.request).catch(() => caches.match(e.request))
   );
