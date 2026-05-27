@@ -664,10 +664,6 @@
             <input type="text" name="target_users" placeholder="예: 교회 성도, 동문회 회원, 지역 주민" class="finput">
           </div>
           <div>
-            <label class="flabel">예상 가맹점 수</label>
-            <input type="number" name="expected_stores" placeholder="0" min="0" class="finput">
-          </div>
-          <div>
             <label class="flabel">운영 시작 희망일</label>
             <input type="date" name="start_date" class="finput">
           </div>
@@ -824,7 +820,6 @@
       address:         fd.get('address')          || null,
       place_intro:     fd.get('place_intro')      || null,
       target_users:    fd.get('target_users')     || null,
-      expected_stores: fd.get('expected_stores')  ? parseInt(fd.get('expected_stores')) : null,
       start_date:      fd.get('start_date')       || null,
       bank_name:       fd.get('bank_name')        || null,
       account_number:  fd.get('account_number')   || null,
