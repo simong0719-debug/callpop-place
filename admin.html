@@ -546,9 +546,9 @@
         <div class="form-field">
           <label style="display:flex;justify-content:space-between;align-items:baseline;">
             <span>플레이스명 (한글) <span style="color:#E3001B">*</span></span>
-            <span id="name-kr-count" style="font-size:11px;font-weight:400;color:#bbb;">0/10</span>
+            <span id="name-kr-count" style="font-size:11px;font-weight:400;color:#bbb;">0/8</span>
           </label>
-          <input id="edit-place-name-kr" type="text" placeholder="예: 강남역" maxlength="10">
+          <input id="edit-place-name-kr" type="text" placeholder="예: 강남역" maxlength="8">
         </div>
         <div class="form-field">
           <label>플레이스명 (영문)</label>
@@ -879,12 +879,12 @@ function applyFilters() {
 
 // ─── Modal ───────────────────────────────────
 document.getElementById('edit-place-name-kr').addEventListener('input', function () {
-  document.getElementById('name-kr-count').textContent = this.value.length + '/10';
+  document.getElementById('name-kr-count').textContent = this.value.length + '/8';
 });
 
 function fillModalFields(app) {
   document.getElementById('edit-place-name-kr').value   = app.place_name_kr    || '';
-  document.getElementById('name-kr-count').textContent  = (app.place_name_kr || '').length + '/10';
+  document.getElementById('name-kr-count').textContent  = (app.place_name_kr || '').length + '/8';
   document.getElementById('edit-place-name-en').value   = app.place_name_en    || '';
   document.getElementById('edit-place-type').value      = app.place_type       || '';
   document.getElementById('edit-expected-stores').value = app.expected_stores  ?? '';
