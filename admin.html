@@ -336,7 +336,7 @@
 <div id="login-screen">
   <div id="login-box">
     <div class="login-logo-header">
-      <img src="brand_logo/callpop_logo_light.png" alt="CallPop"
+      <img src="brand_logo/callpop_logo_orange.png" alt="CallPop"
            onerror="this.style.display='none';document.querySelector('.login-logo-text').style.display='block'">
       <span class="login-logo-text">CALLPOP</span>
     </div>
@@ -360,7 +360,8 @@
 <div id="dashboard" style="display:none">
 
   <header id="app-header">
-    <img src="brand_logo/callpop_logo_light.png" alt="CallPop"
+    <img src="brand_logo/callpop_logo_orange.png" alt="CallPop"
+         style="filter:brightness(0) invert(1)"
          onerror="this.style.display='none';document.querySelector('.header-logo-text').style.display='block'">
     <span class="header-logo-text">CALLPOP</span>
     <span class="admin-badge">ADMIN</span>
@@ -410,6 +411,7 @@
           <option value="취소">취소</option>
         </select>
         <button class="refresh-btn" id="refresh-btn">↻ 새로고침</button>
+        <button class="btn-save" id="new-place-btn" style="padding:8px 18px;font-size:13px;white-space:nowrap;">+ 플레이스 추가</button>
       </div>
 
       <div class="table-wrap">
@@ -538,34 +540,102 @@
     </div>
     <div class="modal-body">
 
-      <!-- 신청 정보 (읽기 전용) -->
-      <div class="section-label">신청 정보</div>
-      <div class="info-grid" id="modal-info-grid"></div>
+      <!-- 플레이스 기본 정보 -->
+      <div class="section-label">플레이스 정보</div>
+
+      <div class="info-grid">
+        <div class="form-field">
+          <label>플레이스명 (한글) <span style="color:#E3001B">*</span></label>
+          <input id="edit-place-name-kr" type="text" placeholder="예: 강남역">
+        </div>
+        <div class="form-field">
+          <label>플레이스명 (영문)</label>
+          <input id="edit-place-name-en" type="text" placeholder="예: gangnam">
+        </div>
+        <div class="form-field">
+          <label>플레이스 유형</label>
+          <input id="edit-place-type" type="text" placeholder="예: 오피스, 아파트">
+        </div>
+        <div class="form-field">
+          <label>예상 가맹점 수</label>
+          <input id="edit-expected-stores" type="number" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>플레이스 소개</label>
+        <textarea id="edit-place-intro" placeholder="방문자에게 보여줄 플레이스 소개를 입력하세요..." style="min-height:72px;"></textarea>
+      </div>
+      <div class="info-grid">
+        <div class="form-field">
+          <label>사업자명</label>
+          <input id="edit-biz-name" type="text">
+        </div>
+        <div class="form-field">
+          <label>대표자</label>
+          <input id="edit-representative" type="text">
+        </div>
+        <div class="form-field">
+          <label>담당자</label>
+          <input id="edit-manager" type="text">
+        </div>
+        <div class="form-field">
+          <label>전화번호</label>
+          <input id="edit-phone" type="tel">
+        </div>
+        <div class="form-field">
+          <label>이메일</label>
+          <input id="edit-email" type="email">
+        </div>
+        <div class="form-field">
+          <label>타겟 이용자</label>
+          <input id="edit-target-users" type="text" placeholder="예: 직장인, 주민">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>주소</label>
+        <input id="edit-address" type="text">
+      </div>
+      <div class="info-grid">
+        <div class="form-field">
+          <label>운영 시작 희망일</label>
+          <input id="edit-start-date" type="date">
+        </div>
+        <div class="form-field">
+          <label>정산 은행</label>
+          <input id="edit-bank-name" type="text">
+        </div>
+        <div class="form-field">
+          <label>예금주</label>
+          <input id="edit-account-holder" type="text">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>문의 사항</label>
+        <textarea id="edit-message" style="min-height:60px;"></textarea>
+      </div>
 
       <hr class="modal-divider">
 
-      <!-- 관리 설정 (편집 가능) -->
+      <!-- 관리 설정 -->
       <div class="section-label">관리 설정</div>
 
-      <div class="form-field">
-        <label>플레이스 소개</label>
-        <textarea id="edit-place-intro" placeholder="방문자에게 보여줄 플레이스 소개를 입력하세요..." style="min-height:80px;"></textarea>
-      </div>
-      <div class="form-field">
-        <label>콜팝전화번호</label>
-        <input id="edit-callpop-phone" type="tel" placeholder="콜팝 부여 전화번호 (예: 1644-xxxx)">
-      </div>
-      <div class="form-field">
-        <label>착신번호</label>
-        <input id="edit-forwarding" type="tel" placeholder="착신 번호 (예: 0507-xxxx-xxxx)">
-      </div>
-      <div class="form-field">
-        <label>링크주소1</label>
-        <input id="edit-link1" type="url" placeholder="https://example.com/menu">
-      </div>
-      <div class="form-field">
-        <label>링크주소2</label>
-        <input id="edit-link2" type="url" placeholder="https://example.com/info">
+      <div class="info-grid">
+        <div class="form-field">
+          <label>콜팝전화번호</label>
+          <input id="edit-callpop-phone" type="tel" placeholder="예: 1644-xxxx">
+        </div>
+        <div class="form-field">
+          <label>착신번호</label>
+          <input id="edit-forwarding" type="tel" placeholder="예: 0507-xxxx-xxxx">
+        </div>
+        <div class="form-field">
+          <label>링크주소1</label>
+          <input id="edit-link1" type="url" placeholder="https://...">
+        </div>
+        <div class="form-field">
+          <label>링크주소2</label>
+          <input id="edit-link2" type="url" placeholder="https://...">
+        </div>
       </div>
       <div class="form-field" style="background:#FFFBF0;border:1.5px solid #FCD34D;border-radius:6px;padding:12px 14px;">
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:0;">
@@ -646,6 +716,7 @@ let sb;
 // ─── State ───────────────────────────────────
 let allApps   = [];
 let currentId = null;
+let isCreating = false;
 let allStores   = [];
 let currentStoreId = null;
 
@@ -805,56 +876,66 @@ function applyFilters() {
 }
 
 // ─── Modal ───────────────────────────────────
+function fillModalFields(app) {
+  document.getElementById('edit-place-name-kr').value   = app.place_name_kr    || '';
+  document.getElementById('edit-place-name-en').value   = app.place_name_en    || '';
+  document.getElementById('edit-place-type').value      = app.place_type       || '';
+  document.getElementById('edit-expected-stores').value = app.expected_stores  ?? '';
+  document.getElementById('edit-place-intro').value     = app.place_intro      || '';
+  document.getElementById('edit-biz-name').value        = app.biz_name         || '';
+  document.getElementById('edit-representative').value  = app.representative   || '';
+  document.getElementById('edit-manager').value         = app.manager          || '';
+  document.getElementById('edit-phone').value           = app.phone            || '';
+  document.getElementById('edit-email').value           = app.email            || '';
+  document.getElementById('edit-target-users').value    = app.target_users     || '';
+  document.getElementById('edit-address').value         = app.address          || '';
+  document.getElementById('edit-start-date').value      = app.start_date       || '';
+  document.getElementById('edit-bank-name').value       = app.bank_name        || '';
+  document.getElementById('edit-account-holder').value  = app.account_holder   || '';
+  document.getElementById('edit-message').value         = app.message          || '';
+  document.getElementById('edit-callpop-phone').value   = app.callpop_phone    || '';
+  document.getElementById('edit-forwarding').value      = app.forwarding_number|| '';
+  document.getElementById('edit-link1').value           = app.link_url         || '';
+  document.getElementById('edit-link2').value           = app.link_url2        || '';
+  document.getElementById('edit-featured').checked      = !!app.is_featured;
+  document.getElementById('edit-status').value          = app.status           || '대기중';
+  document.getElementById('edit-memo').value            = app.admin_memo       || '';
+}
+
 function openModal(id) {
   const app = allApps.find(a => a.id === id);
   if (!app) return;
   currentId = id;
+  isCreating = false;
 
   document.getElementById('modal-title').textContent =
     (app.place_name_kr || '신청 상세') + ' — 편집';
 
-  const INFO_FIELDS = [
-    ['플레이스명 (한글)', app.place_name_kr],
-    ['플레이스명 (영문)', app.place_name_en],
-    ['플레이스 유형',     app.place_type],
-    ['사업자명',          app.biz_name],
-    ['대표자',            app.representative],
-    ['담당자',            app.manager],
-    ['전화번호',          app.phone],
-    ['이메일',            app.email],
-    ['주소',              app.address],
-    ['플레이스 소개',     app.place_intro],
-    ['타겟 이용자',       app.target_users],
-    ['예상 가맹점 수',    app.expected_stores ? app.expected_stores + '개' : null],
-    ['운영 시작 희망일',  app.start_date],
-    ['정산 은행',         app.bank_name],
-    ['예금주',            app.account_holder],
-    ['문의 사항',         app.message],
-  ];
+  fillModalFields(app);
 
-  document.getElementById('modal-info-grid').innerHTML = INFO_FIELDS
-    .filter(([, v]) => v != null && v !== '')
-    .map(([label, value]) => `
-      <div class="info-item">
-        <div class="i-label">${esc(label)}</div>
-        <div class="i-value">${esc(String(value))}</div>
-      </div>
-    `).join('');
+  document.getElementById('save-ok').style.display        = 'none';
+  document.getElementById('modal-save-btn').disabled      = false;
+  document.getElementById('modal-save-btn').textContent   = '저장';
+  document.getElementById('modal-delete-btn').style.display  = '';
+  document.getElementById('modal-delete-btn').disabled       = false;
+  document.getElementById('modal-delete-btn').textContent    = '삭제';
 
-  document.getElementById('edit-place-intro').value   = app.place_intro        || '';
-  document.getElementById('edit-callpop-phone').value = app.callpop_phone      || '';
-  document.getElementById('edit-forwarding').value    = app.forwarding_number  || '';
-  document.getElementById('edit-link1').value    = app.link_url    || '';
-  document.getElementById('edit-link2').value    = app.link_url2   || '';
-  document.getElementById('edit-featured').checked = !!app.is_featured;
-  document.getElementById('edit-status').value         = app.status             || '대기중';
-  document.getElementById('edit-memo').value           = app.admin_memo         || '';
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
 
-  document.getElementById('save-ok').style.display      = 'none';
-  document.getElementById('modal-save-btn').disabled    = false;
-  document.getElementById('modal-save-btn').textContent = '저장';
-  document.getElementById('modal-delete-btn').disabled    = false;
-  document.getElementById('modal-delete-btn').textContent = '삭제';
+function openNewPlaceModal() {
+  currentId = null;
+  isCreating = true;
+
+  document.getElementById('modal-title').textContent = '새 플레이스 추가';
+  fillModalFields({});
+  document.getElementById('edit-status').value = '대기중';
+
+  document.getElementById('save-ok').style.display        = 'none';
+  document.getElementById('modal-save-btn').disabled      = false;
+  document.getElementById('modal-save-btn').textContent   = '추가';
+  document.getElementById('modal-delete-btn').style.display  = 'none';
 
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -864,6 +945,7 @@ function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
   currentId = null;
+  isCreating = false;
 }
 
 document.getElementById('modal-close-btn').addEventListener('click', closeModal);
@@ -882,53 +964,84 @@ document.addEventListener('keydown', e => {
 // ─── Save ────────────────────────────────────
 document.getElementById('modal-save-btn').addEventListener('click', saveModal);
 
+function collectModalFields() {
+  const isFeatured = document.getElementById('edit-featured').checked;
+  const esRaw = document.getElementById('edit-expected-stores').value.trim();
+  return {
+    place_name_kr:     document.getElementById('edit-place-name-kr').value.trim()    || null,
+    place_name_en:     document.getElementById('edit-place-name-en').value.trim()    || null,
+    place_type:        document.getElementById('edit-place-type').value.trim()       || null,
+    expected_stores:   esRaw !== '' ? parseInt(esRaw, 10) : null,
+    place_intro:       document.getElementById('edit-place-intro').value.trim()      || null,
+    biz_name:          document.getElementById('edit-biz-name').value.trim()         || null,
+    representative:    document.getElementById('edit-representative').value.trim()   || null,
+    manager:           document.getElementById('edit-manager').value.trim()          || null,
+    phone:             document.getElementById('edit-phone').value.trim()            || null,
+    email:             document.getElementById('edit-email').value.trim()            || null,
+    target_users:      document.getElementById('edit-target-users').value.trim()     || null,
+    address:           document.getElementById('edit-address').value.trim()          || null,
+    start_date:        document.getElementById('edit-start-date').value             || null,
+    bank_name:         document.getElementById('edit-bank-name').value.trim()        || null,
+    account_holder:    document.getElementById('edit-account-holder').value.trim()  || null,
+    message:           document.getElementById('edit-message').value.trim()          || null,
+    callpop_phone:     document.getElementById('edit-callpop-phone').value.trim()    || null,
+    forwarding_number: document.getElementById('edit-forwarding').value.trim()       || null,
+    link_url:          document.getElementById('edit-link1').value.trim()            || null,
+    link_url2:         document.getElementById('edit-link2').value.trim()            || null,
+    is_featured:       isFeatured,
+    status:            document.getElementById('edit-status').value,
+    admin_memo:        document.getElementById('edit-memo').value.trim()             || null,
+  };
+}
+
 async function saveModal() {
-  if (!currentId) return;
+  if (!isCreating && !currentId) return;
+
+  const nameKr = document.getElementById('edit-place-name-kr').value.trim();
+  if (!nameKr) { alert('플레이스명 (한글)은 필수입니다.'); return; }
 
   const btn = document.getElementById('modal-save-btn');
   const ok  = document.getElementById('save-ok');
 
-  btn.textContent = '저장 중...';
+  btn.textContent = isCreating ? '추가 중...' : '저장 중...';
   btn.disabled = true;
   ok.style.display = 'none';
 
-  const isFeatured = document.getElementById('edit-featured').checked;
-  const updates = {
-    place_intro:       document.getElementById('edit-place-intro').value.trim()   || null,
-    callpop_phone:     document.getElementById('edit-callpop-phone').value.trim() || null,
-    forwarding_number: document.getElementById('edit-forwarding').value.trim()    || null,
-    link_url:  document.getElementById('edit-link1').value.trim() || null,
-    link_url2: document.getElementById('edit-link2').value.trim() || null,
-    status:            document.getElementById('edit-status').value,
-    admin_memo:        document.getElementById('edit-memo').value.trim()           || null,
-    is_featured:       isFeatured,
-  };
+  const fields = collectModalFields();
 
-  // 기본 플레이스는 1개만 허용 — 다른 항목 해제
-  if (isFeatured) {
-    await sb.from('callpop_applications').update({ is_featured: false }).neq('id', currentId);
+  // 기본 플레이스는 1개만 허용
+  if (fields.is_featured) {
+    const q = sb.from('callpop_applications').update({ is_featured: false }).eq('is_featured', true);
+    if (!isCreating && currentId) await q.neq('id', currentId);
+    else await q;
   }
 
-  const { error } = await sb
-    .from('callpop_applications')
-    .update(updates)
-    .eq('id', currentId);
+  let error, data;
+  if (isCreating) {
+    ({ error, data } = await sb.from('callpop_applications').insert(fields).select().single());
+  } else {
+    ({ error } = await sb.from('callpop_applications').update(fields).eq('id', currentId));
+  }
 
   if (error) {
-    btn.textContent = '저장 실패 — 다시 시도';
+    btn.textContent = isCreating ? '추가 실패 — 다시 시도' : '저장 실패 — 다시 시도';
     btn.disabled = false;
-    alert('저장 실패: ' + error.message);
+    alert((isCreating ? '추가' : '저장') + ' 실패: ' + error.message);
     return;
   }
 
-  const idx = allApps.findIndex(a => a.id === currentId);
-  if (idx !== -1) Object.assign(allApps[idx], updates);
+  if (isCreating && data) {
+    allApps.unshift(data);
+  } else {
+    const idx = allApps.findIndex(a => a.id === currentId);
+    if (idx !== -1) Object.assign(allApps[idx], fields);
+  }
 
   updateStats();
   applyFilters();
 
   ok.style.display = 'block';
-  btn.textContent  = '저장';
+  btn.textContent  = isCreating ? '추가' : '저장';
   btn.disabled     = false;
 
   setTimeout(closeModal, 1200);
@@ -1089,6 +1202,8 @@ async function deleteApp() {
   applyFilters();
   closeModal();
 }
+
+document.getElementById('new-place-btn').addEventListener('click', openNewPlaceModal);
 
 // ─── 가맹점 신청 로드 ────────────────────────
 document.getElementById('s-refresh-btn').addEventListener('click', loadStores);
