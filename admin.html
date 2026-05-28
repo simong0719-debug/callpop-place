@@ -646,6 +646,13 @@
           <span style="font-size:12px;color:#888;font-weight:400;">(가맹점 신청 시 추천으로 표시됨)</span>
         </label>
       </div>
+      <div class="form-field" style="background:#F0FFF4;border:1.5px solid #86EFAC;border-radius:6px;padding:12px 14px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:0;">
+          <input type="checkbox" id="edit-recommended" style="width:17px;height:17px;accent-color:#16A34A;cursor:pointer;">
+          <span style="font-size:14px;font-weight:700;">추천 플레이스로 표시</span>
+          <span style="font-size:12px;color:#888;font-weight:400;">(앱 플레이스 변경 목록에 표시됨)</span>
+        </label>
+      </div>
       <div class="form-field">
         <label>처리 상태</label>
         <select id="edit-status">
@@ -905,6 +912,7 @@ function fillModalFields(app) {
   document.getElementById('edit-link1').value           = app.link_url         || '';
   document.getElementById('edit-link2').value           = app.link_url2        || '';
   document.getElementById('edit-featured').checked      = !!app.is_featured;
+  document.getElementById('edit-recommended').checked   = app.is_recommended !== false;
   document.getElementById('edit-status').value          = app.status           || '대기중';
   document.getElementById('edit-memo').value            = app.admin_memo       || '';
 }
@@ -996,6 +1004,7 @@ function collectModalFields() {
     link_url:          document.getElementById('edit-link1').value.trim()            || null,
     link_url2:         document.getElementById('edit-link2').value.trim()            || null,
     is_featured:       isFeatured,
+    is_recommended:    document.getElementById('edit-recommended').checked,
     status:            document.getElementById('edit-status').value,
     admin_memo:        document.getElementById('edit-memo').value.trim()             || null,
   };
