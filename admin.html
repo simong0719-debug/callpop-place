@@ -375,6 +375,7 @@
     <div class="tab-bar">
       <button class="tab-btn active" id="tab-place-btn" onclick="switchTab('place')">플레이스 신청</button>
       <button class="tab-btn" id="tab-store-btn" onclick="switchTab('store')">가맹점 신청</button>
+      <button class="tab-btn" id="tab-notif-btn" onclick="switchTab('notif')">알림 발송</button>
     </div>
 
     <!-- ══ 플레이스 신청 패널 ══ -->
@@ -492,6 +493,69 @@
         </table>
       </div>
 
+    </div>
+
+    <!-- ══ 알림 발송 패널 ══ -->
+    <div class="tab-panel" id="tab-notif">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;">
+
+        <!-- 발송 폼 -->
+        <div style="background:#fff;border-radius:10px;padding:24px;box-shadow:0 1px 4px rgba(0,0,0,.07);">
+          <div style="font-size:15px;font-weight:800;margin-bottom:20px;">새 알림 작성</div>
+
+          <div class="form-field">
+            <label>탭 구분</label>
+            <select id="notif-tab">
+              <option value="alerts">알림 (배달현황·플레이스공지 등)</option>
+              <option value="benefits">혜택 (이벤트·쿠폰 등)</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>알림 유형</label>
+            <select id="notif-type">
+              <option value="general">일반</option>
+              <option value="delivery">배달현황</option>
+              <option value="place">플레이스 공지</option>
+              <option value="wishlist">찜매장 혜택</option>
+              <option value="event">이벤트</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>제목 <span style="color:#E3001B">*</span></label>
+            <input id="notif-title" type="text" placeholder="알림 제목을 입력하세요">
+          </div>
+          <div class="form-field">
+            <label>내용</label>
+            <textarea id="notif-body" placeholder="알림 내용 (선택)" style="min-height:80px;"></textarea>
+          </div>
+          <div class="form-field">
+            <label>발송 대상</label>
+            <select id="notif-target" onchange="toggleTargetUser()">
+              <option value="all">전체 이용자</option>
+              <option value="user">특정 이용자</option>
+            </select>
+          </div>
+          <div class="form-field" id="notif-user-field" style="display:none;">
+            <label>이용자 이메일</label>
+            <input id="notif-user-email" type="email" placeholder="대상 이용자 이메일">
+            <div id="notif-user-result" style="font-size:12px;margin-top:6px;color:#888;"></div>
+          </div>
+
+          <p id="notif-send-msg" style="font-size:13px;min-height:18px;margin-bottom:10px;"></p>
+          <button class="btn-save" id="notif-send-btn" style="width:100%;padding:12px;" onclick="sendNotification()">발송하기</button>
+        </div>
+
+        <!-- 최근 발송 목록 -->
+        <div style="background:#fff;border-radius:10px;padding:24px;box-shadow:0 1px 4px rgba(0,0,0,.07);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <span style="font-size:15px;font-weight:800;">최근 발송</span>
+            <button class="refresh-btn" onclick="loadNotifications()" style="padding:6px 12px;font-size:12px;">↻ 새로고침</button>
+          </div>
+          <div id="notif-list"><p style="color:#bbb;font-size:14px;text-align:center;padding:20px 0;">불러오는 중...</p></div>
+        </div>
+
+      </div>
     </div>
 
   </div>
@@ -735,11 +799,12 @@ let currentStoreId = null;
 
 // ─── Tab 전환 ────────────────────────────────
 function switchTab(tab) {
-  document.getElementById('tab-place').classList.toggle('active', tab === 'place');
-  document.getElementById('tab-store').classList.toggle('active', tab === 'store');
-  document.getElementById('tab-place-btn').classList.toggle('active', tab === 'place');
-  document.getElementById('tab-store-btn').classList.toggle('active', tab === 'store');
+  ['place','store','notif'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', tab === t);
+    document.getElementById('tab-' + t + '-btn').classList.toggle('active', tab === t);
+  });
   if (tab === 'store' && allStores.length === 0) loadStores();
+  if (tab === 'notif') loadNotifications();
 }
 
 // ─── Init ────────────────────────────────────
@@ -1402,6 +1467,92 @@ function esc(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+// ─── 알림 발송 ────────────────────────────────
+function toggleTargetUser() {
+  const show = document.getElementById('notif-target').value === 'user';
+  document.getElementById('notif-user-field').style.display = show ? '' : 'none';
+  if (!show) document.getElementById('notif-user-result').textContent = '';
+}
+
+async function resolveUserByEmail(email) {
+  // service_role 없이 profiles 테이블로 조회 (이메일은 auth.users에 있어 직접 접근 불가)
+  // profiles 테이블에 email 컬럼이 있다고 가정, 없으면 null 반환
+  const { data } = await sb.from('profiles').select('id').eq('email', email).maybeSingle();
+  return data?.id ?? null;
+}
+
+async function sendNotification() {
+  const btn = document.getElementById('notif-send-btn');
+  const msg = document.getElementById('notif-send-msg');
+  const title = document.getElementById('notif-title').value.trim();
+  if (!title) { msg.style.color = '#E3001B'; msg.textContent = '제목을 입력해주세요.'; return; }
+
+  btn.disabled = true;
+  msg.textContent = '';
+
+  const payload = {
+    tab:         document.getElementById('notif-tab').value,
+    type:        document.getElementById('notif-type').value,
+    title,
+    body:        document.getElementById('notif-body').value.trim() || null,
+    target_type: document.getElementById('notif-target').value,
+    target_user_id: null,
+  };
+
+  if (payload.target_type === 'user') {
+    const email = document.getElementById('notif-user-email').value.trim();
+    if (!email) { msg.style.color = '#E3001B'; msg.textContent = '이용자 이메일을 입력해주세요.'; btn.disabled = false; return; }
+    const uid = await resolveUserByEmail(email);
+    if (!uid) { msg.style.color = '#E3001B'; msg.textContent = '해당 이메일의 이용자를 찾을 수 없습니다.'; btn.disabled = false; return; }
+    payload.target_user_id = uid;
+    document.getElementById('notif-user-result').textContent = `✓ uid: ${uid}`;
+  }
+
+  const { error } = await sb.from('notifications').insert(payload);
+  if (error) {
+    msg.style.color = '#E3001B'; msg.textContent = '발송 실패: ' + error.message;
+  } else {
+    msg.style.color = '#1b7e3a'; msg.textContent = '✓ 발송 완료!';
+    document.getElementById('notif-title').value = '';
+    document.getElementById('notif-body').value = '';
+    loadNotifications();
+  }
+  btn.disabled = false;
+}
+
+const NOTIF_TYPE_LABEL = { delivery:'배달현황', place:'플레이스공지', wishlist:'찜매장혜택', event:'이벤트', general:'일반' };
+
+async function loadNotifications() {
+  const el = document.getElementById('notif-list');
+  el.innerHTML = '<p style="color:#bbb;font-size:14px;text-align:center;padding:20px 0;">불러오는 중...</p>';
+  const { data, error } = await sb.from('notifications').select('*').order('created_at', { ascending: false }).limit(30);
+  if (error || !data || data.length === 0) {
+    el.innerHTML = '<p style="color:#bbb;font-size:14px;text-align:center;padding:20px 0;">발송 내역이 없습니다.</p>';
+    return;
+  }
+  el.innerHTML = data.map(n => `
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f5f5f5;">
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+          <span style="font-size:11px;padding:1px 7px;border-radius:10px;background:${n.tab==='alerts'?'#e3f0ff':'#FFF0EA'};color:${n.tab==='alerts'?'#1565c0':'#FF6B35'};font-weight:700;">${n.tab==='alerts'?'알림':'혜택'}</span>
+          <span style="font-size:11px;color:#aaa;">${NOTIF_TYPE_LABEL[n.type]||n.type}</span>
+          <span style="font-size:11px;color:#aaa;">· ${n.target_type==='all'?'전체':'특정'}</span>
+        </div>
+        <p style="font-size:13px;font-weight:700;margin:0;">${esc(n.title)}</p>
+        ${n.body ? `<p style="font-size:12px;color:#888;margin:2px 0 0;">${esc(n.body)}</p>` : ''}
+        <p style="font-size:11px;color:#bbb;margin:3px 0 0;">${new Date(n.created_at).toLocaleString('ko-KR')}</p>
+      </div>
+      <button onclick="deleteNotification('${n.id}')" style="flex-shrink:0;padding:4px 8px;border:1px solid #dc2626;color:#dc2626;background:#fff;border-radius:4px;font-size:11px;cursor:pointer;">삭제</button>
+    </div>
+  `).join('');
+}
+
+async function deleteNotification(id) {
+  if (!confirm('이 알림을 삭제하시겠습니까?')) return;
+  await sb.from('notifications').delete().eq('id', id);
+  loadNotifications();
 }
 </script>
 </body>
