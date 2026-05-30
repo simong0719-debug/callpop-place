@@ -727,8 +727,12 @@
           <div class="form-section-title"><span class="num">1</span>신청인 정보</div>
           <div class="grid-form-2">
             <div>
-              <label class="flabel">플레이스명 (한글) <span class="req">*</span></label>
-              <input type="text" name="place_name_kr" placeholder="예: 한마음교회 콜팝" class="finput" required>
+              <label class="flabel" style="display:flex;justify-content:space-between;align-items:baseline;">
+                <span>플레이스명 (한글) <span class="req">*</span></span>
+                <span id="name-kr-count" style="font-size:11px;font-weight:400;color:#bbb;">0/8</span>
+              </label>
+              <input type="text" name="place_name_kr" placeholder="예: 한마음교회 콜팝" class="finput" required maxlength="8"
+                oninput="document.getElementById('name-kr-count').textContent=this.value.length+'/8'">
             </div>
             <div>
               <label class="flabel">플레이스명 (영문) <span class="req">*</span></label>
@@ -785,10 +789,6 @@
             <div style="grid-column:1/-1;">
               <label class="flabel">타겟 이용자</label>
               <input type="text" name="target_users" placeholder="예: 교회 성도, 동문회 회원, 지역 주민" class="finput">
-            </div>
-            <div>
-              <label class="flabel">예상 가맹점 수</label>
-              <input type="number" name="expected_stores" placeholder="0" min="0" class="finput">
             </div>
             <div>
               <label class="flabel">운영 시작 희망일</label>
@@ -1460,7 +1460,6 @@ document.getElementById('place-form').addEventListener('submit', async function(
     address:         fd.get('address')          || null,
     place_intro:     fd.get('place_intro')      || null,
     target_users:    fd.get('target_users')     || null,
-    expected_stores: fd.get('expected_stores')  ? parseInt(fd.get('expected_stores')) : null,
     start_date:      fd.get('start_date')       || null,
     bank_name:       fd.get('bank_name')        || null,
     account_number:  fd.get('account_number')   || null,
@@ -1557,7 +1556,7 @@ async function loadPlacesData() {
     var sb = await getSb();
     var { data, error } = await sb
       .from('callpop_applications')
-      .select('id,place_name_kr,place_type,callpop_phone,start_date,expected_stores,place_intro,status,is_featured')
+      .select('id,place_name_kr,place_type,callpop_phone,start_date,place_intro,status,is_featured')
       .eq('status','운영중')
       .not('place_name_kr','is',null);
     if (error) throw error;
@@ -1616,7 +1615,7 @@ function showPopupDetail(place) {
   var rows=[
     ['플레이스명',place.place_name_kr],['플레이스유형',place.place_type],
     ['콜팝번호',place.callpop_phone],['운영개시일',place.start_date],
-    ['가맹점수',place.expected_stores?place.expected_stores+'개':null],['플레이스소개',place.place_intro]
+    ['플레이스소개',place.place_intro]
   ];
   document.getElementById('popup-detail-panel').innerHTML=
     '<table class="popup-detail-table">'+
