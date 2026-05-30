@@ -1,0 +1,7 @@
+﻿{
+  "version": "1.0.0",
+  "versionCode": 1,
+  "apkUrl": "/downloads/callpop.apk",
+  "forceUpdate": false,
+  "releaseNotes": "초기 버전"
+}

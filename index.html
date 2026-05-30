@@ -1351,6 +1351,30 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 
 // ══════════════════════════════════════
+// 앱 버전 체크 — 새 APK 필요 시 버튼 변경
+// ══════════════════════════════════════
+var INSTALLED_APK_KEY = 'callpop_installed_apk_version';
+
+async function checkAppVersion() {
+  try {
+    var res = await fetch('/app-version.json?t=' + Date.now());
+    var info = await res.json();
+    var installed = localStorage.getItem(INSTALLED_APK_KEY);
+    var btn = document.getElementById('hero-install-btn');
+    var androidBtn = document.getElementById('download-android-btn');
+    if (installed && installed !== info.version) {
+      // 설치된 버전과 다른 새 버전이 있음
+      if (btn) { btn.textContent = '🔄 앱 업데이트'; btn.style.background = '#e55a25'; }
+      if (androidBtn) { androidBtn.innerHTML = '<span>🔄</span> Android 업데이트'; }
+      var hint = document.getElementById('hero-install-hint');
+      if (hint) hint.textContent = '새 버전 ' + info.version + '이 나왔습니다. 다운로드 후 설치해주세요.';
+    }
+    return info;
+  } catch(e) { return null; }
+}
+checkAppVersion();
+
+// ══════════════════════════════════════
 // PWA 설치
 // ══════════════════════════════════════
 var deferredPrompt = null;
@@ -1384,15 +1408,23 @@ window.addEventListener('appinstalled', function() {
 });
 
 function handleInstall() {
-  if (isAndroid) {
-    var a = document.createElement('a');
-    a.href = '/downloads/callpop.apk';
-    a.download = 'callpop.apk';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    var hint = document.getElementById('hero-install-hint') || document.getElementById('download-hint');
-    if (hint) hint.textContent = '다운로드 후 파일을 열어 설치하세요.';
+  if (isAndroid || !isMobile) {
+    checkAppVersion().then(function(info) {
+      var version = (info && info.version) || '1.0.0';
+      localStorage.setItem(INSTALLED_APK_KEY, version);
+      var a = document.createElement('a');
+      a.href = (info && info.apkUrl) || '/downloads/callpop.apk';
+      a.download = 'callpop.apk';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      var btn = document.getElementById('hero-install-btn');
+      var androidBtn = document.getElementById('download-android-btn');
+      if (btn) btn.textContent = '앱설치하고 사용해보기';
+      if (androidBtn) androidBtn.innerHTML = '<span>🤖</span> Android 설치';
+      var hint = document.getElementById('hero-install-hint') || document.getElementById('download-hint');
+      if (hint) hint.textContent = '다운로드 후 파일을 열어 설치하세요.';
+    });
     return;
   }
   showInstallGuide(); // iOS는 가이드 표시
