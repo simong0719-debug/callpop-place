@@ -601,8 +601,12 @@
         </div>
         <div class="grid-form-2">
           <div>
-            <label class="flabel">플레이스명 (한글) <span class="req">*</span></label>
-            <input type="text" name="place_name_kr" placeholder="예: 한마음교회 콜팝" class="finput" required>
+            <label class="flabel" style="display:flex;justify-content:space-between;align-items:baseline;">
+              <span>플레이스명 (한글) <span class="req">*</span></span>
+              <span id="name-kr-count" style="font-size:11px;font-weight:400;color:#bbb;">0/8</span>
+            </label>
+            <input type="text" name="place_name_kr" placeholder="예: 한마음교회 콜팝" class="finput" required maxlength="8"
+              oninput="document.getElementById('name-kr-count').textContent=this.value.length+'/8'">
           </div>
           <div>
             <label class="flabel">플레이스명 (영문) <span class="req">*</span></label>

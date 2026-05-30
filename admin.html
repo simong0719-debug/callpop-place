@@ -603,6 +603,10 @@
           <input id="edit-bank-name" type="text">
         </div>
         <div class="form-field">
+          <label>계좌번호</label>
+          <input id="edit-account-number" type="text" placeholder="- 없이 숫자만">
+        </div>
+        <div class="form-field">
           <label>예금주</label>
           <input id="edit-account-holder" type="text">
         </div>
@@ -905,6 +909,7 @@ function fillModalFields(app) {
   document.getElementById('edit-address').value         = app.address          || '';
   document.getElementById('edit-start-date').value      = app.start_date       || '';
   document.getElementById('edit-bank-name').value       = app.bank_name        || '';
+  document.getElementById('edit-account-number').value  = app.account_number   || '';
   document.getElementById('edit-account-holder').value  = app.account_holder   || '';
   document.getElementById('edit-message').value         = app.message          || '';
   document.getElementById('edit-callpop-phone').value   = app.callpop_phone    || '';
@@ -997,6 +1002,7 @@ function collectModalFields() {
     address:           document.getElementById('edit-address').value.trim()          || null,
     start_date:        document.getElementById('edit-start-date').value             || null,
     bank_name:         document.getElementById('edit-bank-name').value.trim()        || null,
+    account_number:    document.getElementById('edit-account-number').value.trim()  || null,
     account_holder:    document.getElementById('edit-account-holder').value.trim()  || null,
     message:           document.getElementById('edit-message').value.trim()          || null,
     callpop_phone:     document.getElementById('edit-callpop-phone').value.trim()    || null,
