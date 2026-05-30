@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.callpop.twa",
+        "sha256_cert_fingerprints": ["BD:B2:0E:D0:62:79:20:7F:53:04:7F:20:7D:2F:44:9B:79:1F:DB:B3:78:B6:C8:7F:CD:D6:D2:1F:60:AF:40:C1"]
+      }
+    }]

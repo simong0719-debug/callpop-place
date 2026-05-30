@@ -1346,6 +1346,10 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// 새로고침 시 항상 최상단으로
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
 // ══════════════════════════════════════
 // PWA 설치
 // ══════════════════════════════════════
@@ -1356,14 +1360,11 @@ var isAndroid = /Android/i.test(navigator.userAgent);
 var isMobile = isIOS || isAndroid;
 
 if (!isMobile) {
-  ['hero-install-btn', 'install-btns-wrap'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
-  var dm = document.getElementById('desktop-msg');
-  if (dm) dm.style.display = 'block';
-  var hint = document.getElementById('hero-install-hint');
-  if (hint) hint.textContent = '모바일 기기에서 앱을 설치하세요.';
+  // PC에서도 APK 다운로드 가능 — 버튼 표시 유지, 텍스트만 변경
+  var heroBtn2 = document.getElementById('hero-install-btn');
+  if (heroBtn2) heroBtn2.textContent = 'Android APK 다운로드';
+  var hint2 = document.getElementById('hero-install-hint');
+  if (hint2) hint2.textContent = 'Android 기기에서 설치하세요. iPhone은 Safari > 공유 > 홈 화면 추가';
 }
 
 if (isStandalone) {
@@ -1383,9 +1384,15 @@ window.addEventListener('appinstalled', function() {
 });
 
 function handleInstall() {
-  if (!isMobile) return;
   if (isAndroid) {
-    window.location.href = 'https://callpop.vercel.app';
+    var a = document.createElement('a');
+    a.href = '/downloads/callpop.apk';
+    a.download = 'callpop.apk';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    var hint = document.getElementById('hero-install-hint') || document.getElementById('download-hint');
+    if (hint) hint.textContent = '다운로드 후 파일을 열어 설치하세요.';
     return;
   }
   showInstallGuide(); // iOS는 가이드 표시
