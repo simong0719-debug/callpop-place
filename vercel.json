@@ -1,7 +1,9 @@
 ﻿{
-  "rewrites": [
-    { "source": "/place",  "destination": "/place/index.html"  },
-    { "source": "/store",  "destination": "/store/index.html"  },
-    { "source": "/admin",  "destination": "/admin.html"        }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1.js" },
+    { "src": "/place",    "dest": "/place/index.html" },
+    { "src": "/store",    "dest": "/store/index.html" },
+    { "src": "/admin",    "dest": "/admin.html" },
+    { "src": "/(.*)",     "dest": "/$1" }
   ]
 }
