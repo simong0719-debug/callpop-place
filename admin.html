@@ -1513,12 +1513,37 @@ async function sendNotification() {
   const { error } = await sb.from('notifications').insert(payload);
   if (error) {
     msg.style.color = '#E3001B'; msg.textContent = '발송 실패: ' + error.message;
-  } else {
-    msg.style.color = '#1b7e3a'; msg.textContent = '✓ 발송 완료!';
-    document.getElementById('notif-title').value = '';
-    document.getElementById('notif-body').value = '';
-    loadNotifications();
+    btn.disabled = false; return;
   }
+
+  // Web Push 발송
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const pushRes = await fetch('https://callpop.vercel.app/api/push/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + session?.access_token,
+      },
+      body: JSON.stringify({
+        title: payload.title,
+        body: payload.body,
+        url: '/',
+        target_type: payload.target_type,
+        target_user_id: payload.target_user_id,
+      }),
+    });
+    const pushData = await pushRes.json();
+    msg.style.color = '#1b7e3a';
+    msg.textContent = `✓ 발송 완료! (푸시 ${pushData.sent ?? 0}대 전송)`;
+  } catch {
+    msg.style.color = '#1b7e3a';
+    msg.textContent = '✓ 알림 저장 완료 (푸시 전송 실패)';
+  }
+
+  document.getElementById('notif-title').value = '';
+  document.getElementById('notif-body').value = '';
+  loadNotifications();
   btn.disabled = false;
 }
 
