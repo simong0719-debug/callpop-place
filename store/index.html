@@ -986,7 +986,7 @@
       var sb = await getSb();
       var { data, error } = await sb
         .from('callpop_applications')
-        .select('id, place_name_kr, place_type, callpop_phone, start_date, expected_stores, place_intro, status, is_featured')
+        .select('id, place_name_kr, place_type, callpop_phone, start_date, place_intro, status, is_featured')
         .eq('status', '운영중')
         .not('place_name_kr', 'is', null);
       if (error) throw error;
@@ -1054,7 +1054,6 @@
       ['플레이스유형', place.place_type],
       ['콜팝번호',     place.callpop_phone],
       ['운영개시일',   place.start_date],
-      ['가맹점수',     place.expected_stores ? place.expected_stores + '개' : null],
       ['플레이스소개', place.place_intro],
     ];
     document.getElementById('popup-detail-panel').innerHTML =
