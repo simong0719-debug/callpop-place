@@ -708,7 +708,7 @@
         </div>
         <div class="form-field">
           <label>링크주소1</label>
-          <input id="edit-link1" type="url" placeholder="https://...">
+          <input id="edit-link1" type="url" placeholder="https://..." oninput="autoFillCallpopUrl()">
         </div>
         <div class="form-field">
           <label>링크주소2</label>
@@ -994,6 +994,7 @@ function fillModalFields(app) {
   document.getElementById('edit-forwarding').value      = app.forwarding_number|| '';
   document.getElementById('edit-link1').value           = app.link_url         || '';
   document.getElementById('edit-link2').value           = app.link_url2        || '';
+  autoFillCallpopUrl();
   document.getElementById('edit-featured').checked      = !!app.is_featured;
   document.getElementById('edit-recommended').checked   = app.is_recommended !== false;
   document.getElementById('edit-status').value          = app.status           || '대기중';
@@ -1004,6 +1005,17 @@ function updateCallpopUrl() {
   const en = (document.getElementById('edit-place-name-en').value || '').trim().toLowerCase().replace(/\s+/g, '-');
   const urlEl = document.getElementById('callpop-url-display');
   urlEl.value = en ? 'https://callpop.vercel.app/?zone=' + en : '';
+}
+
+function autoFillCallpopUrl() {
+  var link1 = document.getElementById('edit-link1').value.trim();
+  if (!link1) return;
+  try {
+    var qr = new URL(link1).searchParams.get('qr');
+    if (qr) {
+      document.getElementById('edit-link2').value = 'https://callpop.vercel.app/?zone=' + qr;
+    }
+  } catch(e) {}
 }
 
 function copyCallpopUrl() {
