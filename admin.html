@@ -616,7 +616,19 @@
         </div>
         <div class="form-field">
           <label>플레이스명 (영문)</label>
-          <input id="edit-place-name-en" type="text" placeholder="예: gangnam">
+          <input id="edit-place-name-en" type="text" placeholder="예: gangnam" oninput="updateCallpopUrl()">
+        </div>
+        <div class="form-field">
+          <label style="display:flex;justify-content:space-between;align-items:center;">
+            <span>콜팝 URL <span style="font-size:11px;font-weight:400;color:#aaa;">(콜투웹 / 공유용)</span></span>
+            <button type="button" id="copy-callpop-url-btn" onclick="copyCallpopUrl()"
+              style="font-size:11px;font-weight:600;color:#E3001B;background:none;border:1px solid #E3001B;border-radius:6px;padding:2px 10px;cursor:pointer;">
+              복사
+            </button>
+          </label>
+          <input id="callpop-url-display" type="text" readonly
+            placeholder="영문명 입력 시 자동 생성됩니다"
+            style="background:#f7f7f7;color:#555;font-size:12px;cursor:default;">
         </div>
         <div class="form-field">
           <label>플레이스 유형</label>
@@ -962,6 +974,7 @@ function fillModalFields(app) {
   document.getElementById('edit-place-name-kr').value   = app.place_name_kr    || '';
   document.getElementById('name-kr-count').textContent  = (app.place_name_kr || '').length + '/8';
   document.getElementById('edit-place-name-en').value   = app.place_name_en    || '';
+  updateCallpopUrl();
   document.getElementById('edit-place-type').value      = app.place_type       || '';
   document.getElementById('edit-expected-stores').value = app.expected_stores  ?? '';
   document.getElementById('edit-place-intro').value     = app.place_intro      || '';
@@ -985,6 +998,28 @@ function fillModalFields(app) {
   document.getElementById('edit-recommended').checked   = app.is_recommended !== false;
   document.getElementById('edit-status').value          = app.status           || '대기중';
   document.getElementById('edit-memo').value            = app.admin_memo       || '';
+}
+
+function updateCallpopUrl() {
+  const en = (document.getElementById('edit-place-name-en').value || '').trim().toLowerCase().replace(/\s+/g, '-');
+  const urlEl = document.getElementById('callpop-url-display');
+  urlEl.value = en ? 'https://callpop.vercel.app/?zone=' + en : '';
+}
+
+function copyCallpopUrl() {
+  const url = document.getElementById('callpop-url-display').value;
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(function() {
+    var btn = document.getElementById('copy-callpop-url-btn');
+    btn.textContent = '복사됨!';
+    btn.style.color = '#22c55e';
+    btn.style.borderColor = '#22c55e';
+    setTimeout(function() {
+      btn.textContent = '복사';
+      btn.style.color = '#E3001B';
+      btn.style.borderColor = '#E3001B';
+    }, 1800);
+  });
 }
 
 function openModal(id) {
