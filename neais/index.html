@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEAIS — New Era AI Services</title>
+  <meta name="description" content="NEAIS는 AI 기술로 사람과 서비스를 연결하는 기업입니다. 서로 연결되어, 모두가 더 나은 미래로.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal:    #00B4A6;
+      --teal-lt: #15DDD0;
+      --blue:    #0077CB;
+      --navy:    #0D1B2A;
+      --navy2:   #162537;
+      --text:    #1A1A2E;
+      --sub:     #4A5568;
+      --mute:    #718096;
+      --bg:      #F7F9FC;
+      --border:  #E2E8F0;
+      --white:   #FFFFFF;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans KR', 'Inter', sans-serif; color: var(--text); background: var(--white); overflow-x: hidden; }
+    img  { max-width: 100%; }
+    a    { text-decoration: none; color: inherit; }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+    .section { padding: 100px 0; }
+
+    /* ── 헤더 ── */
+    #site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(13, 27, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    #site-header .wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+    }
+    #site-header nav { display: flex; align-items: center; gap: 8px; }
+    #site-header nav a {
+      font-size: 14px; font-weight: 500; color: rgba(255,255,255,.65);
+      padding: 6px 14px; border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+    }
+    #site-header nav a:hover { color: #fff; background: rgba(255,255,255,.08); }
+    .nav-cta {
+      font-size: 13px !important; font-weight: 600 !important;
+      color: var(--teal) !important; border: 1.5px solid var(--teal) !important;
+      padding: 5px 16px !important; border-radius: 20px !important;
+    }
+    .nav-cta:hover { background: rgba(0,180,166,.15) !important; }
+
+    /* ── 로고 SVG ── */
+    .logo-mark { width: 36px; height: 36px; }
+    .logo-wordmark {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 20px; font-weight: 800; letter-spacing: .04em;
+      color: #fff;
+    }
+    .logo-text span { color: var(--teal); }
+
+    /* ── 히어로 ── */
+    #hero {
+      min-height: 100vh;
+      background: linear-gradient(160deg, var(--navy) 0%, #0a2240 55%, #061520 100%);
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute; top: -30%; right: -10%;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(0,180,166,.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    #hero::after {
+      content: '';
+      position: absolute; bottom: -20%; left: -5%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(0,119,203,.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; align-items: flex-start;
+      max-width: 760px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid rgba(0,180,166,.4);
+      border-radius: 20px; padding: 6px 16px;
+      font-size: 12px; font-weight: 600; letter-spacing: .08em;
+      color: var(--teal); margin-bottom: 32px;
+    }
+    .hero-badge::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal); animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .5; transform: scale(1.4); }
+    }
+    .hero-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4.2rem);
+      font-weight: 800; line-height: 1.12; letter-spacing: -.02em;
+      color: #fff; margin-bottom: 24px;
+    }
+    .hero-title .accent { color: var(--teal); }
+    .hero-tagline {
+      font-size: clamp(1rem, 2.2vw, 1.25rem);
+      font-weight: 400; color: rgba(255,255,255,.62);
+      line-height: 1.7; margin-bottom: 48px;
+    }
+    .hero-tagline strong { color: rgba(255,255,255,.88); font-weight: 600; }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-hero-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--teal); color: #fff;
+      font-size: 15px; font-weight: 700;
+      padding: 14px 32px; border-radius: 8px; border: none; cursor: pointer;
+      transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+    }
+    .btn-hero-primary:hover { background: #009d91; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,180,166,.4); }
+    .btn-hero-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: rgba(255,255,255,.8);
+      font-size: 15px; font-weight: 600;
+      padding: 14px 32px; border-radius: 8px;
+      border: 1.5px solid rgba(255,255,255,.2); cursor: pointer;
+      transition: border-color 0.18s, color 0.18s, transform 0.12s;
+    }
+    .btn-hero-secondary:hover { border-color: rgba(255,255,255,.6); color: #fff; transform: translateY(-2px); }
+
+    /* ── 브랜드 스토리 ── */
+    #brand-story { background: var(--bg); }
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      font-weight: 800; line-height: 1.25; color: var(--navy);
+      margin-bottom: 20px;
+    }
+    .section-body {
+      font-size: 16px; color: var(--sub); line-height: 1.9;
+      max-width: 620px;
+    }
+    .story-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      align-items: center;
+    }
+    .story-visual {
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    .story-card {
+      background: var(--white); border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 24px 28px;
+      box-shadow: 0 2px 16px rgba(13,27,42,.05);
+    }
+    .story-card-icon {
+      font-size: 24px; margin-bottom: 12px;
+    }
+    .story-card-title {
+      font-size: 15px; font-weight: 700; color: var(--navy);
+      margin-bottom: 6px;
+    }
+    .story-card-body {
+      font-size: 13px; color: var(--mute); line-height: 1.7;
+    }
+
+    /* ── 핵심가치 ── */
+    #values { background: var(--navy); }
+    #values .section-title { color: #fff; }
+    #values .section-label { color: var(--teal-lt); }
+    .values-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 24px; margin-top: 56px;
+    }
+    .value-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px; padding: 32px 24px;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .value-card:hover {
+      background: rgba(0,180,166,.1);
+      border-color: rgba(0,180,166,.35);
+      transform: translateY(-4px);
+    }
+    .value-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(0,180,166,.18); display: flex; align-items: center;
+      justify-content: center; margin-bottom: 20px;
+    }
+    .value-name {
+      font-size: 18px; font-weight: 800; color: #fff;
+      margin-bottom: 10px;
+    }
+    .value-desc {
+      font-size: 13px; color: rgba(255,255,255,.5); line-height: 1.75;
+    }
+
+    /* ── 서비스 ── */
+    #services { background: var(--bg); }
+    .service-card {
+      background: var(--white); border-radius: 20px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(13,27,42,.07);
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: stretch;
+    }
+    .service-card-content {
+      padding: 56px 48px;
+    }
+    .service-tag {
+      display: inline-block; background: rgba(0,180,166,.1);
+      color: var(--teal); font-size: 11px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 20px; margin-bottom: 20px;
+    }
+    .service-name {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 900; color: var(--navy); letter-spacing: -.02em;
+      margin-bottom: 4px;
+    }
+    .service-sub {
+      font-size: 14px; color: var(--mute); margin-bottom: 24px;
+    }
+    .service-desc {
+      font-size: 15px; color: var(--sub); line-height: 1.8;
+      margin-bottom: 32px;
+    }
+    .service-points { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+    .service-points li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--sub);
+    }
+    .service-points li::before {
+      content: ''; flex-shrink: 0;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: rgba(0,180,166,.12);
+      border: 1.5px solid var(--teal);
+      margin-top: 2px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%2300B4A6' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: center; background-size: 10px;
+    }
+    .service-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--navy); color: #fff;
+      font-size: 14px; font-weight: 700;
+      padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer;
+      transition: background 0.18s, transform 0.12s;
+    }
+    .service-btn:hover { background: var(--navy2); transform: translateY(-1px); }
+    .service-card-visual {
+      background: linear-gradient(135deg, #FF6B35 0%, #E85A25 100%);
+      display: flex; align-items: center; justify-content: center;
+      min-height: 360px;
+    }
+    .callpop-mock {
+      background: rgba(255,255,255,.12); border-radius: 16px;
+      padding: 24px; width: 180px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+    }
+    .callpop-mock-logo {
+      width: 56px; height: 56px; background: rgba(255,255,255,.2);
+      border-radius: 14px; display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+    }
+    .callpop-mock-name {
+      font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -.01em;
+    }
+    .callpop-mock-tag {
+      font-size: 11px; color: rgba(255,255,255,.7); text-align: center; line-height: 1.5;
+    }
+
+    /* ── 회사정보 ── */
+    #company-info { background: var(--white); }
+    .info-table { width: 100%; border-collapse: collapse; }
+    .info-table tr { border-bottom: 1px solid var(--border); }
+    .info-table th {
+      width: 160px; padding: 20px 24px;
+      background: var(--bg); color: var(--mute);
+      font-size: 13px; font-weight: 700; text-align: left;
+      white-space: nowrap;
+    }
+    .info-table td {
+      padding: 20px 24px; font-size: 15px; color: var(--text);
+    }
+    .info-table a { color: var(--teal); }
+    .info-wrap {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 2px 16px rgba(13,27,42,.04);
+    }
+
+    /* ── 푸터 ── */
+    #site-footer {
+      background: var(--navy);
+      padding: 64px 0 40px;
+    }
+    .footer-logo-row {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 24px;
+    }
+    .footer-tagline {
+      font-size: 15px; color: rgba(255,255,255,.45);
+      margin-bottom: 32px; line-height: 1.7;
+    }
+    .footer-info {
+      font-size: 12px; color: rgba(255,255,255,.3);
+      line-height: 2;
+    }
+    .footer-divider {
+      border: none; border-top: 1px solid rgba(255,255,255,.07);
+      margin: 40px 0 28px;
+    }
+    .footer-copy {
+      font-size: 12px; color: rgba(255,255,255,.2);
+    }
+
+    /* ── 반응형 ── */
+    @media (max-width: 900px) {
+      .story-grid { grid-template-columns: 1fr; gap: 48px; }
+      .values-grid { grid-template-columns: repeat(2, 1fr); }
+      .service-card { grid-template-columns: 1fr; }
+      .service-card-visual { min-height: 220px; }
+    }
+    @media (max-width: 600px) {
+      .wrap { padding: 0 20px; }
+      .section { padding: 72px 0; }
+      .values-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+      #site-header nav a { display: none; }
+      #site-header nav a.nav-cta { display: inline-flex; }
+      .service-card-content { padding: 36px 24px; }
+      .info-table th { width: 110px; padding: 14px 16px; }
+      .info-table td { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ 헤더 ══ -->
+<header id="site-header">
+  <div class="wrap">
+    <a href="#" class="logo-wordmark">
+      <svg class="logo-mark" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lg1" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#15DDD0"/>
+            <stop offset="50%" stop-color="#00B4A6"/>
+            <stop offset="100%" stop-color="#0055CC"/>
+          </linearGradient>
+        </defs>
+        <path d="M40 6 C37,6 31,9 26,18 L4,66 C2,72 8,76 14,73 L22,70 C27,68 29,62 31,55 L40 28 Z" fill="url(#lg1)"/>
+        <path d="M40 6 C43,6 49,9 54,18 L76,66 C78,72 72,76 66,73 L58,70 C53,68 51,62 49,55 L40 28 Z" fill="url(#lg1)"/>
+      </svg>
+      <span class="logo-text">NE<span>A</span>IS</span>
+    </a>
+    <nav>
+      <a href="#brand-story">소개</a>
+      <a href="#values">가치</a>
+      <a href="#services">서비스</a>
+      <a href="#company-info">회사정보</a>
+      <a href="mailto:contact@callpop.co.kr" class="nav-cta">문의하기</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ══ 히어로 ══ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-badge">NEW ERA AI SERVICES</div>
+      <h1 class="hero-title">
+        서로 연결되어,<br>
+        모두가 더 나은<br>
+        <span class="accent">미래로.</span>
+      </h1>
+      <p class="hero-tagline">
+        NEAIS는 <strong>AI 기술로 사람과 서비스를 연결</strong>하는 기업입니다.<br>
+        작은 연결이 모여 더 공정하고 더 따뜻한 세상을 만듭니다.
+      </p>
+      <div class="hero-btns">
+        <a href="#services" class="btn-hero-primary">서비스 보기</a>
+        <a href="#brand-story" class="btn-hero-secondary">더 알아보기</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 브랜드 스토리 ══ -->
+<section id="brand-story" class="section">
+  <div class="wrap">
+    <div class="story-grid">
+      <div>
+        <div class="section-label">Our Story</div>
+        <h2 class="section-title">기술은 연결을 위해<br>존재해야 합니다</h2>
+        <p class="section-body">
+          NEAIS는 AI 기술이 소수가 아닌 모두를 위한 도구가 되어야 한다고 믿습니다.
+          소상공인, 지역 공동체, 그리고 그들과 함께하는 사람들이 기술 격차 없이
+          더 나은 방식으로 연결될 수 있도록 실질적인 서비스를 만들어갑니다.
+        </p>
+        <br>
+        <p class="section-body">
+          &ldquo;서로 연결되어, 모두가 더 나은 미래로&rdquo;라는 모토 아래
+          우리는 상생의 생태계를 설계합니다.
+          이익이 소수에게 집중되는 구조를 바꾸고, 참여하는 모든 이가
+          함께 성장하는 플랫폼을 지향합니다.
+        </p>
+      </div>
+      <div class="story-visual">
+        <div class="story-card">
+          <div class="story-card-icon">🌐</div>
+          <div class="story-card-title">연결 중심 설계</div>
+          <div class="story-card-body">기술을 통해 소상공인·지역사회·이용자가 유기적으로 연결되는 플랫폼을 만듭니다.</div>
+        </div>
+        <div class="story-card">
+          <div class="story-card-icon">⚡</div>
+          <div class="story-card-title">AI 기반 실용화</div>
+          <div class="story-card-body">최신 AI 기술을 실제 현장에서 쓸 수 있는 형태로 빠르게 적용합니다.</div>
+        </div>
+        <div class="story-card">
+          <div class="story-card-icon">🤝</div>
+          <div class="story-card-title">상생 생태계</div>
+          <div class="story-card-body">수익이 모든 참여자에게 공정하게 돌아가는 구조를 처음부터 설계합니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 핵심가치 ══ -->
+<section id="values" class="section">
+  <div class="wrap">
+    <div class="section-label">Core Values</div>
+    <h2 class="section-title" style="color:#fff;">NEAIS가 추구하는 네 가지</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="5" cy="12" r="3" stroke="#00B4A6" stroke-width="1.8"/>
+            <circle cx="19" cy="5" r="3" stroke="#00B4A6" stroke-width="1.8"/>
+            <circle cx="19" cy="19" r="3" stroke="#00B4A6" stroke-width="1.8"/>
+            <line x1="7.8" y1="10.8" x2="16.2" y2="6.2" stroke="#00B4A6" stroke-width="1.8"/>
+            <line x1="7.8" y1="13.2" x2="16.2" y2="17.8" stroke="#00B4A6" stroke-width="1.8"/>
+          </svg>
+        </div>
+        <div class="value-name">연결</div>
+        <div class="value-desc">사람과 서비스, 기술과 현장을 잇는 다리가 됩니다. 고립된 섬이 아닌 이어진 세계를 만듭니다.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3L14.5 8.5H20L15.5 12L17.5 18L12 14.5L6.5 18L8.5 12L4 8.5H9.5L12 3Z" stroke="#00B4A6" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="value-name">상생</div>
+        <div class="value-desc">이익이 플랫폼에 집중되지 않습니다. 참여하는 모든 이에게 공정한 가치가 돌아갑니다.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" stroke="#00B4A6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="17 6 23 6 23 12" stroke="#00B4A6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="value-name">성장</div>
+        <div class="value-desc">우리와 함께하는 모든 파트너가 더 크게 성장할 수 있도록 지속적으로 혁신합니다.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="#00B4A6" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="value-name">미래</div>
+        <div class="value-desc">지금 당장의 편의를 넘어 지속 가능한 내일을 위한 기술과 구조를 만듭니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 운영 서비스 ══ -->
+<section id="services" class="section">
+  <div class="wrap">
+    <div class="section-label" style="margin-bottom:16px;">Our Services</div>
+    <h2 class="section-title" style="margin-bottom:56px;">운영 중인 서비스</h2>
+    <div class="service-card">
+      <div class="service-card-content">
+        <div class="service-tag">배달 주문 플랫폼</div>
+        <div class="service-name">CallPop</div>
+        <div class="service-sub">callpop.co.kr — 전화 한 통으로 완성되는 배달</div>
+        <p class="service-desc">
+          콜팝은 중개 수수료 없는 배달 O2O 플랫폼입니다.
+          대학, 교회, 동문회 등 모든 조직이 플레이스로 등록하면 구성원 주문 시 수익이 조직에 배분됩니다.
+          소상공인과 이용자가 함께 만드는 상생 배달 생태계입니다.
+        </p>
+        <ul class="service-points">
+          <li>중개 수수료 · 광고비 없는 투명한 구조</li>
+          <li>플레이스 시스템으로 조직이 자발적 홍보 → 무광고 성장</li>
+          <li>AI 기술로 더 스마트한 주문 경험 제공</li>
+        </ul>
+        <a href="https://callpop.co.kr" target="_blank" class="service-btn">서비스 방문하기 →</a>
+      </div>
+      <div class="service-card-visual">
+        <div class="callpop-mock">
+          <div class="callpop-mock-logo">📦</div>
+          <div class="callpop-mock-name">CallPop</div>
+          <div class="callpop-mock-tag">수수료 없는<br>배달 플랫폼</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 회사정보 ══ -->
+<section id="company-info" class="section" style="background:var(--bg);">
+  <div class="wrap">
+    <div class="section-label">Company Info</div>
+    <h2 class="section-title" style="margin-bottom:40px;">회사 정보</h2>
+    <div class="info-wrap">
+      <table class="info-table">
+        <tbody>
+          <tr>
+            <th>회사명</th>
+            <td>(주)네이스</td>
+          </tr>
+          <tr>
+            <th>영문명</th>
+            <td>NEAIS Inc.</td>
+          </tr>
+          <tr>
+            <th>슬로건</th>
+            <td>서로 연결되어, 모두가 더 나은 미래로</td>
+          </tr>
+          <tr>
+            <th>사업자번호</th>
+            <td>330-87-03914</td>
+          </tr>
+          <tr>
+            <th>사업장 주소</th>
+            <td>서울특별시 중랑구 동일로 129길 35, 2층</td>
+          </tr>
+          <tr>
+            <th>이메일</th>
+            <td><a href="mailto:contact@callpop.co.kr">contact@callpop.co.kr</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 푸터 ══ -->
+<footer id="site-footer">
+  <div class="wrap">
+    <div class="footer-logo-row">
+      <svg width="32" height="32" viewBox="0 0 80 80" fill="none">
+        <defs>
+          <linearGradient id="lg2" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#15DDD0"/>
+            <stop offset="100%" stop-color="#0077CB"/>
+          </linearGradient>
+        </defs>
+        <path d="M40 6 C37,6 31,9 26,18 L4,66 C2,72 8,76 14,73 L22,70 C27,68 29,62 31,55 L40 28 Z" fill="url(#lg2)"/>
+        <path d="M40 6 C43,6 49,9 54,18 L76,66 C78,72 72,76 66,73 L58,70 C53,68 51,62 49,55 L40 28 Z" fill="url(#lg2)"/>
+      </svg>
+      <span style="font-family:'Inter',sans-serif;font-size:18px;font-weight:800;letter-spacing:.04em;color:#fff;">NE<span style="color:var(--teal);">A</span>IS</span>
+    </div>
+    <p class="footer-tagline">서로 연결되어, 모두가 더 나은 미래로</p>
+    <div class="footer-info">
+      (주)네이스 &nbsp;|&nbsp; 사업자번호 330-87-03914<br>
+      서울특별시 중랑구 동일로 129길 35, 2층<br>
+      contact@callpop.co.kr
+    </div>
+    <hr class="footer-divider">
+    <p class="footer-copy">© 2026 NEAIS Inc. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
