@@ -220,6 +220,7 @@
         <button id="nav-home"  class="tab-btn active" onclick="goTab('home')">홈</button>
         <button id="nav-place" class="tab-btn"        onclick="goTab('place')">플레이스</button>
         <button id="nav-store" class="tab-btn"        onclick="goTab('store')">가맹점</button>
+        <button id="nav-about" class="tab-btn"        onclick="goTab('about')">회사소개</button>
       </nav>
     </div>
   </div>
@@ -1142,6 +1143,47 @@
 
 </div><!-- /tab-store -->
 
+<!-- ════════════════════════════════════════
+     TAB: 회사소개
+════════════════════════════════════════ -->
+<div id="tab-about" style="display:none;">
+  <div class="section" style="max-width:720px;margin:0 auto;">
+    <h2 style="font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:32px;">회사 소개</h2>
+
+    <div style="background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,.06);overflow:hidden;margin-bottom:32px;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="width:130px;padding:18px 20px;background:var(--bg);color:var(--sub);font-size:13px;font-weight:700;text-align:left;vertical-align:top;">회사명</th>
+            <td style="padding:18px 20px;font-size:14px;color:var(--text);">(주)네이스</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="width:130px;padding:18px 20px;background:var(--bg);color:var(--sub);font-size:13px;font-weight:700;text-align:left;vertical-align:top;">서비스명</th>
+            <td style="padding:18px 20px;font-size:14px;color:var(--text);">콜팝 (CallPop)</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="width:130px;padding:18px 20px;background:var(--bg);color:var(--sub);font-size:13px;font-weight:700;text-align:left;vertical-align:top;">사업자번호</th>
+            <td style="padding:18px 20px;font-size:14px;color:var(--text);">330-87-03914</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="width:130px;padding:18px 20px;background:var(--bg);color:var(--sub);font-size:13px;font-weight:700;text-align:left;vertical-align:top;">사업장 주소</th>
+            <td style="padding:18px 20px;font-size:14px;color:var(--text);">서울특별시 중랑구 동일로 129길 35, 2층</td>
+          </tr>
+          <tr>
+            <th style="width:130px;padding:18px 20px;background:var(--bg);color:var(--sub);font-size:13px;font-weight:700;text-align:left;vertical-align:top;">이메일</th>
+            <td style="padding:18px 20px;font-size:14px;color:var(--text);"><a href="mailto:contact@callpop.co.kr" style="color:var(--orange);text-decoration:none;">contact@callpop.co.kr</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="font-size:14px;color:var(--sub);line-height:1.8;">
+      콜팝은 소상공인과 이용자가 상생하는 수수료 없는 배달 주문 플랫폼입니다.<br>
+      대학, 교회, 동문회 등 어떤 조직이든 플레이스로 등록하면 구성원 주문 시 조직에 수익이 배분됩니다.
+    </p>
+  </div>
+</div><!-- /tab-about -->
+
 
 <!-- ════════════════════════════════════════
      FOOTER (공통)
@@ -1155,6 +1197,8 @@
         </div>
         <div style="font-size:13px;line-height:2;color:rgba(255,255,255,.55);">
           (주)네이스<br>
+          사업자번호 330-87-03914<br>
+          서울특별시 중랑구 동일로 129길 35, 2층<br>
           <a href="mailto:contact@callpop.co.kr" style="color:rgba(255,255,255,.55);text-decoration:none;">contact@callpop.co.kr</a>
         </div>
       </div>
@@ -1164,6 +1208,7 @@
           <a href="#" onclick="goTab('home');window.scrollTo(0,0);return false;" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">홈</a>
           <a href="#" onclick="goTabAndScroll('place','place-apply-form');return false;" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">플레이스 신청</a>
           <a href="#" onclick="goTabAndScroll('store','store-inquiry-form');return false;" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">가맹점 신청</a>
+          <a href="#" onclick="goTab('about');window.scrollTo(0,0);return false;" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">회사소개</a>
           <a href="/admin" style="font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;">관리자 로그인</a>
         </div>
       </div>
@@ -1295,7 +1340,7 @@
 // ══════════════════════════════════════
 // TAB 전환
 // ══════════════════════════════════════
-var TABS = ['home', 'place', 'store'];
+var TABS = ['home', 'place', 'store', 'about'];
 
 function showTab(tab) {
   TABS.forEach(function(t) {
@@ -1332,6 +1377,7 @@ function goTabAndScroll(tab, sectionId) {
   var initial = 'home';
   if (path.startsWith('/place')) initial = 'place';
   else if (path.startsWith('/store')) initial = 'store';
+  else if (path.startsWith('/about')) initial = 'about';
   showTab(initial);
 })();
 
