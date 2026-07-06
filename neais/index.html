@@ -1,372 +1,432 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NEAIS — New Era AI Services</title>
-  <meta name="description" content="NEAIS는 AI 기술로 사람과 서비스를 연결하는 기업입니다. 서로 연결되어, 모두가 더 나은 미래로.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --teal:    #00B4A6;
-      --teal-lt: #15DDD0;
-      --blue:    #0077CB;
-      --navy:    #0D1B2A;
-      --navy2:   #162537;
-      --text:    #1A1A2E;
-      --sub:     #4A5568;
-      --mute:    #718096;
-      --bg:      #F7F9FC;
-      --border:  #E2E8F0;
-      --white:   #FFFFFF;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Noto Sans KR', 'Inter', sans-serif; color: var(--text); background: var(--white); overflow-x: hidden; }
-    img  { max-width: 100%; }
-    a    { text-decoration: none; color: inherit; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEAIS — New Era AI Services</title>
+<meta name="description" content="NEAIS는 AI 기술로 사람과 서비스를 연결하는 기업입니다. 서로 연결되어, 모두가 더 나은 미래로.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ── 기본 ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans KR', 'Inter', -apple-system, sans-serif;
+  color: #1A2332; background: #fff; overflow-x: hidden; line-height: 1.6;
+}
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+strong { font-weight: 700; }
 
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
-    .section { padding: 100px 0; }
+.wrap { max-width: 1140px; margin: 0 auto; padding: 0 36px; }
+.section { padding: 112px 0; }
 
-    /* ── 헤더 ── */
-    #site-header {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(13, 27, 42, 0.95);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-    #site-header .wrap {
-      display: flex; align-items: center; justify-content: space-between;
-      height: 68px;
-    }
-    #site-header nav { display: flex; align-items: center; gap: 8px; }
-    #site-header nav a {
-      font-size: 14px; font-weight: 500; color: rgba(255,255,255,.65);
-      padding: 6px 14px; border-radius: 6px;
-      transition: color 0.15s, background 0.15s;
-    }
-    #site-header nav a:hover { color: #fff; background: rgba(255,255,255,.08); }
-    .nav-cta {
-      font-size: 13px !important; font-weight: 600 !important;
-      color: var(--teal) !important; border: 1.5px solid var(--teal) !important;
-      padding: 5px 16px !important; border-radius: 20px !important;
-    }
-    .nav-cta:hover { background: rgba(0,180,166,.15) !important; }
+/* ── 애니메이션 ── */
+.fade { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+.fade.visible { opacity: 1; transform: none; }
+.fade-d1 { transition-delay: .1s; }
+.fade-d2 { transition-delay: .2s; }
+.fade-d3 { transition-delay: .3s; }
+.fade-d4 { transition-delay: .4s; }
 
-    /* ── 로고 ── */
-    .logo-wordmark { display: flex; align-items: center; gap: 10px; }
-    .logo-img-icon { height: 36px; width: auto; }
-    .logo-img-word { height: 20px; width: auto; filter: brightness(0) invert(1); }
-    .footer-logo-icon { height: 32px; width: auto; }
-    .footer-logo-word { height: 16px; width: auto; filter: brightness(0) invert(1); opacity: .85; }
+/* ── 공통 타이포 ── */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: #00B4A6; margin-bottom: 18px;
+}
+.eyebrow::before {
+  content: ''; width: 24px; height: 2px; background: #00B4A6; border-radius: 2px;
+}
+.sec-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(2rem, 3.8vw, 3rem);
+  font-weight: 800; line-height: 1.18; letter-spacing: -.03em;
+  color: #0D1B2A; margin-bottom: 22px;
+}
+.sec-body {
+  font-size: 16px; color: #536070; line-height: 1.9; max-width: 540px;
+}
 
-    /* ── 히어로 ── */
-    #hero {
-      min-height: 100vh;
-      background: linear-gradient(160deg, var(--navy) 0%, #0a2240 55%, #061520 100%);
-      display: flex; align-items: center;
-      position: relative; overflow: hidden;
-    }
-    #hero::before {
-      content: '';
-      position: absolute; top: -30%; right: -10%;
-      width: 700px; height: 700px;
-      background: radial-gradient(circle, rgba(0,180,166,.18) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    #hero::after {
-      content: '';
-      position: absolute; bottom: -20%; left: -5%;
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(0,119,203,.14) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-inner {
-      position: relative; z-index: 2;
-      display: flex; flex-direction: column; align-items: flex-start;
-      max-width: 760px;
-    }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      border: 1px solid rgba(0,180,166,.4);
-      border-radius: 20px; padding: 6px 16px;
-      font-size: 12px; font-weight: 600; letter-spacing: .08em;
-      color: var(--teal); margin-bottom: 32px;
-    }
-    .hero-badge::before {
-      content: ''; width: 6px; height: 6px; border-radius: 50%;
-      background: var(--teal); animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: .5; transform: scale(1.4); }
-    }
-    .hero-title {
-      font-family: 'Inter', sans-serif;
-      font-size: clamp(2.6rem, 6vw, 4.2rem);
-      font-weight: 800; line-height: 1.12; letter-spacing: -.02em;
-      color: #fff; margin-bottom: 24px;
-    }
-    .hero-title .accent { color: var(--teal); }
-    .hero-tagline {
-      font-size: clamp(1rem, 2.2vw, 1.25rem);
-      font-weight: 400; color: rgba(255,255,255,.62);
-      line-height: 1.7; margin-bottom: 48px;
-    }
-    .hero-tagline strong { color: rgba(255,255,255,.88); font-weight: 600; }
-    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
-    .btn-hero-primary {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--teal); color: #fff;
-      font-size: 15px; font-weight: 700;
-      padding: 14px 32px; border-radius: 8px; border: none; cursor: pointer;
-      transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
-    }
-    .btn-hero-primary:hover { background: #009d91; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,180,166,.4); }
-    .btn-hero-secondary {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: transparent; color: rgba(255,255,255,.8);
-      font-size: 15px; font-weight: 600;
-      padding: 14px 32px; border-radius: 8px;
-      border: 1.5px solid rgba(255,255,255,.2); cursor: pointer;
-      transition: border-color 0.18s, color 0.18s, transform 0.12s;
-    }
-    .btn-hero-secondary:hover { border-color: rgba(255,255,255,.6); color: #fff; transform: translateY(-2px); }
+/* ── 버튼 ── */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #00B4A6; color: #fff;
+  font-size: 15px; font-weight: 700;
+  padding: 14px 30px; border-radius: 10px; border: none; cursor: pointer;
+  transition: background .18s, transform .12s, box-shadow .18s;
+}
+.btn-primary:hover { background: #009d91; transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,180,166,.35); }
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: #0D1B2A;
+  font-size: 15px; font-weight: 600;
+  padding: 14px 28px; border-radius: 10px;
+  border: 1.5px solid #D4DCE8; cursor: pointer;
+  transition: border-color .18s, color .18s, transform .12s;
+}
+.btn-outline:hover { border-color: #00B4A6; color: #00B4A6; transform: translateY(-2px); }
 
-    /* ── 브랜드 스토리 ── */
-    #brand-story { background: var(--bg); }
-    .section-label {
-      font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-      color: var(--teal); margin-bottom: 16px;
-    }
-    .section-title {
-      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
-      font-weight: 800; line-height: 1.25; color: var(--navy);
-      margin-bottom: 20px;
-    }
-    .section-body {
-      font-size: 16px; color: var(--sub); line-height: 1.9;
-      max-width: 620px;
-    }
-    .story-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
-      align-items: center;
-    }
-    .story-visual {
-      display: flex; flex-direction: column; gap: 20px;
-    }
-    .story-card {
-      background: var(--white); border-radius: 14px;
-      border: 1px solid var(--border);
-      padding: 24px 28px;
-      box-shadow: 0 2px 16px rgba(13,27,42,.05);
-    }
-    .story-card-icon {
-      font-size: 24px; margin-bottom: 12px;
-    }
-    .story-card-title {
-      font-size: 15px; font-weight: 700; color: var(--navy);
-      margin-bottom: 6px;
-    }
-    .story-card-body {
-      font-size: 13px; color: var(--mute); line-height: 1.7;
-    }
+/* ══════════════════════════════
+   HEADER
+══════════════════════════════ */
+#site-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  transition: box-shadow .2s;
+}
+#site-header.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,.07); }
+#site-header .wrap { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+.logo-link { display: flex; align-items: center; gap: 10px; }
+.logo-img-icon { height: 34px; width: auto; }
+.logo-img-word { height: 19px; width: auto; }
+nav { display: flex; align-items: center; gap: 4px; }
+nav a {
+  font-size: 14px; font-weight: 500; color: #4A5568;
+  padding: 6px 14px; border-radius: 7px;
+  transition: color .15s, background .15s;
+}
+nav a:hover { color: #0D1B2A; background: #F0F4F8; }
+.nav-cta {
+  font-size: 13px !important; font-weight: 700 !important;
+  background: #0D1B2A !important; color: #fff !important;
+  padding: 8px 18px !important; border-radius: 8px !important;
+  margin-left: 6px;
+  transition: background .15s, transform .12s !important;
+}
+.nav-cta:hover { background: #162537 !important; transform: translateY(-1px); }
 
-    /* ── 핵심가치 ── */
-    #values { background: var(--navy); }
-    #values .section-title { color: #fff; }
-    #values .section-label { color: var(--teal-lt); }
-    .values-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 24px; margin-top: 56px;
-    }
-    .value-card {
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 14px; padding: 32px 24px;
-      transition: background 0.2s, border-color 0.2s, transform 0.2s;
-    }
-    .value-card:hover {
-      background: rgba(0,180,166,.1);
-      border-color: rgba(0,180,166,.35);
-      transform: translateY(-4px);
-    }
-    .value-icon {
-      width: 48px; height: 48px; border-radius: 12px;
-      background: rgba(0,180,166,.18); display: flex; align-items: center;
-      justify-content: center; margin-bottom: 20px;
-    }
-    .value-name {
-      font-size: 18px; font-weight: 800; color: #fff;
-      margin-bottom: 10px;
-    }
-    .value-desc {
-      font-size: 13px; color: rgba(255,255,255,.5); line-height: 1.75;
-    }
+/* ══════════════════════════════
+   HERO
+══════════════════════════════ */
+#hero {
+  min-height: 100vh; padding-top: 70px;
+  display: flex; align-items: center;
+  background: #fff;
+  position: relative; overflow: hidden;
+}
+#hero::before {
+  content: '';
+  position: absolute; top: -20%; right: -12%;
+  width: 680px; height: 680px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,180,166,.11) 0%, transparent 68%);
+  pointer-events: none;
+}
+#hero::after {
+  content: '';
+  position: absolute; bottom: -10%; left: -5%;
+  width: 440px; height: 440px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(13,27,42,.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 64px; align-items: center;
+  padding: 80px 0 100px;
+  position: relative; z-index: 2;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1.5px solid rgba(0,180,166,.35);
+  background: rgba(0,180,166,.07);
+  border-radius: 20px; padding: 6px 16px;
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: #00B4A6; margin-bottom: 28px;
+}
+.hero-badge::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: #00B4A6; animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.45;transform:scale(1.5)} }
+.hero-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(2.8rem, 5.5vw, 4.4rem);
+  font-weight: 900; line-height: 1.1; letter-spacing: -.035em;
+  color: #0D1B2A; margin-bottom: 26px;
+}
+.hero-title .accent {
+  background: linear-gradient(135deg, #00B4A6 0%, #0077CB 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-body {
+  font-size: 17px; color: #536070; line-height: 1.8; margin-bottom: 44px;
+}
+.hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
 
-    /* ── 서비스 ── */
-    #services { background: var(--bg); }
-    .service-card {
-      background: var(--white); border-radius: 20px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      box-shadow: 0 4px 24px rgba(13,27,42,.07);
-      display: grid; grid-template-columns: 1fr 1fr;
-      align-items: stretch;
-    }
-    .service-card-content {
-      padding: 56px 48px;
-    }
-    .service-tag {
-      display: inline-block; background: rgba(0,180,166,.1);
-      color: var(--teal); font-size: 11px; font-weight: 700;
-      letter-spacing: .1em; text-transform: uppercase;
-      padding: 4px 12px; border-radius: 20px; margin-bottom: 20px;
-    }
-    .service-name {
-      font-size: clamp(1.8rem, 3vw, 2.4rem);
-      font-weight: 900; color: var(--navy); letter-spacing: -.02em;
-      margin-bottom: 4px;
-    }
-    .service-sub {
-      font-size: 14px; color: var(--mute); margin-bottom: 24px;
-    }
-    .service-desc {
-      font-size: 15px; color: var(--sub); line-height: 1.8;
-      margin-bottom: 32px;
-    }
-    .service-points { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
-    .service-points li {
-      display: flex; align-items: flex-start; gap: 10px;
-      font-size: 14px; color: var(--sub);
-    }
-    .service-points li::before {
-      content: ''; flex-shrink: 0;
-      width: 18px; height: 18px; border-radius: 50%;
-      background: rgba(0,180,166,.12);
-      border: 1.5px solid var(--teal);
-      margin-top: 2px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%2300B4A6' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: center; background-size: 10px;
-    }
-    .service-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--navy); color: #fff;
-      font-size: 14px; font-weight: 700;
-      padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer;
-      transition: background 0.18s, transform 0.12s;
-    }
-    .service-btn:hover { background: var(--navy2); transform: translateY(-1px); }
-    .service-card-visual {
-      background: linear-gradient(135deg, #FF6B35 0%, #E85A25 100%);
-      display: flex; align-items: center; justify-content: center;
-      min-height: 360px;
-    }
-    .callpop-mock {
-      background: rgba(255,255,255,.12); border-radius: 16px;
-      padding: 24px; width: 180px;
-      display: flex; flex-direction: column; align-items: center; gap: 12px;
-    }
-    .callpop-mock-logo {
-      width: 56px; height: 56px; background: rgba(255,255,255,.2);
-      border-radius: 14px; display: flex; align-items: center; justify-content: center;
-      font-size: 26px;
-    }
-    .callpop-mock-name {
-      font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -.01em;
-    }
-    .callpop-mock-tag {
-      font-size: 11px; color: rgba(255,255,255,.7); text-align: center; line-height: 1.5;
-    }
+/* 히어로 우측 비주얼 */
+.hero-visual {
+  position: relative; display: flex;
+  align-items: center; justify-content: center;
+  height: 460px;
+}
+.hero-circle-wrap {
+  position: relative; width: 300px; height: 300px;
+}
+.hero-circle-ring {
+  position: absolute; inset: -20px; border-radius: 50%;
+  border: 1.5px dashed rgba(0,180,166,.3);
+  animation: spin-slow 24s linear infinite;
+}
+.hero-circle-ring-2 {
+  position: absolute; inset: -48px; border-radius: 50%;
+  border: 1px solid rgba(0,180,166,.12);
+}
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.hero-circle-bg {
+  width: 300px; height: 300px; border-radius: 50%;
+  background: linear-gradient(140deg, #f0fafb 0%, #e8f6f5 100%);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 24px 64px rgba(0,180,166,.12);
+}
+.hero-icon { width: 160px; height: auto; }
 
-    /* ── 회사정보 ── */
-    #company-info { background: var(--white); }
-    .info-table { width: 100%; border-collapse: collapse; }
-    .info-table tr { border-bottom: 1px solid var(--border); }
-    .info-table th {
-      width: 160px; padding: 20px 24px;
-      background: var(--bg); color: var(--mute);
-      font-size: 13px; font-weight: 700; text-align: left;
-      white-space: nowrap;
-    }
-    .info-table td {
-      padding: 20px 24px; font-size: 15px; color: var(--text);
-    }
-    .info-table a { color: var(--teal); }
-    .info-wrap {
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: 16px; overflow: hidden;
-      box-shadow: 0 2px 16px rgba(13,27,42,.04);
-      display: grid; grid-template-columns: 320px 1fr;
-    }
-    .company-logo-panel {
-      background: linear-gradient(150deg, #e8f4f9 0%, #f0fbfa 100%);
-      border-right: 1px solid var(--border);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 52px 40px; gap: 20px;
-    }
-    .company-logo-full { width: 100%; max-width: 220px; height: auto; }
-    .company-logo-tag {
-      font-size: 13px; font-weight: 500; letter-spacing: .02em;
-      color: var(--mute); text-align: center; line-height: 1.6;
-    }
-    @media (max-width: 900px) {
-      .info-wrap { grid-template-columns: 1fr; }
-      .company-logo-panel { border-right: none; border-bottom: 1px solid var(--border); padding: 40px 32px; }
-    }
+/* 플로팅 카드 */
+.float-card {
+  position: absolute; background: #fff;
+  border-radius: 12px; padding: 12px 16px;
+  box-shadow: 0 8px 32px rgba(13,27,42,.1);
+  font-size: 13px; font-weight: 600; color: #0D1B2A;
+  display: flex; align-items: center; gap: 8px;
+  white-space: nowrap;
+}
+.float-dot { width: 8px; height: 8px; border-radius: 50%; background: #00B4A6; flex-shrink: 0; }
+.float-card-1 { top: 40px; right: -20px; animation: float1 4s ease-in-out infinite; }
+.float-card-2 { bottom: 80px; left: -24px; animation: float2 4.5s ease-in-out infinite; }
+.float-card-3 {
+  bottom: 32px; right: 10px; animation: float3 5s ease-in-out infinite;
+  background: #0D1B2A; color: #fff;
+}
+.float-card-3 .float-dot { background: #00B4A6; }
+@keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+@keyframes float3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
 
-    /* ── 푸터 ── */
-    #site-footer {
-      background: var(--navy);
-      padding: 64px 0 40px;
-    }
-    .footer-logo-row {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 24px;
-    }
-    .footer-tagline {
-      font-size: 15px; color: rgba(255,255,255,.45);
-      margin-bottom: 32px; line-height: 1.7;
-    }
-    .footer-info {
-      font-size: 12px; color: rgba(255,255,255,.3);
-      line-height: 2;
-    }
-    .footer-divider {
-      border: none; border-top: 1px solid rgba(255,255,255,.07);
-      margin: 40px 0 28px;
-    }
-    .footer-copy {
-      font-size: 12px; color: rgba(255,255,255,.2);
-    }
+/* ══════════════════════════════
+   STORY
+══════════════════════════════ */
+#brand-story { background: #F7F9FC; }
+.story-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 72px; align-items: start;
+}
+.story-cards { display: flex; flex-direction: column; gap: 16px; }
+.story-card {
+  background: #fff; border-radius: 16px;
+  border: 1px solid #E4EBF5;
+  padding: 28px 32px;
+  box-shadow: 0 2px 16px rgba(13,27,42,.04);
+  transition: transform .2s, box-shadow .2s;
+}
+.story-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(13,27,42,.09); }
+.story-card-head {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+}
+.story-card-icon {
+  width: 44px; height: 44px; border-radius: 11px;
+  background: rgba(0,180,166,.1); display: flex; align-items: center;
+  justify-content: center; font-size: 20px; flex-shrink: 0;
+}
+.story-card-title { font-size: 15px; font-weight: 700; color: #0D1B2A; }
+.story-card-body { font-size: 13px; color: #7A8899; line-height: 1.75; }
 
-    /* ── 반응형 ── */
-    @media (max-width: 900px) {
-      .story-grid { grid-template-columns: 1fr; gap: 48px; }
-      .values-grid { grid-template-columns: repeat(2, 1fr); }
-      .service-card { grid-template-columns: 1fr; }
-      .service-card-visual { min-height: 220px; }
-    }
-    @media (max-width: 600px) {
-      .wrap { padding: 0 20px; }
-      .section { padding: 72px 0; }
-      .values-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
-      #site-header nav a { display: none; }
-      #site-header nav a.nav-cta { display: inline-flex; }
-      .service-card-content { padding: 36px 24px; }
-      .info-table th { width: 110px; padding: 14px 16px; }
-      .info-table td { padding: 14px 16px; }
-    }
-  </style>
+/* ══════════════════════════════
+   VALUES
+══════════════════════════════ */
+#values { background: #fff; }
+.values-intro { max-width: 520px; margin-bottom: 72px; }
+.values-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.value-item {
+  padding: 48px 52px;
+  border-top: 1px solid #E4EBF5;
+  transition: background .2s;
+  position: relative;
+}
+.value-item:nth-child(odd) { border-right: 1px solid #E4EBF5; }
+.value-item:hover { background: #F7FFFE; }
+.value-num {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  color: #00B4A6; margin-bottom: 20px;
+}
+.value-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em;
+  color: #0D1B2A; margin-bottom: 14px;
+}
+.value-desc { font-size: 14px; color: #6B7A8D; line-height: 1.8; max-width: 280px; }
+.value-bar {
+  position: absolute; top: 0; left: 52px;
+  width: 40px; height: 3px; background: #00B4A6; border-radius: 0 0 3px 3px;
+}
+
+/* ══════════════════════════════
+   SERVICES
+══════════════════════════════ */
+#services { background: #F0FAFB; }
+.service-wrap {
+  background: #fff; border-radius: 24px;
+  border: 1px solid #D8EEF0;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,180,166,.08);
+  display: grid; grid-template-columns: 1.1fr 1fr;
+}
+.service-content { padding: 60px 56px; }
+.service-tag {
+  display: inline-block;
+  background: rgba(0,180,166,.1); color: #00B4A6;
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 20px; margin-bottom: 24px;
+}
+.service-name {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 900; letter-spacing: -.04em; color: #0D1B2A;
+  margin-bottom: 6px; line-height: 1.1;
+}
+.service-url { font-size: 13px; color: #9AABB8; margin-bottom: 24px; }
+.service-desc { font-size: 15px; color: #536070; line-height: 1.85; margin-bottom: 36px; }
+.service-points { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
+.service-points li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 14px; color: #4A5568;
+}
+.service-points li::before {
+  content: ''; flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px;
+  border-radius: 50%; background: rgba(0,180,166,.12);
+  border: 1.5px solid #00B4A6;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6l2.5 2.5 4.5-5' stroke='%2300B4A6' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: center; background-size: 10px;
+}
+.service-visual {
+  background: linear-gradient(140deg, #FF6B35 0%, #E8420E 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 56px 40px; gap: 28px;
+}
+.callpop-badge {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,.15); border-radius: 16px;
+  padding: 20px 28px;
+}
+.callpop-icon {
+  width: 56px; height: 56px; border-radius: 14px;
+  background: rgba(255,255,255,.25); display: flex; align-items: center;
+  justify-content: center; font-size: 28px;
+}
+.callpop-info {}
+.callpop-name { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -.02em; }
+.callpop-sub { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
+.callpop-stat {
+  display: flex; gap: 12px;
+}
+.callpop-stat-item {
+  background: rgba(255,255,255,.12); border-radius: 10px; padding: 12px 18px;
+  text-align: center;
+}
+.callpop-stat-val { font-size: 17px; font-weight: 800; color: #fff; }
+.callpop-stat-lbl { font-size: 11px; color: rgba(255,255,255,.65); margin-top: 2px; }
+
+/* ══════════════════════════════
+   COMPANY INFO
+══════════════════════════════ */
+#company-info { background: #fff; }
+.info-card {
+  background: #fff; border: 1px solid #E4EBF5;
+  border-radius: 20px; overflow: hidden;
+  box-shadow: 0 4px 24px rgba(13,27,42,.05);
+  display: grid; grid-template-columns: 320px 1fr;
+}
+.info-logo-panel {
+  background: linear-gradient(150deg, #EAF6F6 0%, #F2FBFA 100%);
+  border-right: 1px solid #D8EEF0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 56px 44px; gap: 18px;
+}
+.info-logo-img { width: 100%; max-width: 210px; height: auto; }
+.info-logo-tagline {
+  font-size: 12.5px; color: #7A9BA0; text-align: center; line-height: 1.65;
+}
+.info-table { width: 100%; border-collapse: collapse; }
+.info-table tr { border-bottom: 1px solid #F0F4F8; }
+.info-table tr:last-child { border-bottom: none; }
+.info-table th {
+  width: 140px; padding: 22px 28px;
+  background: #FAFBFD; color: #8896A7;
+  font-size: 12px; font-weight: 700; text-align: left; white-space: nowrap;
+}
+.info-table td { padding: 22px 28px; font-size: 15px; color: #1A2332; }
+.info-table a { color: #00B4A6; }
+
+/* ══════════════════════════════
+   FOOTER
+══════════════════════════════ */
+#site-footer {
+  background: #0D1B2A;
+  padding: 72px 0 44px;
+}
+.footer-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 56px; flex-wrap: wrap; gap: 40px;
+}
+.footer-brand {}
+.footer-logo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.footer-logo-icon { height: 30px; width: auto; }
+.footer-logo-word { height: 16px; width: auto; filter: brightness(0) invert(1); opacity: .9; }
+.footer-tagline { font-size: 14px; color: rgba(255,255,255,.4); line-height: 1.7; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; }
+.footer-links a { font-size: 13px; color: rgba(255,255,255,.4); transition: color .15s; }
+.footer-links a:hover { color: rgba(255,255,255,.75); }
+.footer-divider { border: none; border-top: 1px solid rgba(255,255,255,.06); margin-bottom: 28px; }
+.footer-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-copy { font-size: 12px; color: rgba(255,255,255,.2); }
+.footer-info { font-size: 12px; color: rgba(255,255,255,.22); line-height: 1.8; text-align: right; }
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+@media (max-width: 960px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 56px; }
+  .hero-visual { height: 320px; }
+  .hero-circle-wrap { width: 220px; height: 220px; }
+  .hero-circle-bg { width: 220px; height: 220px; }
+  .hero-icon { width: 120px; }
+  .story-grid { grid-template-columns: 1fr; gap: 48px; }
+  .values-list { grid-template-columns: 1fr; }
+  .value-item:nth-child(odd) { border-right: none; }
+  .service-wrap { grid-template-columns: 1fr; }
+  .service-visual { min-height: 240px; }
+  .info-card { grid-template-columns: 1fr; }
+  .info-logo-panel { border-right: none; border-bottom: 1px solid #D8EEF0; }
+  .footer-top { flex-direction: column; }
+  .footer-info { text-align: left; }
+}
+@media (max-width: 600px) {
+  .wrap { padding: 0 20px; }
+  .section { padding: 80px 0; }
+  .hero-grid { padding: 60px 0 72px; }
+  nav a:not(.nav-cta) { display: none; }
+  .hero-title { font-size: 2.6rem; }
+  .service-content { padding: 40px 28px; }
+  .info-table th { width: 100px; padding: 16px 18px; font-size: 11px; }
+  .info-table td { padding: 16px 18px; font-size: 13px; }
+  .float-card-2 { left: -8px; }
+  .float-card-1 { right: -4px; }
+}
+</style>
 </head>
 <body>
 
 <!-- ══ 헤더 ══ -->
 <header id="site-header">
   <div class="wrap">
-    <a href="#" class="logo-wordmark">
+    <a href="#" class="logo-link">
       <img src="images/logo-icon.png" class="logo-img-icon" alt="NEAIS">
       <img src="images/logo-word.png" class="logo-img-word" alt="NEAIS">
     </a>
@@ -375,7 +435,7 @@
       <a href="#values">가치</a>
       <a href="#services">서비스</a>
       <a href="#company-info">회사정보</a>
-      <a href="mailto:contact@callpop.co.kr" class="nav-cta">문의하기</a>
+      <a href="mailto:contact@neais.co.kr" class="nav-cta">문의하기</a>
     </nav>
   </div>
 </header>
@@ -383,20 +443,40 @@
 <!-- ══ 히어로 ══ -->
 <section id="hero">
   <div class="wrap">
-    <div class="hero-inner">
-      <div class="hero-badge">NEW ERA AI SERVICES</div>
-      <h1 class="hero-title">
-        서로 연결되어,<br>
-        모두가 더 나은<br>
-        <span class="accent">미래로.</span>
-      </h1>
-      <p class="hero-tagline">
-        NEAIS는 <strong>AI 기술로 사람과 서비스를 연결</strong>하는 기업입니다.<br>
-        작은 연결이 모여 더 공정하고 더 따뜻한 세상을 만듭니다.
-      </p>
-      <div class="hero-btns">
-        <a href="#services" class="btn-hero-primary">서비스 보기</a>
-        <a href="#brand-story" class="btn-hero-secondary">더 알아보기</a>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge fade">NEW ERA AI SERVICES</div>
+        <h1 class="hero-title fade fade-d1">
+          서로 연결되어,<br>
+          모두가 더<br>
+          <span class="accent">나은 미래로.</span>
+        </h1>
+        <p class="hero-body fade fade-d2">
+          NEAIS는 <strong>AI 기술로 사람과 서비스를 연결</strong>하는 기업입니다.<br>
+          작은 연결이 모여 더 공정하고 따뜻한 세상을 만듭니다.
+        </p>
+        <div class="hero-btns fade fade-d3">
+          <a href="#services" class="btn-primary">서비스 보기</a>
+          <a href="#brand-story" class="btn-outline">더 알아보기 →</a>
+        </div>
+      </div>
+      <div class="hero-visual fade fade-d2">
+        <div class="hero-circle-wrap">
+          <div class="hero-circle-ring"></div>
+          <div class="hero-circle-ring-2"></div>
+          <div class="hero-circle-bg">
+            <img src="images/logo-icon.png" class="hero-icon" alt="NEAIS icon">
+          </div>
+        </div>
+        <div class="float-card float-card-1">
+          <span class="float-dot"></span>AI 기반 실용화
+        </div>
+        <div class="float-card float-card-2">
+          <span class="float-dot"></span>상생 생태계
+        </div>
+        <div class="float-card float-card-3">
+          <span class="float-dot"></span>CallPop 운영중 ↗
+        </div>
       </div>
     </div>
   </div>
@@ -407,35 +487,38 @@
   <div class="wrap">
     <div class="story-grid">
       <div>
-        <div class="section-label">Our Story</div>
-        <h2 class="section-title">기술은 연결을 위해<br>존재해야 합니다</h2>
-        <p class="section-body">
+        <div class="eyebrow fade">Our Story</div>
+        <h2 class="sec-title fade fade-d1">기술은 연결을<br>위해 존재해야 합니다</h2>
+        <p class="sec-body fade fade-d2" style="margin-bottom:20px">
           NEAIS는 AI 기술이 소수가 아닌 모두를 위한 도구가 되어야 한다고 믿습니다.
           소상공인, 지역 공동체, 그리고 그들과 함께하는 사람들이 기술 격차 없이
           더 나은 방식으로 연결될 수 있도록 실질적인 서비스를 만들어갑니다.
         </p>
-        <br>
-        <p class="section-body">
-          &ldquo;서로 연결되어, 모두가 더 나은 미래로&rdquo;라는 모토 아래
-          우리는 상생의 생태계를 설계합니다.
+        <p class="sec-body fade fade-d3">
           이익이 소수에게 집중되는 구조를 바꾸고, 참여하는 모든 이가
           함께 성장하는 플랫폼을 지향합니다.
         </p>
       </div>
-      <div class="story-visual">
-        <div class="story-card">
-          <div class="story-card-icon">🌐</div>
-          <div class="story-card-title">연결 중심 설계</div>
+      <div class="story-cards">
+        <div class="story-card fade fade-d1">
+          <div class="story-card-head">
+            <div class="story-card-icon">🌐</div>
+            <div class="story-card-title">연결 중심 설계</div>
+          </div>
           <div class="story-card-body">기술을 통해 소상공인·지역사회·이용자가 유기적으로 연결되는 플랫폼을 만듭니다.</div>
         </div>
-        <div class="story-card">
-          <div class="story-card-icon">⚡</div>
-          <div class="story-card-title">AI 기반 실용화</div>
+        <div class="story-card fade fade-d2">
+          <div class="story-card-head">
+            <div class="story-card-icon">⚡</div>
+            <div class="story-card-title">AI 기반 실용화</div>
+          </div>
           <div class="story-card-body">최신 AI 기술을 실제 현장에서 쓸 수 있는 형태로 빠르게 적용합니다.</div>
         </div>
-        <div class="story-card">
-          <div class="story-card-icon">🤝</div>
-          <div class="story-card-title">상생 생태계</div>
+        <div class="story-card fade fade-d3">
+          <div class="story-card-head">
+            <div class="story-card-icon">🤝</div>
+            <div class="story-card-title">상생 생태계</div>
+          </div>
           <div class="story-card-body">수익이 모든 참여자에게 공정하게 돌아가는 구조를 처음부터 설계합니다.</div>
         </div>
       </div>
@@ -446,47 +529,32 @@
 <!-- ══ 핵심가치 ══ -->
 <section id="values" class="section">
   <div class="wrap">
-    <div class="section-label">Core Values</div>
-    <h2 class="section-title" style="color:#fff;">NEAIS가 추구하는 네 가지</h2>
-    <div class="values-grid">
-      <div class="value-card">
-        <div class="value-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle cx="5" cy="12" r="3" stroke="#00B4A6" stroke-width="1.8"/>
-            <circle cx="19" cy="5" r="3" stroke="#00B4A6" stroke-width="1.8"/>
-            <circle cx="19" cy="19" r="3" stroke="#00B4A6" stroke-width="1.8"/>
-            <line x1="7.8" y1="10.8" x2="16.2" y2="6.2" stroke="#00B4A6" stroke-width="1.8"/>
-            <line x1="7.8" y1="13.2" x2="16.2" y2="17.8" stroke="#00B4A6" stroke-width="1.8"/>
-          </svg>
-        </div>
+    <div class="values-intro">
+      <div class="eyebrow fade">Core Values</div>
+      <h2 class="sec-title fade fade-d1">NEAIS가 추구하는<br>네 가지 가치</h2>
+    </div>
+    <div class="values-list">
+      <div class="value-item fade">
+        <div class="value-bar"></div>
+        <div class="value-num">01</div>
         <div class="value-name">연결</div>
         <div class="value-desc">사람과 서비스, 기술과 현장을 잇는 다리가 됩니다. 고립된 섬이 아닌 이어진 세계를 만듭니다.</div>
       </div>
-      <div class="value-card">
-        <div class="value-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M12 3L14.5 8.5H20L15.5 12L17.5 18L12 14.5L6.5 18L8.5 12L4 8.5H9.5L12 3Z" stroke="#00B4A6" stroke-width="1.8" stroke-linejoin="round"/>
-          </svg>
-        </div>
+      <div class="value-item fade fade-d1">
+        <div class="value-bar"></div>
+        <div class="value-num">02</div>
         <div class="value-name">상생</div>
         <div class="value-desc">이익이 플랫폼에 집중되지 않습니다. 참여하는 모든 이에게 공정한 가치가 돌아갑니다.</div>
       </div>
-      <div class="value-card">
-        <div class="value-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" stroke="#00B4A6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <polyline points="17 6 23 6 23 12" stroke="#00B4A6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
+      <div class="value-item fade fade-d2">
+        <div class="value-bar"></div>
+        <div class="value-num">03</div>
         <div class="value-name">성장</div>
         <div class="value-desc">우리와 함께하는 모든 파트너가 더 크게 성장할 수 있도록 지속적으로 혁신합니다.</div>
       </div>
-      <div class="value-card">
-        <div class="value-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="#00B4A6" stroke-width="1.8" stroke-linejoin="round"/>
-          </svg>
-        </div>
+      <div class="value-item fade fade-d3">
+        <div class="value-bar"></div>
+        <div class="value-num">04</div>
         <div class="value-name">미래</div>
         <div class="value-desc">지금 당장의 편의를 넘어 지속 가능한 내일을 위한 기술과 구조를 만듭니다.</div>
       </div>
@@ -494,33 +562,49 @@
   </div>
 </section>
 
-<!-- ══ 운영 서비스 ══ -->
+<!-- ══ 서비스 ══ -->
 <section id="services" class="section">
   <div class="wrap">
-    <div class="section-label" style="margin-bottom:16px;">Our Services</div>
-    <h2 class="section-title" style="margin-bottom:56px;">운영 중인 서비스</h2>
-    <div class="service-card">
-      <div class="service-card-content">
+    <div class="eyebrow fade">Our Services</div>
+    <h2 class="sec-title fade fade-d1" style="margin-bottom:48px">운영 중인 서비스</h2>
+    <div class="service-wrap fade fade-d2">
+      <div class="service-content">
         <div class="service-tag">배달 주문 플랫폼</div>
         <div class="service-name">CallPop</div>
-        <div class="service-sub">callpop.co.kr — 전화 한 통으로 완성되는 배달</div>
+        <div class="service-url">callpop.co.kr</div>
         <p class="service-desc">
           콜팝은 중개 수수료 없는 배달 O2O 플랫폼입니다.
-          대학, 교회, 동문회 등 모든 조직이 플레이스로 등록하면 구성원 주문 시 수익이 조직에 배분됩니다.
-          소상공인과 이용자가 함께 만드는 상생 배달 생태계입니다.
+          대학, 교회, 동문회 등 모든 조직이 플레이스로 등록하면
+          구성원 주문 시 수익이 조직에 배분됩니다.
         </p>
         <ul class="service-points">
-          <li>중개 수수료 · 광고비 없는 투명한 구조</li>
-          <li>플레이스 시스템으로 조직이 자발적 홍보 → 무광고 성장</li>
+          <li>중개 수수료·광고비 없는 투명한 구조</li>
+          <li>플레이스 시스템으로 자발적 홍보 → 무광고 성장</li>
           <li>AI 기술로 더 스마트한 주문 경험 제공</li>
         </ul>
-        <a href="https://callpop.co.kr" target="_blank" class="service-btn">서비스 방문하기 →</a>
+        <a href="https://callpop.co.kr" target="_blank" class="btn-primary">서비스 방문하기 →</a>
       </div>
-      <div class="service-card-visual">
-        <div class="callpop-mock">
-          <div class="callpop-mock-logo">📦</div>
-          <div class="callpop-mock-name">CallPop</div>
-          <div class="callpop-mock-tag">수수료 없는<br>배달 플랫폼</div>
+      <div class="service-visual">
+        <div class="callpop-badge">
+          <div class="callpop-icon">📦</div>
+          <div class="callpop-info">
+            <div class="callpop-name">CallPop</div>
+            <div class="callpop-sub">수수료 없는 배달 플랫폼</div>
+          </div>
+        </div>
+        <div class="callpop-stat">
+          <div class="callpop-stat-item">
+            <div class="callpop-stat-val">0%</div>
+            <div class="callpop-stat-lbl">중개 수수료</div>
+          </div>
+          <div class="callpop-stat-item">
+            <div class="callpop-stat-val">∞</div>
+            <div class="callpop-stat-lbl">조직 등록</div>
+          </div>
+          <div class="callpop-stat-item">
+            <div class="callpop-stat-val">AI</div>
+            <div class="callpop-stat-lbl">기반 주문</div>
+          </div>
         </div>
       </div>
     </div>
@@ -528,41 +612,23 @@
 </section>
 
 <!-- ══ 회사정보 ══ -->
-<section id="company-info" class="section" style="background:var(--bg);">
+<section id="company-info" class="section" style="background:#F7F9FC">
   <div class="wrap">
-    <div class="section-label">Company Info</div>
-    <h2 class="section-title" style="margin-bottom:40px;">회사 정보</h2>
-    <div class="info-wrap">
-      <div class="company-logo-panel">
-        <img src="images/logo-full.png" class="company-logo-full" alt="NEAIS">
-        <div class="company-logo-tag">서로 연결되어, 모두가 더 나은 미래로</div>
+    <div class="eyebrow fade">Company Info</div>
+    <h2 class="sec-title fade fade-d1" style="margin-bottom:44px">회사 정보</h2>
+    <div class="info-card fade fade-d2">
+      <div class="info-logo-panel">
+        <img src="images/logo-full.png" class="info-logo-img" alt="NEAIS">
+        <div class="info-logo-tagline">서로 연결되어,<br>모두가 더 나은 미래로</div>
       </div>
       <table class="info-table">
         <tbody>
-          <tr>
-            <th>회사명</th>
-            <td>(주)네이스</td>
-          </tr>
-          <tr>
-            <th>영문명</th>
-            <td>NEAIS Inc.</td>
-          </tr>
-          <tr>
-            <th>슬로건</th>
-            <td>서로 연결되어, 모두가 더 나은 미래로</td>
-          </tr>
-          <tr>
-            <th>사업자번호</th>
-            <td>330-87-03914</td>
-          </tr>
-          <tr>
-            <th>사업장 주소</th>
-            <td>서울특별시 중랑구 동일로 129길 35, 2층</td>
-          </tr>
-          <tr>
-            <th>이메일</th>
-            <td><a href="mailto:contact@callpop.co.kr">contact@callpop.co.kr</a></td>
-          </tr>
+          <tr><th>회사명</th><td>(주)네이스</td></tr>
+          <tr><th>영문명</th><td>NEAIS Inc.</td></tr>
+          <tr><th>슬로건</th><td>서로 연결되어, 모두가 더 나은 미래로</td></tr>
+          <tr><th>사업자번호</th><td>330-87-03914</td></tr>
+          <tr><th>사업장 주소</th><td>서울특별시 중랑구 동일로 129길 35, 2층</td></tr>
+          <tr><th>이메일</th><td><a href="mailto:contact@neais.co.kr">contact@neais.co.kr</a></td></tr>
         </tbody>
       </table>
     </div>
@@ -572,20 +638,49 @@
 <!-- ══ 푸터 ══ -->
 <footer id="site-footer">
   <div class="wrap">
-    <div class="footer-logo-row">
-      <img src="images/logo-icon.png" class="footer-logo-icon" alt="NEAIS">
-      <img src="images/logo-word.png" class="footer-logo-word" alt="NEAIS">
-    </div>
-    <p class="footer-tagline">서로 연결되어, 모두가 더 나은 미래로</p>
-    <div class="footer-info">
-      (주)네이스 &nbsp;|&nbsp; 사업자번호 330-87-03914<br>
-      서울특별시 중랑구 동일로 129길 35, 2층<br>
-      contact@callpop.co.kr
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo-row">
+          <img src="images/logo-icon.png" class="footer-logo-icon" alt="NEAIS">
+          <img src="images/logo-word.png" class="footer-logo-word" alt="NEAIS">
+        </div>
+        <div class="footer-tagline">서로 연결되어, 모두가 더 나은 미래로<br>New Era AI Services</div>
+      </div>
+      <div class="footer-links">
+        <a href="#brand-story">소개</a>
+        <a href="#values">가치</a>
+        <a href="#services">서비스</a>
+        <a href="#company-info">회사정보</a>
+        <a href="mailto:contact@neais.co.kr">문의하기</a>
+      </div>
     </div>
     <hr class="footer-divider">
-    <p class="footer-copy">© 2026 NEAIS Inc. All rights reserved.</p>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 NEAIS Inc. All rights reserved.</div>
+      <div class="footer-info">
+        (주)네이스 · 사업자번호 330-87-03914<br>
+        서울특별시 중랑구 동일로 129길 35, 2층
+      </div>
+    </div>
   </div>
 </footer>
 
+<script>
+// 헤더 스크롤 그림자
+window.addEventListener('scroll', () => {
+  document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// 페이드인 애니메이션
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fade').forEach(el => observer.observe(el));
+
+// 히어로 요소는 즉시 표시
+document.querySelectorAll('#hero .fade').forEach(el => {
+  setTimeout(() => el.classList.add('visible'), 100);
+});
+</script>
 </body>
 </html>
