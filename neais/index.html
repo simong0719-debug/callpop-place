@@ -299,6 +299,22 @@
       background: var(--white); border: 1px solid var(--border);
       border-radius: 16px; overflow: hidden;
       box-shadow: 0 2px 16px rgba(13,27,42,.04);
+      display: grid; grid-template-columns: 320px 1fr;
+    }
+    .company-logo-panel {
+      background: linear-gradient(150deg, #e8f4f9 0%, #f0fbfa 100%);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 52px 40px; gap: 20px;
+    }
+    .company-logo-full { width: 100%; max-width: 220px; height: auto; }
+    .company-logo-tag {
+      font-size: 13px; font-weight: 500; letter-spacing: .02em;
+      color: var(--mute); text-align: center; line-height: 1.6;
+    }
+    @media (max-width: 900px) {
+      .info-wrap { grid-template-columns: 1fr; }
+      .company-logo-panel { border-right: none; border-bottom: 1px solid var(--border); padding: 40px 32px; }
     }
 
     /* ── 푸터 ── */
@@ -517,6 +533,10 @@
     <div class="section-label">Company Info</div>
     <h2 class="section-title" style="margin-bottom:40px;">회사 정보</h2>
     <div class="info-wrap">
+      <div class="company-logo-panel">
+        <img src="images/logo-full.png" class="company-logo-full" alt="NEAIS">
+        <div class="company-logo-tag">서로 연결되어, 모두가 더 나은 미래로</div>
+      </div>
       <table class="info-table">
         <tbody>
           <tr>
