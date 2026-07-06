@@ -55,17 +55,12 @@
     }
     .nav-cta:hover { background: rgba(0,180,166,.15) !important; }
 
-    /* ── 로고 SVG ── */
-    .logo-mark { width: 36px; height: 36px; }
-    .logo-wordmark {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .logo-text {
-      font-family: 'Inter', sans-serif;
-      font-size: 20px; font-weight: 800; letter-spacing: .04em;
-      color: #fff;
-    }
-    .logo-text span { color: var(--teal); }
+    /* ── 로고 ── */
+    .logo-wordmark { display: flex; align-items: center; gap: 10px; }
+    .logo-img-icon { height: 36px; width: auto; }
+    .logo-img-word { height: 20px; width: auto; filter: brightness(0) invert(1); }
+    .footer-logo-icon { height: 32px; width: auto; }
+    .footer-logo-word { height: 16px; width: auto; filter: brightness(0) invert(1); opacity: .85; }
 
     /* ── 히어로 ── */
     #hero {
@@ -356,18 +351,8 @@
 <header id="site-header">
   <div class="wrap">
     <a href="#" class="logo-wordmark">
-      <svg class="logo-mark" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="lg1" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#15DDD0"/>
-            <stop offset="50%" stop-color="#00B4A6"/>
-            <stop offset="100%" stop-color="#0055CC"/>
-          </linearGradient>
-        </defs>
-        <path d="M40 6 C37,6 31,9 26,18 L4,66 C2,72 8,76 14,73 L22,70 C27,68 29,62 31,55 L40 28 Z" fill="url(#lg1)"/>
-        <path d="M40 6 C43,6 49,9 54,18 L76,66 C78,72 72,76 66,73 L58,70 C53,68 51,62 49,55 L40 28 Z" fill="url(#lg1)"/>
-      </svg>
-      <span class="logo-text">NE<span>A</span>IS</span>
+      <img src="images/logo-icon.png" class="logo-img-icon" alt="NEAIS">
+      <img src="images/logo-word.png" class="logo-img-word" alt="NEAIS">
     </a>
     <nav>
       <a href="#brand-story">소개</a>
@@ -568,17 +553,8 @@
 <footer id="site-footer">
   <div class="wrap">
     <div class="footer-logo-row">
-      <svg width="32" height="32" viewBox="0 0 80 80" fill="none">
-        <defs>
-          <linearGradient id="lg2" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#15DDD0"/>
-            <stop offset="100%" stop-color="#0077CB"/>
-          </linearGradient>
-        </defs>
-        <path d="M40 6 C37,6 31,9 26,18 L4,66 C2,72 8,76 14,73 L22,70 C27,68 29,62 31,55 L40 28 Z" fill="url(#lg2)"/>
-        <path d="M40 6 C43,6 49,9 54,18 L76,66 C78,72 72,76 66,73 L58,70 C53,68 51,62 49,55 L40 28 Z" fill="url(#lg2)"/>
-      </svg>
-      <span style="font-family:'Inter',sans-serif;font-size:18px;font-weight:800;letter-spacing:.04em;color:#fff;">NE<span style="color:var(--teal);">A</span>IS</span>
+      <img src="images/logo-icon.png" class="footer-logo-icon" alt="NEAIS">
+      <img src="images/logo-word.png" class="footer-logo-word" alt="NEAIS">
     </div>
     <p class="footer-tagline">서로 연결되어, 모두가 더 나은 미래로</p>
     <div class="footer-info">
