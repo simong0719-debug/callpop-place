@@ -231,7 +231,7 @@
 #fab-container button { writing-mode:vertical-rl; text-orientation:mixed; }
 @media(max-width:768px){#fab-container{right:10px !important;}}
 </style>
-<div id="fab-container" style="position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:10px;">
+<div id="fab-container" style="position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:10px;opacity:0;pointer-events:none;transition:opacity .4s;">
   <button onclick="goTabAndScroll('place','place-apply-form')" style="background:var(--orange);color:#fff;border:none;border-radius:28px;padding:18px 10px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(255,107,53,.4);animation:fab-float 3s ease-in-out infinite;letter-spacing:.06em;">플레이스신청</button>
   <button onclick="goTabAndScroll('store','store-inquiry-form')" style="background:var(--navy);color:#fff;border:none;border-radius:28px;padding:18px 10px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(26,26,46,.3);animation:fab-float 3s ease-in-out 1.5s infinite;letter-spacing:.06em;">가맹점신청</button>
 </div>
@@ -254,7 +254,6 @@
 #banner-prev    { left:14px; }
 #banner-next    { right:14px; }
 .banner-dot     { border:none; cursor:pointer; height:8px; border-radius:4px; transition:all .3s; padding:0; }
-#banner-counter { position:absolute; bottom:16px; right:16px; color:rgba(255,255,255,.5); font-size:12px; font-weight:600; z-index:10; letter-spacing:.04em; }
 @media(max-width:640px){
   .banner-slide > div[style*="padding:0 80px"] { padding:0 32px !important; }
   .banner-arrow { width:36px; height:36px; }
@@ -278,8 +277,6 @@
   <!-- 도트 인디케이터 -->
   <div id="banner-dots" style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10;"></div>
 
-  <!-- 슬라이드 카운터 -->
-  <div id="banner-counter"></div>
 </section>
 
 <script>
@@ -302,7 +299,14 @@
       var slide = document.createElement('div');
       slide.className = 'banner-slide';
       slide.style.width = (100 / BANNERS.length) + '%';
-      slide.style.background = b.bg;
+      if (b.imageUrl) {
+        slide.style.background = '#111';
+        slide.style.backgroundImage = 'url(' + b.imageUrl + ')';
+        slide.style.backgroundSize = 'cover';
+        slide.style.backgroundPosition = 'center';
+      } else {
+        slide.style.background = b.bg;
+      }
       if (b.link) { slide.style.cursor = 'pointer'; slide.onclick = function(){ if(!didSwipe) location.href = b.link; }; }
       slide.innerHTML =
         '<div style="position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,.06);right:-100px;top:-80px;pointer-events:none;"></div>' +
@@ -331,8 +335,6 @@
         ? 'width:24px;height:8px;border-radius:4px;background:#fff;'
         : 'width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);';
     });
-    var c = document.getElementById('banner-counter');
-    if(c) c.textContent = (idx+1) + ' / ' + BANNERS.length;
   }
 
   function goTo(n){
@@ -346,22 +348,29 @@
   }
 
   document.addEventListener('DOMContentLoaded', function(){
-    build();
-    resetTimer();
-
     var sec = document.getElementById('banner-section');
-    document.getElementById('banner-prev').addEventListener('click', function(e){ e.stopPropagation(); goTo(idx-1); });
-    document.getElementById('banner-next').addEventListener('click', function(e){ e.stopPropagation(); goTo(idx+1); });
-    sec.addEventListener('mouseenter', function(){ clearInterval(timer); });
-    sec.addEventListener('mouseleave', resetTimer);
-    sec.addEventListener('touchstart', function(e){ touchX = e.touches[0].clientX; didSwipe = false; }, {passive:true});
-    sec.addEventListener('touchmove',  function(e){ if(touchX !== null && Math.abs(e.touches[0].clientX - touchX) > 10) didSwipe = true; }, {passive:true});
-    sec.addEventListener('touchend',   function(e){
-      if(touchX === null) return;
-      var diff = e.changedTouches[0].clientX - touchX;
-      if(Math.abs(diff) > 50) goTo(diff < 0 ? idx+1 : idx-1);
-      touchX = null;
-    });
+    function setup(){
+      build(); resetTimer();
+      document.getElementById('banner-prev').addEventListener('click', function(e){ e.stopPropagation(); goTo(idx-1); });
+      document.getElementById('banner-next').addEventListener('click', function(e){ e.stopPropagation(); goTo(idx+1); });
+      sec.addEventListener('touchstart', function(e){ touchX = e.touches[0].clientX; didSwipe = false; }, {passive:true});
+      sec.addEventListener('touchmove',  function(e){ if(touchX !== null && Math.abs(e.touches[0].clientX - touchX) > 10) didSwipe = true; }, {passive:true});
+      sec.addEventListener('touchend',   function(e){
+        if(touchX === null) return;
+        var diff = e.changedTouches[0].clientX - touchX;
+        if(Math.abs(diff) > 50) goTo(diff < 0 ? idx+1 : idx-1);
+        touchX = null;
+      });
+    }
+    if (typeof getSb === 'function') {
+      getSb().then(function(s){ return s.from('callpop_banners').select('*').eq('is_active', true).order('sort_order', {ascending:true}); })
+        .then(function(r){
+          if (!r.error && r.data && r.data.length) {
+            BANNERS = r.data.map(function(b){ return { bg: b.bg || 'linear-gradient(135deg,#FF6B35 0%,#cc4a18 100%)', title: b.title || '', sub: b.subtitle || '', link: b.link_url || '', imageUrl: b.image_url || '' }; });
+          }
+          setup();
+        }).catch(function(){ setup(); });
+    } else { setup(); }
   });
 })();
 </script>
@@ -382,10 +391,17 @@
           <p style="font-size:16px;color:var(--sub);line-height:1.9;margin-bottom:36px;">
             소비자도 행복!&nbsp; 소상공인도 행복!&nbsp; 플랫폼운영자도 행복!
           </p>
-          <div class="hero-btns">
-            <button id="hero-install-btn" onclick="handleInstall()" class="btn-red" style="padding:14px 32px;font-size:15px;">앱설치하고 사용해보기</button>
+          <div class="hero-btns" style="gap:12px;flex-wrap:wrap;">
+            <button disabled style="display:inline-flex;align-items:center;gap:10px;background:#000;color:#fff;border:none;border-radius:10px;padding:11px 22px;cursor:not-allowed;opacity:.55;font-family:inherit;">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.78,22.05 6.8,20.68 5.96,19.47C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.91,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.1 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.46 12.36,4.26 13,3.5Z"/></svg>
+              <div style="text-align:left"><div style="font-size:10px;opacity:.7;line-height:1">출시 예정</div><div style="font-size:15px;font-weight:700;line-height:1.4">App Store</div></div>
+            </button>
+            <button disabled style="display:inline-flex;align-items:center;gap:10px;background:#fff;color:#111;border:1.5px solid #ccc;border-radius:10px;padding:11px 22px;cursor:not-allowed;opacity:.55;font-family:inherit;">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path fill="#4caf50" d="M3.18 23.76c.43.24.96.23 1.39 0L16.9 12 4.57.24c-.43-.23-.96-.24-1.39 0C2.63.59 2.4 1.15 2.4 1.73v20.54c0 .58.23 1.14.78 1.49z"/><path fill="#f44336" d="M20.82 10.53l-3.1-1.73L14.54 12l3.18 3.2 3.1-1.73c.88-.49.88-1.95 0-2.44z"/><path fill="#ffd700" d="M4.57 23.76L16.9 12 14.54 9.6 4.57 23.76z" opacity=".9"/><path fill="#2196f3" d="M4.57.24L14.54 14.4 16.9 12 4.57.24z" opacity=".9"/></svg>
+              <div style="text-align:left"><div style="font-size:10px;opacity:.65;line-height:1">출시 예정</div><div style="font-size:15px;font-weight:700;line-height:1.4">Google Play</div></div>
+            </button>
           </div>
-          <p id="hero-install-hint" style="margin-top:14px;font-size:12px;color:var(--mute);"></p>
+          <p style="margin-top:14px;font-size:12px;color:var(--mute);">앱 출시 후 스토어에서 다운로드 가능합니다</p>
         </div>
         <!-- RIGHT: CSS Phone Mockup -->
         <div class="hide-mob" style="display:flex;justify-content:center;align-items:center;">
@@ -620,18 +636,22 @@
 
   <hr class="divider">
 
-  <!-- APP DOWNLOAD CTA -->
+  <!-- APP STORE CTA -->
   <section id="download" style="background:linear-gradient(135deg,#FF6B35 0%,#FF8C5A 100%);padding:72px 0;">
     <div style="max-width:560px;margin:0 auto;padding:0 24px;text-align:center;">
       <div style="font-size:48px;margin-bottom:16px;">📱</div>
-      <h2 style="font-size:clamp(22px,4vw,34px);font-weight:900;color:#fff;letter-spacing:-.02em;margin-bottom:12px;">지금 바로<br>콜팝 앱을 설치하세요</h2>
-      <p style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.8;margin-bottom:36px;">설치 후 바로 주문 가능합니다.<br>앱스토어 없이 홈 화면에 바로 추가됩니다.</p>
-      <div id="install-btns-wrap" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
-        <button id="download-android-btn" onclick="handleInstall()" class="btn-white" style="padding:14px 28px;font-size:15px;min-width:170px;"><span>🤖</span> Android 설치</button>
-        <button id="download-ios-btn" onclick="showInstallGuide()" class="btn-outline-white" style="padding:14px 28px;font-size:15px;min-width:170px;"><span>🍎</span> iPhone 설치 안내</button>
+      <h2 style="font-size:clamp(22px,4vw,34px);font-weight:900;color:#fff;letter-spacing:-.02em;margin-bottom:12px;">스토어에서<br>콜팝 앱을 만나보세요</h2>
+      <p style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.8;margin-bottom:36px;">App Store와 Google Play에서<br>곧 출시될 예정입니다.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button disabled style="display:inline-flex;align-items:center;gap:10px;background:#000;color:#fff;border:none;border-radius:10px;padding:12px 24px;cursor:not-allowed;opacity:.65;font-family:inherit;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.78,22.05 6.8,20.68 5.96,19.47C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.91,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.1 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.46 12.36,4.26 13,3.5Z"/></svg>
+          <div style="text-align:left"><div style="font-size:10px;opacity:.75;line-height:1">출시 예정</div><div style="font-size:15px;font-weight:700;line-height:1.4">App Store</div></div>
+        </button>
+        <button disabled style="display:inline-flex;align-items:center;gap:10px;background:#fff;color:#111;border:none;border-radius:10px;padding:12px 24px;cursor:not-allowed;opacity:.65;font-family:inherit;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path fill="#4caf50" d="M3.18 23.76c.43.24.96.23 1.39 0L16.9 12 4.57.24c-.43-.23-.96-.24-1.39 0C2.63.59 2.4 1.15 2.4 1.73v20.54c0 .58.23 1.14.78 1.49z"/><path fill="#f44336" d="M20.82 10.53l-3.1-1.73L14.54 12l3.18 3.2 3.1-1.73c.88-.49.88-1.95 0-2.44z"/><path fill="#ffd700" d="M4.57 23.76L16.9 12 14.54 9.6 4.57 23.76z" opacity=".9"/><path fill="#2196f3" d="M4.57.24L14.54 14.4 16.9 12 4.57.24z" opacity=".9"/></svg>
+          <div style="text-align:left"><div style="font-size:10px;opacity:.65;line-height:1">출시 예정</div><div style="font-size:15px;font-weight:700;line-height:1.4">Google Play</div></div>
+        </button>
       </div>
-      <p id="desktop-msg" style="display:none;font-size:14px;color:rgba(255,255,255,.85);margin-bottom:16px;">📱 모바일 기기에서 앱을 설치하실 수 있습니다</p>
-      <p id="download-hint" style="font-size:12px;color:rgba(255,255,255,.6);"></p>
     </div>
   </section>
 
@@ -1328,51 +1348,6 @@
 <!-- ════════════════════════════════════════
      PWA 설치 가이드 모달
 ════════════════════════════════════════ -->
-<div id="ios-guide" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.55);align-items:flex-end;justify-content:center;">
-  <div style="background:#fff;border-radius:20px 20px 0 0;padding:28px 24px 40px;width:100%;max-width:480px;box-shadow:0 -8px 40px rgba(0,0,0,.15);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-      <h3 id="guide-title" style="font-size:18px;font-weight:900;color:var(--text);">앱 설치 방법</h3>
-      <button onclick="closeInstallGuide()" style="width:32px;height:32px;border-radius:50%;background:var(--bg);border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);">✕</button>
-    </div>
-    <div id="guide-steps-ios" style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
-      <div style="display:flex;gap:16px;align-items:flex-start;">
-        <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">Safari로 이 페이지 열기</div><div style="font-size:13px;color:var(--sub);">Chrome이나 다른 브라우저가 아닌 Safari 앱에서 열어주세요.</div></div>
-      </div>
-      <div style="display:flex;gap:16px;align-items:flex-start;">
-        <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">공유 버튼 탭하기</div><div style="font-size:13px;color:var(--sub);">하단 가운데 <strong>⬆</strong> 공유 버튼을 탭하세요.</div></div>
-      </div>
-      <div style="display:flex;gap:16px;align-items:flex-start;">
-        <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">"홈 화면에 추가" 선택</div><div style="font-size:13px;color:var(--sub);">메뉴에서 <strong>홈 화면에 추가</strong>를 찾아 탭하세요.</div></div>
-      </div>
-      <div style="display:flex;gap:16px;align-items:flex-start;">
-        <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
-        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">"추가" 버튼 탭하기</div><div style="font-size:13px;color:var(--sub);">오른쪽 상단의 <strong>추가</strong>를 탭하면 설치 완료입니다.</div></div>
-      </div>
-    </div>
-    <div id="guide-steps-android" style="display:none;flex-direction:column;gap:16px;margin-bottom:24px;">
-      <div style="display:flex;gap:16px;align-items:flex-start;">
-        <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">Chrome 브라우저로 열기</div><div style="font-size:13px;color:var(--sub);">Chrome 앱에서 이 페이지를 열어주세요.</div></div>
-      </div>
-      <div style="display:flex;gap:16px;align-items:flex-start;">
-        <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">메뉴 버튼 탭하기</div><div style="font-size:13px;color:var(--sub);">주소창 오른쪽 <strong>⋮</strong> 버튼을 탭하세요.</div></div>
-      </div>
-      <div style="display:flex;gap:16px;align-items:flex-start;">
-        <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">"홈 화면에 추가" 선택</div><div style="font-size:13px;color:var(--sub);">메뉴에서 <strong>홈 화면에 추가</strong> 또는 <strong>앱 설치</strong>를 선택하세요.</div></div>
-      </div>
-      <div style="display:flex;gap:16px;align-items:flex-start;">
-        <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
-        <div><div style="font-size:15px;font-weight:700;margin-bottom:4px;">"추가" 확인</div><div style="font-size:13px;color:var(--sub);"><strong>추가</strong>를 탭하면 홈 화면에 콜팝 아이콘이 생깁니다.</div></div>
-      </div>
-    </div>
-    <button onclick="closeInstallGuide()" class="btn-primary" style="width:100%;padding:14px;font-size:15px;border-radius:10px;">확인</button>
-  </div>
-</div>
 
 
 <!-- ════════════════════════════════════════
@@ -1471,108 +1446,16 @@ if ('serviceWorker' in navigator) {
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 
-// ══════════════════════════════════════
-// 앱 버전 체크 — 새 APK 필요 시 버튼 변경
-// ══════════════════════════════════════
-var INSTALLED_APK_KEY = 'callpop_installed_apk_version';
-
-async function checkAppVersion() {
-  try {
-    var res = await fetch('/app-version.json?t=' + Date.now());
-    var info = await res.json();
-    var installed = localStorage.getItem(INSTALLED_APK_KEY);
-    var btn = document.getElementById('hero-install-btn');
-    var androidBtn = document.getElementById('download-android-btn');
-    if (installed && installed !== info.version) {
-      // 설치된 버전과 다른 새 버전이 있음
-      if (btn) { btn.textContent = '🔄 앱 업데이트'; btn.style.background = '#e55a25'; }
-      if (androidBtn) { androidBtn.innerHTML = '<span>🔄</span> Android 업데이트'; }
-      var hint = document.getElementById('hero-install-hint');
-      if (hint) hint.textContent = '새 버전 ' + info.version + '이 나왔습니다. 다운로드 후 설치해주세요.';
-    }
-    return info;
-  } catch(e) { return null; }
-}
-checkAppVersion();
-
-// ══════════════════════════════════════
-// PWA 설치
-// ══════════════════════════════════════
-var deferredPrompt = null;
-var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-var isAndroid = /Android/i.test(navigator.userAgent);
-var isMobile = isIOS || isAndroid;
-
-if (!isMobile) {
-  // PC에서도 APK 다운로드 가능 — 버튼 표시 유지, 텍스트만 변경
-  var heroBtn2 = document.getElementById('hero-install-btn');
-  if (heroBtn2) heroBtn2.textContent = 'Android APK 다운로드';
-  var hint2 = document.getElementById('hero-install-hint');
-  if (hint2) hint2.textContent = 'Android 기기에서 설치하세요. iPhone은 Safari > 공유 > 홈 화면 추가';
-}
-
-if (isStandalone) {
-  var heroBtn = document.getElementById('hero-install-btn');
-  if (heroBtn) { heroBtn.textContent = '✓ 앱이 설치되어 있습니다'; heroBtn.disabled = true; heroBtn.style.opacity = '.7'; }
-}
-
-window.addEventListener('beforeinstallprompt', function(e) {
-  e.preventDefault(); // callpop.co.kr 자체 설치 배너 차단
-});
-
-
-window.addEventListener('appinstalled', function() {
-  deferredPrompt = null; isStandalone = true;
-  var heroBtn = document.getElementById('hero-install-btn');
-  if (heroBtn) { heroBtn.textContent = '✓ 앱이 설치되어 있습니다'; heroBtn.disabled = true; }
-});
-
-function handleInstall() {
-  if (isAndroid || !isMobile) {
-    checkAppVersion().then(function(info) {
-      var version = (info && info.version) || '1.0.0';
-      localStorage.setItem(INSTALLED_APK_KEY, version);
-      var a = document.createElement('a');
-      a.href = (info && info.apkUrl) || '/downloads/callpop.apk';
-      a.download = 'callpop.apk';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      var btn = document.getElementById('hero-install-btn');
-      var androidBtn = document.getElementById('download-android-btn');
-      if (btn) btn.textContent = '앱설치하고 사용해보기';
-      if (androidBtn) androidBtn.innerHTML = '<span>🤖</span> Android 설치';
-      var hint = document.getElementById('hero-install-hint') || document.getElementById('download-hint');
-      if (hint) hint.textContent = '다운로드 후 파일을 열어 설치하세요.';
-    });
-    return;
-  }
-  showInstallGuide(); // iOS는 가이드 표시
-}
-
-function showInstallGuide() {
-  var title = document.getElementById('guide-title');
-  var stepsIOS = document.getElementById('guide-steps-ios');
-  var stepsAndroid = document.getElementById('guide-steps-android');
-  if (isIOS) {
-    if (title) title.textContent = 'iPhone 홈 화면에 추가';
-    if (stepsIOS) stepsIOS.style.display = 'flex';
-    if (stepsAndroid) stepsAndroid.style.display = 'none';
-  } else {
-    if (title) title.textContent = 'Android 앱 설치 방법';
-    if (stepsIOS) stepsIOS.style.display = 'none';
-    if (stepsAndroid) stepsAndroid.style.display = 'flex';
-  }
-  document.getElementById('ios-guide').style.display = 'flex';
-}
-
-function closeInstallGuide() { document.getElementById('ios-guide').style.display = 'none'; }
-document.getElementById('ios-guide').addEventListener('click', function(e) { if (e.target === this) closeInstallGuide(); });
-
-// 헤더 스크롤 그림자
+// 헤더 스크롤 그림자 + FAB 표시/숨김
 window.addEventListener('scroll', function() {
   document.getElementById('site-header').style.boxShadow = pageYOffset > 10 ? '0 2px 16px rgba(0,0,0,.1)' : 'none';
+  var fab = document.getElementById('fab-container');
+  var banner = document.getElementById('banner-section');
+  if (fab && banner) {
+    var show = banner.getBoundingClientRect().bottom < 80;
+    fab.style.opacity = show ? '1' : '0';
+    fab.style.pointerEvents = show ? 'auto' : 'none';
+  }
 });
 
 // ══════════════════════════════════════
