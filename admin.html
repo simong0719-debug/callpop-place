@@ -930,19 +930,46 @@ async function loadBanners() {
     return;
   }
   banners = data || [];
+  if (banners.length === 0) {
+    const seeds = [1,2,3,4].map(i => ({
+      title: '', subtitle: '', image_url: null, link_url: '',
+      bg: 'linear-gradient(135deg,#FF6B35,#cc4a18)',
+      sort_order: i, is_active: true
+    }));
+    const { error: seedErr } = await sb.from('callpop_banners').insert(seeds);
+    if (!seedErr) {
+      const { data: d2 } = await sb.from('callpop_banners').select('*').order('sort_order',{ascending:true});
+      banners = d2 || [];
+    }
+  }
   renderBannerList();
+}
+
+async function addBannerSlot() {
+  const { error } = await sb.from('callpop_banners').insert({
+    title: '', subtitle: '', image_url: null, link_url: '',
+    bg: 'linear-gradient(135deg,#FF6B35,#cc4a18)',
+    sort_order: banners.length + 1, is_active: true
+  });
+  if (!error) await loadBanners();
 }
 
 function renderBannerList() {
   const wrap = document.getElementById('banner-list-wrap');
 
   const bannerCards = banners.map((b, i) => {
+    const isEmpty = !b.image_url && !b.title;
     const bgStyle = b.image_url
       ? `background:url('${escapeHtml(b.image_url)}') center/cover no-repeat`
       : `background:${escapeHtml(b.bg||'linear-gradient(135deg,#FF6B35,#cc4a18)')}`;
     const activeTag = b.is_active !== false
       ? `<span style="background:rgba(22,163,74,.85);color:#fff;font-size:10px;border-radius:10px;padding:2px 7px;">활성</span>`
       : `<span style="background:rgba(0,0,0,.4);color:#fff;font-size:10px;border-radius:10px;padding:2px 7px;">비활성</span>`;
+    const emptyOverlay = isEmpty ? `
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:rgba(0,0,0,.28);">
+        <svg width="28" height="28" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
+        <span style="color:rgba(255,255,255,.8);font-size:12px;font-weight:600;">이미지 설정</span>
+      </div>` : '';
     return `
       <div>
         <div style="font-size:12px;font-weight:700;color:#555;margin-bottom:6px;">배너 ${i+1}</div>
@@ -950,14 +977,15 @@ function renderBannerList() {
              onclick="openBannerModal('${b.id}')"
              onmouseover="this.querySelector('.hover-dim').style.opacity='1'"
              onmouseout="this.querySelector('.hover-dim').style.opacity='0'">
-          <div class="hover-dim" style="position:absolute;inset:0;background:rgba(0,0,0,.25);opacity:0;transition:opacity .15s;display:flex;align-items:center;justify-content:center;">
-            <span style="color:#fff;font-size:13px;font-weight:700;background:rgba(0,0,0,.4);border-radius:8px;padding:6px 14px;">수정</span>
+          ${emptyOverlay}
+          <div class="hover-dim" style="position:absolute;inset:0;background:rgba(0,0,0,.2);opacity:0;transition:opacity .15s;display:flex;align-items:center;justify-content:center;">
+            <span style="color:#fff;font-size:13px;font-weight:700;background:rgba(0,0,0,.4);border-radius:8px;padding:6px 14px;">${isEmpty?'이미지 업로드':'수정'}</span>
           </div>
           <div style="position:absolute;top:8px;right:8px;">${activeTag}</div>
           ${b.title ? `<div style="position:absolute;bottom:8px;left:10px;color:#fff;font-size:12px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.6);">${escapeHtml(b.title)}</div>` : ''}
         </div>
         <div style="display:flex;gap:6px;margin-top:6px;">
-          <button onclick="openBannerModal('${b.id}')" style="flex:1;background:#f3f4f6;border:none;border-radius:6px;padding:6px;font-size:12px;cursor:pointer;font-weight:600;">수정</button>
+          <button onclick="openBannerModal('${b.id}')" style="flex:1;background:#f3f4f6;border:none;border-radius:6px;padding:6px;font-size:12px;cursor:pointer;font-weight:600;">${isEmpty?'설정':'수정'}</button>
           <button onclick="confirmDeleteBanner('${b.id}')" style="background:#fff1f2;border:1px solid #fecaca;border-radius:6px;padding:6px 10px;font-size:12px;cursor:pointer;color:#E3001B;font-weight:600;">삭제</button>
         </div>
       </div>`;
@@ -967,12 +995,12 @@ function renderBannerList() {
     <div>
       <div style="font-size:12px;font-weight:700;color:#bbb;margin-bottom:6px;">배너 ${banners.length+1}</div>
       <div style="position:relative;width:100%;padding-top:31.25%;border:2px dashed #d1d5db;border-radius:10px;cursor:pointer;background:#fafafa;transition:border-color .15s,background .15s;"
-           onclick="openBannerModal(null)"
+           onclick="addBannerSlot()"
            onmouseover="this.style.borderColor='#E3001B';this.style.background='#fff5f5';"
            onmouseout="this.style.borderColor='#d1d5db';this.style.background='#fafafa';">
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#ccc;">
           <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
-          <span style="font-size:12px;font-weight:600;">배너 추가</span>
+          <span style="font-size:12px;font-weight:600;">슬롯 추가</span>
         </div>
       </div>
     </div>`;
