@@ -242,8 +242,132 @@
 ════════════════════════════════════════ -->
 <div id="tab-home">
 
-  <!-- HERO (place page tone/manner) -->
-  <section id="home-hero-section" style="padding-top:120px;padding-bottom:80px;background:#fff;">
+<!-- ════════════════════════════════════════
+     BANNER CAROUSEL
+════════════════════════════════════════ -->
+<style>
+#banner-section { position:relative; overflow:hidden; margin-top:72px; height:calc(100vh - 72px); max-height:600px; min-height:280px; }
+#banner-track   { display:flex; height:100%; transition:transform .5s cubic-bezier(.4,0,.2,1); will-change:transform; }
+.banner-slide   { flex-shrink:0; height:100%; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; width:100%; }
+.banner-arrow   { position:absolute; top:50%; transform:translateY(-50%); z-index:10; width:44px; height:44px; border-radius:50%; background:rgba(0,0,0,.22); border:1.5px solid rgba(255,255,255,.4); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .18s; }
+.banner-arrow:hover { background:rgba(0,0,0,.38); }
+#banner-prev    { left:14px; }
+#banner-next    { right:14px; }
+.banner-dot     { border:none; cursor:pointer; height:8px; border-radius:4px; transition:all .3s; padding:0; }
+#banner-counter { position:absolute; bottom:16px; right:16px; color:rgba(255,255,255,.5); font-size:12px; font-weight:600; z-index:10; letter-spacing:.04em; }
+@media(max-width:640px){
+  .banner-slide > div[style*="padding:0 80px"] { padding:0 32px !important; }
+  .banner-arrow { width:36px; height:36px; }
+  #banner-prev { left:8px; }
+  #banner-next { right:8px; }
+}
+</style>
+
+<section id="banner-section">
+  <!-- 슬라이드 트랙 (JS로 채워짐) -->
+  <div id="banner-track"></div>
+
+  <!-- 좌우 화살표 -->
+  <button class="banner-arrow" id="banner-prev" aria-label="이전 배너">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+  </button>
+  <button class="banner-arrow" id="banner-next" aria-label="다음 배너">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+  </button>
+
+  <!-- 도트 인디케이터 -->
+  <div id="banner-dots" style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10;"></div>
+
+  <!-- 슬라이드 카운터 -->
+  <div id="banner-counter"></div>
+</section>
+
+<script>
+(function(){
+  var BANNERS = [
+    { bg:'linear-gradient(135deg,#FF6B35 0%,#cc4a18 100%)', title:'수수료 없는 배달 주문', sub:'소상공인과 이용자가 함께 잘사는 가장 쉬운 방법' },
+    { bg:'linear-gradient(135deg,#0891b2 0%,#075985 100%)', title:'런칭 기념 특별 이벤트', sub:'콜팝과 함께하는 첫 주문에 특별 쿠폰을 드립니다' },
+    { bg:'linear-gradient(135deg,#7c3aed 0%,#4c1d95 100%)', title:'우리만의 플레이스 혜택', sub:'대학교 · 교회 · 동문회 구성원만을 위한 특별 주문' },
+    { bg:'linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%)', title:'앱 출시 예정', sub:'App Store · Google Play에서 곧 만나요' },
+  ];
+
+  var idx = 0, timer = null, touchX = null, didSwipe = false;
+
+  function build(){
+    var track = document.getElementById('banner-track');
+    var dots  = document.getElementById('banner-dots');
+    track.style.width = (BANNERS.length * 100) + '%';
+
+    BANNERS.forEach(function(b, i){
+      var slide = document.createElement('div');
+      slide.className = 'banner-slide';
+      slide.style.width = (100 / BANNERS.length) + '%';
+      slide.style.background = b.bg;
+      if (b.link) { slide.style.cursor = 'pointer'; slide.onclick = function(){ if(!didSwipe) location.href = b.link; }; }
+      slide.innerHTML =
+        '<div style="position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,.06);right:-100px;top:-80px;pointer-events:none;"></div>' +
+        '<div style="position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.04);left:-40px;bottom:-40px;pointer-events:none;"></div>' +
+        '<div style="text-align:center;color:#fff;padding:0 80px;position:relative;z-index:1;max-width:720px;margin:0 auto;">' +
+          '<p style="font-size:clamp(18px,4vw,34px);font-weight:900;line-height:1.3;letter-spacing:-.02em;margin-bottom:14px;">' + b.title + '</p>' +
+          '<p style="font-size:clamp(12px,2vw,17px);opacity:.82;line-height:1.7;">' + b.sub + '</p>' +
+        '</div>';
+      track.appendChild(slide);
+
+      var dot = document.createElement('button');
+      dot.className = 'banner-dot';
+      dot.setAttribute('aria-label', (i+1) + '번 배너');
+      dot.addEventListener('click', (function(n){ return function(e){ e.stopPropagation(); goTo(n); }; })(i));
+      dots.appendChild(dot);
+    });
+
+    update();
+  }
+
+  function update(){
+    var track = document.getElementById('banner-track');
+    track.style.transform = 'translateX(-' + ((idx / BANNERS.length) * 100) + '%)';
+    document.querySelectorAll('.banner-dot').forEach(function(d, i){
+      d.style.cssText = i === idx
+        ? 'width:24px;height:8px;border-radius:4px;background:#fff;'
+        : 'width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);';
+    });
+    var c = document.getElementById('banner-counter');
+    if(c) c.textContent = (idx+1) + ' / ' + BANNERS.length;
+  }
+
+  function goTo(n){
+    idx = ((n % BANNERS.length) + BANNERS.length) % BANNERS.length;
+    update(); resetTimer();
+  }
+
+  function resetTimer(){
+    if(timer) clearInterval(timer);
+    timer = setInterval(function(){ goTo(idx+1); }, 4000);
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    build();
+    resetTimer();
+
+    var sec = document.getElementById('banner-section');
+    document.getElementById('banner-prev').addEventListener('click', function(e){ e.stopPropagation(); goTo(idx-1); });
+    document.getElementById('banner-next').addEventListener('click', function(e){ e.stopPropagation(); goTo(idx+1); });
+    sec.addEventListener('mouseenter', function(){ clearInterval(timer); });
+    sec.addEventListener('mouseleave', resetTimer);
+    sec.addEventListener('touchstart', function(e){ touchX = e.touches[0].clientX; didSwipe = false; }, {passive:true});
+    sec.addEventListener('touchmove',  function(e){ if(touchX !== null && Math.abs(e.touches[0].clientX - touchX) > 10) didSwipe = true; }, {passive:true});
+    sec.addEventListener('touchend',   function(e){
+      if(touchX === null) return;
+      var diff = e.changedTouches[0].clientX - touchX;
+      if(Math.abs(diff) > 50) goTo(diff < 0 ? idx+1 : idx-1);
+      touchX = null;
+    });
+  });
+})();
+</script>
+
+  <!-- HERO -->
+  <section id="home-hero-section" style="padding-top:80px;padding-bottom:80px;background:#fff;">
     <div class="wrap">
       <div class="grid-hero">
         <!-- LEFT: Text -->
