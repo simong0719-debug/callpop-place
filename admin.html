@@ -1171,8 +1171,6 @@ function _bannerInitCrop(file) {
       el.src=e2.target.result;
       el.style.width=img.naturalWidth+'px'; el.style.height=img.naturalHeight+'px';
       document.getElementById('banner-zoom-slider').value=100;
-      const sl = document.getElementById('banner-zoom-slider');
-      sl.min=Math.round(fit*100); sl.max=Math.round(fit*500); sl.value=Math.round(fit*100);
       _bannerApply();
       document.getElementById('banner-drop-zone').style.display='none';
       document.getElementById('banner-crop-zone').style.display='';
