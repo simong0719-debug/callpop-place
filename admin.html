@@ -598,20 +598,33 @@
           <p style="font-size:11px;color:#aaa;margin:0;">권장 크기 <strong>1920×600px</strong> · 비율 <strong>16:5</strong> · JPG / PNG / WEBP</p>
         </div>
 
-        <!-- 크롭 도구 -->
+        <!-- 크롭 도구 (카카오 스타일) -->
         <div id="banner-crop-zone" style="display:none;margin-top:8px;">
-          <div style="font-size:12px;color:#666;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
-            <span>위치·크기 조정 <span style="color:#aaa">(드래그 이동 · 슬라이더 확대축소)</span></span>
+          <div style="font-size:12px;color:#666;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:#aaa;">드래그로 이동 · 슬라이더로 확대</span>
             <button onclick="bannerResetCrop()" style="font-size:11px;color:#aaa;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;">↩ 다시 선택</button>
           </div>
-          <div id="banner-crop-container" style="position:relative;overflow:hidden;background:#222;cursor:move;user-select:none;border-radius:8px;width:100%;">
+          <!-- Stage: 전체 이미지 + 크롭 프레임 오버레이 -->
+          <div id="banner-crop-stage" style="position:relative;background:#111;border-radius:10px;overflow:hidden;cursor:move;user-select:none;width:100%;">
             <img id="banner-crop-img" style="position:absolute;transform-origin:0 0;pointer-events:none;max-width:none;display:block;">
-            <div style="position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 2px rgba(255,255,255,.55);border-radius:8px;"></div>
+            <!-- 어두운 오버레이 4면 -->
+            <div id="bov-top"    style="position:absolute;left:0;right:0;top:0;background:rgba(0,0,0,.55);pointer-events:none;"></div>
+            <div id="bov-bottom" style="position:absolute;left:0;right:0;background:rgba(0,0,0,.55);pointer-events:none;"></div>
+            <div id="bov-left"   style="position:absolute;background:rgba(0,0,0,.55);pointer-events:none;"></div>
+            <div id="bov-right"  style="position:absolute;background:rgba(0,0,0,.55);pointer-events:none;"></div>
+            <!-- 크롭 프레임 테두리 + 코너 브라켓 -->
+            <div id="banner-crop-frame" style="position:absolute;pointer-events:none;box-sizing:border-box;border:2px solid rgba(255,255,255,.9);">
+              <div style="position:absolute;top:-3px;left:-3px;width:18px;height:18px;border-top:3px solid #fff;border-left:3px solid #fff;"></div>
+              <div style="position:absolute;top:-3px;right:-3px;width:18px;height:18px;border-top:3px solid #fff;border-right:3px solid #fff;"></div>
+              <div style="position:absolute;bottom:-3px;left:-3px;width:18px;height:18px;border-bottom:3px solid #fff;border-left:3px solid #fff;"></div>
+              <div style="position:absolute;bottom:-3px;right:-3px;width:18px;height:18px;border-bottom:3px solid #fff;border-right:3px solid #fff;"></div>
+            </div>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
-            <span style="font-size:14px;line-height:1;color:#888;">−</span>
-            <input type="range" id="banner-zoom-slider" min="10" max="400" value="100" style="flex:1;accent-color:#E3001B;" oninput="bannerOnZoom(this)">
-            <span style="font-size:14px;line-height:1;color:#888;">+</span>
+          <!-- 줌 슬라이더 -->
+          <div style="display:flex;align-items:center;gap:10px;margin-top:12px;padding:0 2px;">
+            <svg width="16" height="16" fill="none" stroke="#999" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M8 11h6"/></svg>
+            <input type="range" id="banner-zoom-slider" min="100" max="300" value="100" style="flex:1;accent-color:#E3001B;" oninput="bannerOnZoom(this)">
+            <svg width="16" height="16" fill="none" stroke="#999" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/></svg>
           </div>
         </div>
       </div>
@@ -905,7 +918,7 @@ function switchTab(tab) {
 let banners = [];
 let editingBannerId = null;
 let bannerCroppedBlob = null;
-let bannerCropState = {x:0,y:0,scale:1,minScale:1,natW:0,natH:0,contW:0,contH:0};
+let bannerCropState = {x:0,y:0,scale:1,minScale:1,natW:0,natH:0,stageW:0,stageH:0,frameX:0,frameY:0,frameW:0,frameH:0};
 let bannerDragging = false, bDragX0=0, bDragY0=0, bImgX0=0, bImgY0=0;
 let bannerToolsInited = false;
 const BANNER_RATIO = 16/5;
@@ -1104,7 +1117,7 @@ function _initBannerTools() {
   dz.addEventListener('dragleave', ()=>{ dz.style.borderColor='#e5e7eb'; dz.style.background='#fafafa'; });
   dz.addEventListener('drop', e=>{ e.preventDefault(); dz.style.borderColor='#e5e7eb'; dz.style.background='#fafafa'; const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')) _bannerInitCrop(f); });
 
-  const cc = document.getElementById('banner-crop-container');
+  const cc = document.getElementById('banner-crop-stage');
   const onStart = (cx,cy) => { if(!bannerCropState.natW) return; bannerDragging=true; bDragX0=cx; bDragY0=cy; bImgX0=bannerCropState.x; bImgY0=bannerCropState.y; };
   const onMove  = (cx,cy) => { if(!bannerDragging) return; bannerCropState.x=bImgX0+(cx-bDragX0); bannerCropState.y=bImgY0+(cy-bDragY0); _bannerClamp(); _bannerApply(); };
   const onEnd   = ()=>{ if(bannerDragging){ bannerDragging=false; _bannerExtract(); } };
@@ -1120,7 +1133,7 @@ function bannerHandleFile(e) { const f=e.target.files[0]; if(f) _bannerInitCrop(
 
 function bannerResetCrop() {
   bannerCroppedBlob=null;
-  bannerCropState={x:0,y:0,scale:1,minScale:1,natW:0,natH:0,contW:0,contH:0};
+  bannerCropState={x:0,y:0,scale:1,minScale:1,natW:0,natH:0,stageW:0,stageH:0,frameX:0,frameY:0,frameW:0,frameH:0};
   document.getElementById('banner-crop-zone').style.display='none';
   document.getElementById('banner-drop-zone').style.display='';
   document.getElementById('b-file-input').value='';
@@ -1131,19 +1144,33 @@ function _bannerInitCrop(file) {
   reader.onload = e2 => {
     const img = new Image();
     img.onload = () => {
-      const cc = document.getElementById('banner-crop-container');
-      const cW = cc.offsetWidth || 480;
-      const cH = Math.round(cW / BANNER_RATIO);
-      cc.style.height = cH + 'px';
+      const stage = document.getElementById('banner-crop-stage');
+      const stageW = stage.offsetWidth || 480;
+      const HPAD = 36, VPAD = 52;
+      const frameW = stageW - HPAD * 2;
+      const frameH = Math.round(frameW / BANNER_RATIO);
+      const stageH = frameH + VPAD * 2;
+      stage.style.height = stageH + 'px';
+      const frameX = HPAD, frameY = VPAD;
+
       bannerCropState.natW=img.naturalWidth; bannerCropState.natH=img.naturalHeight;
-      bannerCropState.contW=cW; bannerCropState.contH=cH;
-      const fit = Math.max(cW/img.naturalWidth, cH/img.naturalHeight);
-      bannerCropState.scale=fit; bannerCropState.minScale=fit;
-      bannerCropState.x=(cW-img.naturalWidth*fit)/2;
-      bannerCropState.y=(cH-img.naturalHeight*fit)/2;
+      bannerCropState.stageW=stageW; bannerCropState.stageH=stageH;
+      bannerCropState.frameX=frameX; bannerCropState.frameY=frameY;
+      bannerCropState.frameW=frameW; bannerCropState.frameH=frameH;
+
+      const minScale = Math.max(frameW/img.naturalWidth, frameH/img.naturalHeight);
+      bannerCropState.minScale=minScale; bannerCropState.scale=minScale;
+      bannerCropState.x = frameX - (img.naturalWidth*minScale - frameW)/2;
+      bannerCropState.y = frameY - (img.naturalHeight*minScale - frameH)/2;
+
+      const frame = document.getElementById('banner-crop-frame');
+      frame.style.left=frameX+'px'; frame.style.top=frameY+'px';
+      frame.style.width=frameW+'px'; frame.style.height=frameH+'px';
+
       const el = document.getElementById('banner-crop-img');
       el.src=e2.target.result;
       el.style.width=img.naturalWidth+'px'; el.style.height=img.naturalHeight+'px';
+      document.getElementById('banner-zoom-slider').value=100;
       const sl = document.getElementById('banner-zoom-slider');
       sl.min=Math.round(fit*100); sl.max=Math.round(fit*500); sl.value=Math.round(fit*100);
       _bannerApply();
@@ -1159,20 +1186,29 @@ function _bannerInitCrop(file) {
 function _bannerApply() {
   const s = bannerCropState;
   document.getElementById('banner-crop-img').style.transform = `translate(${s.x}px,${s.y}px) scale(${s.scale})`;
+  const {stageW,stageH,frameX,frameY,frameW,frameH} = s;
+  const t=document.getElementById('bov-top'), b=document.getElementById('bov-bottom');
+  const l=document.getElementById('bov-left'), r=document.getElementById('bov-right');
+  t.style.height=frameY+'px';
+  b.style.top=(frameY+frameH)+'px'; b.style.height=(stageH-frameY-frameH)+'px';
+  l.style.top=frameY+'px'; l.style.width=frameX+'px'; l.style.height=frameH+'px';
+  r.style.left=(frameX+frameW)+'px'; r.style.top=frameY+'px'; r.style.width=(stageW-frameX-frameW)+'px'; r.style.height=frameH+'px';
 }
 
 function _bannerClamp() {
-  const {contW,contH,natW,natH,scale} = bannerCropState;
+  const {frameX,frameY,frameW,frameH,natW,natH,scale} = bannerCropState;
   const sw=natW*scale, sh=natH*scale;
-  bannerCropState.x = sw>=contW ? Math.min(0,Math.max(contW-sw,bannerCropState.x)) : (contW-sw)/2;
-  bannerCropState.y = sh>=contH ? Math.min(0,Math.max(contH-sh,bannerCropState.y)) : (contH-sh)/2;
+  bannerCropState.x = Math.min(frameX, Math.max(frameX+frameW-sw, bannerCropState.x));
+  bannerCropState.y = Math.min(frameY, Math.max(frameY+frameH-sh, bannerCropState.y));
 }
 
 function bannerOnZoom(input) {
-  const ns = parseInt(input.value)/100;
-  const {contW:cW,contH:cH,x,y,scale:os} = bannerCropState;
-  bannerCropState.x = cW/2-(cW/2-x)*(ns/os);
-  bannerCropState.y = cH/2-(cH/2-y)*(ns/os);
+  const ratio = parseInt(input.value)/100;
+  const ns = bannerCropState.minScale * ratio;
+  const {frameX,frameY,frameW,frameH,x,y,scale:os} = bannerCropState;
+  const fcX=frameX+frameW/2, fcY=frameY+frameH/2;
+  bannerCropState.x = fcX-(fcX-x)*(ns/os);
+  bannerCropState.y = fcY-(fcY-y)*(ns/os);
   bannerCropState.scale = ns;
   _bannerClamp(); _bannerApply(); _bannerExtract();
 }
@@ -1180,10 +1216,11 @@ function bannerOnZoom(input) {
 function _bannerExtract() {
   const el = document.getElementById('banner-crop-img');
   if (!el.src || !bannerCropState.natW) return;
-  const {x,y,scale,contW,contH} = bannerCropState;
+  const {x,y,scale,frameX,frameY,frameW,frameH} = bannerCropState;
   const canvas = document.createElement('canvas');
   canvas.width=1920; canvas.height=600;
-  canvas.getContext('2d').drawImage(el, -x/scale, -y/scale, contW/scale, contH/scale, 0,0,1920,600);
+  const srcX=(frameX-x)/scale, srcY=(frameY-y)/scale;
+  canvas.getContext('2d').drawImage(el, srcX, srcY, frameW/scale, frameH/scale, 0,0,1920,600);
   canvas.toBlob(b=>{ bannerCroppedBlob=b; }, 'image/jpeg', 0.92);
 }
 
