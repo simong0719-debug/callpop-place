@@ -620,12 +620,7 @@
               <div style="position:absolute;bottom:-3px;right:-3px;width:18px;height:18px;border-bottom:3px solid #fff;border-right:3px solid #fff;"></div>
             </div>
           </div>
-          <!-- 줌 슬라이더 -->
-          <div style="display:flex;align-items:center;gap:10px;margin-top:12px;padding:0 2px;">
-            <svg width="16" height="16" fill="none" stroke="#999" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M8 11h6"/></svg>
-            <input type="range" id="banner-zoom-slider" min="100" max="300" value="100" style="flex:1;accent-color:#E3001B;" oninput="bannerOnZoom(this)">
-            <svg width="16" height="16" fill="none" stroke="#999" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/></svg>
-          </div>
+          <div style="text-align:center;margin-top:8px;font-size:11px;color:#aaa;">스크롤로 확대 · 축소</div>
         </div>
       </div>
 
@@ -1127,6 +1122,20 @@ function _initBannerTools() {
   cc.addEventListener('touchstart', e=>{ if(e.touches.length===1){ onStart(e.touches[0].clientX,e.touches[0].clientY); e.preventDefault(); } },{passive:false});
   document.addEventListener('touchmove', e=>{ if(e.touches.length===1) onMove(e.touches[0].clientX,e.touches[0].clientY); },{passive:true});
   document.addEventListener('touchend', onEnd);
+  cc.addEventListener('wheel', e=>{
+    if(!bannerCropState.natW) return;
+    e.preventDefault();
+    const rect = cc.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const factor = e.deltaY < 0 ? 1.08 : 0.93;
+    const ns = Math.max(bannerCropState.minScale, bannerCropState.scale * factor);
+    const os = bannerCropState.scale;
+    bannerCropState.x = mx - (mx - bannerCropState.x) * (ns/os);
+    bannerCropState.y = my - (my - bannerCropState.y) * (ns/os);
+    bannerCropState.scale = ns;
+    _bannerClamp(); _bannerApply(); _bannerExtract();
+  },{passive:false});
 }
 
 function bannerHandleFile(e) { const f=e.target.files[0]; if(f) _bannerInitCrop(f); }
@@ -1170,7 +1179,6 @@ function _bannerInitCrop(file) {
       const el = document.getElementById('banner-crop-img');
       el.src=e2.target.result;
       el.style.width=img.naturalWidth+'px'; el.style.height=img.naturalHeight+'px';
-      document.getElementById('banner-zoom-slider').value=100;
       _bannerApply();
       document.getElementById('banner-drop-zone').style.display='none';
       document.getElementById('banner-crop-zone').style.display='';
@@ -1200,16 +1208,6 @@ function _bannerClamp() {
   bannerCropState.y = Math.min(frameY, Math.max(frameY+frameH-sh, bannerCropState.y));
 }
 
-function bannerOnZoom(input) {
-  const ratio = parseInt(input.value)/100;
-  const ns = bannerCropState.minScale * ratio;
-  const {frameX,frameY,frameW,frameH,x,y,scale:os} = bannerCropState;
-  const fcX=frameX+frameW/2, fcY=frameY+frameH/2;
-  bannerCropState.x = fcX-(fcX-x)*(ns/os);
-  bannerCropState.y = fcY-(fcY-y)*(ns/os);
-  bannerCropState.scale = ns;
-  _bannerClamp(); _bannerApply(); _bannerExtract();
-}
 
 function _bannerExtract() {
   const el = document.getElementById('banner-crop-img');
