@@ -282,10 +282,10 @@
 <script>
 (function(){
   var BANNERS = [
-    { bg:'linear-gradient(135deg,#FF6B35 0%,#cc4a18 100%)', title:'수수료 없는 배달 주문', sub:'소상공인과 이용자가 함께 잘사는 가장 쉬운 방법' },
-    { bg:'linear-gradient(135deg,#0891b2 0%,#075985 100%)', title:'런칭 기념 특별 이벤트', sub:'콜팝과 함께하는 첫 주문에 특별 쿠폰을 드립니다' },
-    { bg:'linear-gradient(135deg,#7c3aed 0%,#4c1d95 100%)', title:'우리만의 플레이스 혜택', sub:'대학교 · 교회 · 동문회 구성원만을 위한 특별 주문' },
-    { bg:'linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%)', title:'앱 출시 예정', sub:'App Store · Google Play에서 곧 만나요' },
+    { bg:'linear-gradient(135deg,#FF6B35 0%,#cc4a18 100%)', link:'' },
+    { bg:'linear-gradient(135deg,#0891b2 0%,#075985 100%)', link:'' },
+    { bg:'linear-gradient(135deg,#7c3aed 0%,#4c1d95 100%)', link:'' },
+    { bg:'linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%)', link:'' },
   ];
 
   var idx = 0, timer = null, touchX = null, didSwipe = false;
@@ -307,14 +307,7 @@
       } else {
         slide.style.background = b.bg;
       }
-      if (b.link) { slide.style.cursor = 'pointer'; slide.onclick = function(){ if(!didSwipe) location.href = b.link; }; }
-      slide.innerHTML =
-        '<div style="position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,.06);right:-100px;top:-80px;pointer-events:none;"></div>' +
-        '<div style="position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.04);left:-40px;bottom:-40px;pointer-events:none;"></div>' +
-        '<div style="text-align:center;color:#fff;padding:0 80px;position:relative;z-index:1;max-width:720px;margin:0 auto;">' +
-          '<p style="font-size:clamp(18px,4vw,34px);font-weight:900;line-height:1.3;letter-spacing:-.02em;margin-bottom:14px;">' + b.title + '</p>' +
-          '<p style="font-size:clamp(12px,2vw,17px);opacity:.82;line-height:1.7;">' + b.sub + '</p>' +
-        '</div>';
+      if (b.link) { slide.style.cursor = 'pointer'; slide.onclick = function(){ if(!didSwipe) window.open(b.link, '_blank'); }; }
       track.appendChild(slide);
 
       var dot = document.createElement('button');
@@ -366,7 +359,7 @@
       getSb().then(function(s){ return s.from('callpop_banners').select('*').eq('is_active', true).order('sort_order', {ascending:true}); })
         .then(function(r){
           if (!r.error && r.data && r.data.length) {
-            BANNERS = r.data.map(function(b){ return { bg: b.bg || 'linear-gradient(135deg,#FF6B35 0%,#cc4a18 100%)', title: b.title || '', sub: b.subtitle || '', link: b.link_url || '', imageUrl: b.image_url || '' }; });
+            BANNERS = r.data.map(function(b){ return { bg: b.bg || 'linear-gradient(135deg,#FF6B35 0%,#cc4a18 100%)', link: b.link_url || '', imageUrl: b.image_url || '' }; });
           }
           setup();
         }).catch(function(){ setup(); });
