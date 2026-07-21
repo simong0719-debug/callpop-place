@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>콜팝 출시 기념 이벤트 응모</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Noto Sans KR', sans-serif; box-sizing: border-box; }
+    body { background: #fdf6f0; margin: 0; }
+
+    .hero-bg {
+      background: linear-gradient(160deg, #FF6B35 0%, #e8521f 55%, #c73d0d 100%);
+    }
+    .confetti-dot {
+      position: absolute;
+      border-radius: 50%;
+      opacity: .7;
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-12px) rotate(180deg); }
+    }
+
+    .prize-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 18px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.08);
+      margin-bottom: 12px;
+    }
+    .prize-rank {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .form-input {
+      width: 100%;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color .2s;
+      background: #fff;
+    }
+    .form-input:focus { border-color: #FF6B35; }
+    .form-input::placeholder { color: #bbb; }
+
+    .btn-submit {
+      width: 100%;
+      background: #FF6B35;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      margin-top: 8px;
+    }
+    .btn-submit:hover  { background: #e85d28; }
+    .btn-submit:active { transform: scale(.98); }
+    .btn-submit:disabled { background: #ffc4aa; cursor: not-allowed; }
+
+    .step-circle {
+      width: 32px; height: 32px;
+      background: #FF6B35;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .step-line {
+      width: 2px;
+      background: #ffe4d8;
+      height: 28px;
+      margin: 2px 0 2px 15px;
+    }
+
+    .success-box {
+      display: none;
+      text-align: center;
+      padding: 32px 16px;
+    }
+    .success-icon {
+      font-size: 56px;
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1f2937;
+      color: #fff;
+      border-radius: 10px;
+      padding: 12px 22px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+      z-index: 999;
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="hero-bg" style="position:relative;overflow:hidden;padding:28px 20px 48px;">
+  <!-- 장식 점들 -->
+  <div class="confetti-dot" style="width:10px;height:10px;background:#ffd6b0;top:18%;left:8%;animation-delay:0s;"></div>
+  <div class="confetti-dot" style="width:7px;height:7px;background:#fff;top:30%;right:12%;animation-delay:1s;"></div>
+  <div class="confetti-dot" style="width:12px;height:12px;background:#ffbd9e;top:60%;left:15%;animation-delay:2s;"></div>
+  <div class="confetti-dot" style="width:6px;height:6px;background:#fff;top:70%;right:20%;animation-delay:.5s;border-radius:2px;"></div>
+  <div class="confetti-dot" style="width:9px;height:9px;background:#ffd6b0;top:12%;right:30%;animation-delay:1.5s;border-radius:3px;"></div>
+
+  <!-- 로고 -->
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;">
+    <a href="/" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+      <img src="/logo.png" alt="콜팝" style="height:32px;" onerror="this.style.display='none'">
+      <span style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-.5px;">콜팝</span>
+    </a>
+  </div>
+
+  <!-- 타이틀 -->
+  <div style="position:relative;z-index:1;">
+    <p style="color:rgba(255,255,255,.85);font-size:13px;font-weight:700;margin:0 0 6px;letter-spacing:.05em;">✦ 콜팝 출시 기념 ✦</p>
+    <h1 style="color:#fff;font-size:clamp(26px,7vw,36px);font-weight:900;line-height:1.25;margin:0 0 12px;">이용 프로모션<br>푸짐한 선물을<br>받아가세요!</h1>
+    <p style="color:rgba(255,255,255,.85);font-size:14px;margin:0 0 20px;line-height:1.6;">콜팝으로 주문하고 주문코드를 입력하세요.<br>주문 1건 = 응모 1회 · 중복 응모 가능!</p>
+    <div style="display:inline-flex;background:rgba(0,0,0,.18);border-radius:10px;padding:8px 14px;gap:6px;align-items:center;">
+      <svg width="14" height="14" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span id="event-period" style="color:rgba(255,255,255,.9);font-size:13px;font-weight:700;">이벤트 기간 로딩 중...</span>
+    </div>
+  </div>
+</div>
+
+<!-- 기간 배지 (아래로 연결) -->
+<div style="height:24px;background:#fdf6f0;margin-top:-24px;border-radius:24px 24px 0 0;position:relative;z-index:2;"></div>
+
+<div style="max-width:480px;margin:0 auto;padding:0 16px 48px;">
+
+  <!-- ══ 참여 방법 ══ -->
+  <div style="margin-bottom:28px;">
+    <h2 style="font-size:17px;font-weight:900;color:#1f2937;margin:0 0 16px;">참여 방법</h2>
+    <div style="display:flex;flex-direction:column;">
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div class="step-circle">1</div>
+        <div style="padding-top:6px;">
+          <p style="margin:0;font-size:14px;font-weight:700;color:#1f2937;">콜팝 앱에서 주문</p>
+          <p style="margin:2px 0 0;font-size:12px;color:#6b7280;">앱 내 원하는 음식을 주문하세요</p>
+        </div>
+      </div>
+      <div class="step-line"></div>
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div class="step-circle">2</div>
+        <div style="padding-top:6px;">
+          <p style="margin:0;font-size:14px;font-weight:700;color:#1f2937;">주문코드 확인</p>
+          <p style="margin:2px 0 0;font-size:12px;color:#6b7280;">주문 완료 화면에서 이벤트 코드를 복사하세요</p>
+        </div>
+      </div>
+      <div class="step-line"></div>
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div class="step-circle">3</div>
+        <div style="padding-top:6px;">
+          <p style="margin:0;font-size:14px;font-weight:700;color:#1f2937;">아래에 입력 후 응모!</p>
+          <p style="margin:2px 0 0;font-size:12px;color:#6b7280;">코드 1개당 응모 1회, 추가 주문 시 재응모 가능</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 경품 안내 ══ -->
+  <div style="margin-bottom:28px;">
+    <h2 style="font-size:17px;font-weight:900;color:#1f2937;margin:0 0 16px;">경품 안내 <span style="font-size:12px;color:#aaa;font-weight:400;">(예시 — 변경될 수 있습니다)</span></h2>
+
+    <div class="prize-card">
+      <div class="prize-rank" style="background:#FF6B35;color:#fff;">1등</div>
+      <div style="flex:1;">
+        <p style="margin:0;font-size:15px;font-weight:700;color:#1f2937;">맥북에어 M4</p>
+        <p style="margin:2px 0 0;font-size:12px;color:#6b7280;">1명 추첨</p>
+      </div>
+      <span style="font-size:22px;">💻</span>
+    </div>
+
+    <div class="prize-card">
+      <div class="prize-rank" style="background:#f59e0b;color:#fff;">2등</div>
+      <div style="flex:1;">
+        <p style="margin:0;font-size:15px;font-weight:700;color:#1f2937;">아이폰 17 Pro</p>
+        <p style="margin:2px 0 0;font-size:12px;color:#6b7280;">3명 추첨</p>
+      </div>
+      <span style="font-size:22px;">📱</span>
+    </div>
+
+    <div class="prize-card">
+      <div class="prize-rank" style="background:#8b5cf6;color:#fff;">3등</div>
+      <div style="flex:1;">
+        <p style="margin:0;font-size:15px;font-weight:700;color:#1f2937;">스마트워치</p>
+        <p style="margin:2px 0 0;font-size:12px;color:#6b7280;">10명 추첨 · 애플워치 / 갤럭시워치</p>
+      </div>
+      <span style="font-size:22px;">⌚</span>
+    </div>
+
+    <div class="prize-card">
+      <div class="prize-rank" style="background:#10b981;color:#fff;">4등</div>
+      <div style="flex:1;">
+        <p style="margin:0;font-size:15px;font-weight:700;color:#1f2937;">상품권 10만원</p>
+        <p style="margin:2px 0 0;font-size:12px;color:#6b7280;">30명 추첨 · 신세계 / 네이버페이</p>
+      </div>
+      <span style="font-size:22px;">🎁</span>
+    </div>
+
+    <div class="prize-card">
+      <div class="prize-rank" style="background:#6b7280;color:#fff;">5등</div>
+      <div style="flex:1;">
+        <p style="margin:0;font-size:15px;font-weight:700;color:#1f2937;">콜팝 할인쿠폰 1만원</p>
+        <p style="margin:2px 0 0;font-size:12px;color:#6b7280;">100명 추첨 · 앱 내 지급</p>
+      </div>
+      <span style="font-size:22px;">🍱</span>
+    </div>
+  </div>
+
+  <!-- ══ 응모 폼 ══ -->
+  <div style="background:#fff;border-radius:20px;padding:24px 20px;box-shadow:0 4px 20px rgba(0,0,0,.08);margin-bottom:20px;">
+    <h2 style="font-size:18px;font-weight:900;color:#1f2937;margin:0 0 4px;">이벤트 응모</h2>
+    <p style="font-size:13px;color:#9ca3af;margin:0 0 20px;">주문코드 1개당 응모 1회 처리됩니다</p>
+
+    <!-- 폼 -->
+    <div id="entry-form">
+      <div style="margin-bottom:14px;">
+        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:6px;">이름 <span style="color:#FF6B35;">*</span></label>
+        <input id="f-name" class="form-input" type="text" placeholder="홍길동" maxlength="20">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:6px;">전화번호 <span style="color:#FF6B35;">*</span></label>
+        <input id="f-phone" class="form-input" type="tel" placeholder="010-0000-0000" maxlength="13" oninput="formatPhone(this)">
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:6px;">주문코드 <span style="color:#FF6B35;">*</span></label>
+        <input id="f-code" class="form-input" type="text" placeholder="앱에서 복사한 코드를 입력하세요" maxlength="20" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
+        <p style="font-size:11px;color:#9ca3af;margin:6px 0 0;">주문 완료 화면에서 확인할 수 있습니다</p>
+      </div>
+
+      <p id="form-error" style="font-size:13px;color:#ef4444;min-height:18px;margin:0 0 8px;display:none;"></p>
+      <button class="btn-submit" id="submit-btn" onclick="submitEntry()">🎯 지금 응모하기</button>
+
+      <p style="font-size:11px;color:#d1d5db;text-align:center;margin:14px 0 0;">
+        응모 시 <span style="color:#9ca3af;">개인정보 수집·이용</span>에 동의하는 것으로 간주됩니다
+      </p>
+    </div>
+
+    <!-- 성공 -->
+    <div class="success-box" id="success-box">
+      <span class="success-icon">🎉</span>
+      <h3 style="font-size:20px;font-weight:900;color:#1f2937;margin:0 0 8px;">응모 완료!</h3>
+      <p id="success-msg" style="font-size:14px;color:#6b7280;margin:0 0 24px;line-height:1.6;"></p>
+      <button onclick="resetForm()" style="background:#fdf6f0;border:1.5px solid #FF6B35;color:#FF6B35;border-radius:12px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;">추가 코드로 재응모</button>
+    </div>
+  </div>
+
+  <!-- ══ 유의사항 ══ -->
+  <div style="background:#f9fafb;border-radius:14px;padding:18px 16px;">
+    <h3 style="font-size:13px;font-weight:700;color:#374151;margin:0 0 10px;">유의사항</h3>
+    <ul style="margin:0;padding-left:16px;list-style:disc;">
+      <li style="font-size:12px;color:#6b7280;margin-bottom:5px;">주문코드 1개는 1회만 사용 가능합니다</li>
+      <li style="font-size:12px;color:#6b7280;margin-bottom:5px;">동일인은 여러 코드로 중복 응모 가능하나 1인 1당첨입니다</li>
+      <li style="font-size:12px;color:#6b7280;margin-bottom:5px;">이벤트 기간 내 콜팝 앱에서 이루어진 주문에 한해 코드가 발급됩니다</li>
+      <li style="font-size:12px;color:#6b7280;margin-bottom:5px;">경품 및 당첨 인원은 사정에 따라 변경될 수 있습니다</li>
+      <li style="font-size:12px;color:#6b7280;margin-bottom:5px;">제세공과금(5만원 초과 당첨 시)은 당첨자 본인 부담입니다</li>
+      <li style="font-size:12px;color:#6b7280;">추첨 결과는 공중인 입회 하에 진행되며 홈페이지를 통해 발표합니다</li>
+    </ul>
+  </div>
+
+  <p style="text-align:center;font-size:12px;color:#d1d5db;margin-top:24px;">
+    문의: <a href="mailto:support@callpop.co.kr" style="color:#FF6B35;">support@callpop.co.kr</a><br>
+    <a href="/" style="color:#d1d5db;text-decoration:none;">callpop.co.kr</a>
+  </p>
+
+</div>
+
+<!-- 토스트 -->
+<div id="toast"></div>
+
+<script>
+// ── 이벤트 설정 ──────────────────────────────
+const EVENT = {
+  slug:    'launch2026',
+  start:   new Date('2026-09-01T00:00:00+09:00'),
+  end:     new Date('2026-11-30T23:59:59+09:00'),
+  draw:    '2026년 12월 14일 (월)',
+  announce:'2026년 12월 16일 (수)',
+};
+
+// ── Supabase ─────────────────────────────────
+const { createClient } = supabase;
+let _sb;
+async function getSb() {
+  if (_sb) return _sb;
+  const { supabaseUrl, supabaseKey } = await fetch('/api/config').then(r => r.json());
+  _sb = createClient(supabaseUrl, supabaseKey);
+  return _sb;
+}
+
+// ── 이벤트 기간 표시 ─────────────────────────
+(function() {
+  const fmt = d => `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+  document.getElementById('event-period').textContent =
+    `${fmt(EVENT.start)} ~ ${fmt(EVENT.end)}`;
+
+  const now = new Date();
+  if (now < EVENT.start) {
+    setFormState('upcoming', `이벤트는 ${fmt(EVENT.start)}부터 시작됩니다`);
+  } else if (now > EVENT.end) {
+    setFormState('ended', '이벤트가 종료되었습니다');
+  }
+})();
+
+function setFormState(state, msg) {
+  const btn = document.getElementById('submit-btn');
+  if (state === 'upcoming' || state === 'ended') {
+    btn.disabled = true;
+    btn.textContent = state === 'upcoming' ? '⏳ 이벤트 준비 중' : '이벤트 종료';
+    showError(msg);
+  }
+}
+
+// ── 전화번호 자동 포맷 ───────────────────────
+function formatPhone(el) {
+  let v = el.value.replace(/\D/g, '');
+  if (v.length > 11) v = v.slice(0, 11);
+  if (v.length <= 3)       el.value = v;
+  else if (v.length <= 7)  el.value = v.slice(0,3) + '-' + v.slice(3);
+  else                     el.value = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7);
+}
+
+// ── 폼 유효성 검사 ──────────────────────────
+function validate() {
+  const name  = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const code  = document.getElementById('f-code').value.trim();
+  if (!name)  return '이름을 입력해주세요';
+  if (!/^010-\d{4}-\d{4}$/.test(phone)) return '전화번호 형식이 올바르지 않습니다 (010-0000-0000)';
+  if (code.length < 4) return '주문코드를 입력해주세요';
+  return null;
+}
+
+function showError(msg) {
+  const el = document.getElementById('form-error');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+// ── 응모 제출 ────────────────────────────────
+async function submitEntry() {
+  const err = validate();
+  if (err) { showError(err); return; }
+  showError('');
+
+  const btn  = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '응모 중...';
+
+  const name  = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const code  = document.getElementById('f-code').value.trim().toUpperCase();
+
+  try {
+    const sb = await getSb();
+
+    // 응모 저장 (order_code unique → 중복 코드 자동 차단)
+    const { error } = await sb.from('event_entries').insert({
+      event_slug: EVENT.slug,
+      name,
+      phone,
+      order_code: code,
+    });
+
+    if (error) {
+      if (error.code === '23505') { // unique violation
+        showError('이미 사용된 주문코드입니다. 다른 코드를 입력해주세요.');
+      } else {
+        showError('오류가 발생했습니다: ' + error.message);
+      }
+      btn.disabled = false;
+      btn.textContent = '🎯 지금 응모하기';
+      return;
+    }
+
+    // 내 총 응모 수 조회
+    const { count } = await sb
+      .from('event_entries')
+      .select('*', { count: 'exact', head: true })
+      .eq('event_slug', EVENT.slug)
+      .eq('phone', phone);
+
+    showSuccess(name, count || 1);
+
+  } catch (e) {
+    showError('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    btn.disabled = false;
+    btn.textContent = '🎯 지금 응모하기';
+  }
+}
+
+function showSuccess(name, count) {
+  document.getElementById('entry-form').style.display = 'none';
+  const box = document.getElementById('success-box');
+  box.style.display = 'block';
+  document.getElementById('success-msg').innerHTML =
+    `<strong>${name}</strong>님의 응모가 완료되었습니다!<br><br>` +
+    `총 <strong style="color:#FF6B35;font-size:18px;">${count}회</strong> 응모하셨습니다.<br>` +
+    `추첨일: <strong>${EVENT.draw}</strong><br>당첨 발표: <strong>${EVENT.announce}</strong>`;
+}
+
+function resetForm() {
+  document.getElementById('f-code').value = '';
+  document.getElementById('form-error').style.display = 'none';
+  document.getElementById('entry-form').style.display = 'block';
+  document.getElementById('success-box').style.display = 'none';
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = false;
+  btn.textContent = '🎯 지금 응모하기';
+  document.getElementById('f-code').focus();
+}
+
+// ── 토스트 ──────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
